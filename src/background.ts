@@ -9,6 +9,9 @@ chrome.runtime.onConnect.addListener((port) => {
 
     if (port.name === 'tab-column-formatting') {
         tabConnections[port.sender.tab.id] = port;
+        port.postMessage({
+            type: 'refresh_preview'
+        })
     }
 
     if (port.name === 'devtools-column-formatting') {

@@ -1,7 +1,6 @@
 (() => {
     console.log('running content.js');
     let injected = false;
-    injectKnockout();
 
     let port = chrome.runtime.connect(null, { name: 'tab-column-formatting' });
 
@@ -11,50 +10,58 @@
         }
     });
 
-    function refreshPreview(data: any) {
+    async function refreshPreview(data: any) {
         console.log('received refresh command');
         if (!injected) {
             injected = true;
-            injectScript()
-                .then(() => {
-                    executeRefresh(data);
-                });
-        } else {
-            executeRefresh(data);
+
+            /*
+            injectCssFile('monaco-editor/dist/external/monaco.css');
+
+            injectScript(`
+                window.MonacoEnvironment = {
+                    baseUrl: 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/dist/external',
+                };
+                console.log('added require.config');
+            `);
+            /*
+            await injectScriptFile('monaco-editor/dev/vs/loader.js');
+            await injectScriptFile('monaco-editor/dev/vs/editor/editor.main.nls.js');
+            await injectScriptFile('monaco-editor/dev/vs/editor/editor.main.js');
+            */
+            await injectScriptFile('js/exec_script.js');
         }
-    }
-
-    function injectKnockout() {
-        let scriptTag = document.createElement('script');
-        scriptTag.src = chrome.runtime.getURL('js/inject_ko.js');
-
-        (document.head || document.documentElement).appendChild(scriptTag);
+        executeRefresh(data);
     }
 
     function executeRefresh(data: any) {
         window.postMessage({ fieldInternalName: data.fieldInternalName, name: 'column_formatting', type: data.type, jsonFormatting: data.jsonFormatting }, location.origin);
     }
 
-    function injectScript(): Promise<void> {
+    function injectCssFile(src: string) {
+        let link = document.createElement("link");
+        link.href = chrome.runtime.getURL(src);;
+        link.type = "text/css";
+        link.rel = "stylesheet";
+
+        document.getElementsByTagName("head")[0].appendChild(link);
+    }
+
+    function injectScript(code: string) {
+        let scriptElement = document.createElement('script');
+        scriptElement.textContent = code;
+        (document.head || document.documentElement).appendChild(scriptElement);
+        scriptElement.remove();
+    }
+
+    function injectScriptFile(src: string): Promise<void> {
         return new Promise((resolve, reject) => {
             let scriptTag = document.createElement('script');
-            scriptTag.src = chrome.runtime.getURL('js/exec_script.js');
-
-            window.addEventListener('message', (event) => {
-                if (event.origin !== location.origin || !event.data || event.data.name !== 'column_formatting') {
-                    return;
-                }
-
-                if (event.data.type === 'init') {
-                    resolve();
-                    return;
-                }
-
-                console.log(event);
-            }, false);
+            scriptTag.src = chrome.runtime.getURL(src);
 
             scriptTag.onload = function () {
                 console.log('loaded!!');
+                resolve();
             };
 
             (document.head || document.documentElement).appendChild(scriptTag);

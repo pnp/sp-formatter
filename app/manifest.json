@@ -3,7 +3,6 @@
   "name": "Chrome Extension TypeScript Starter",
   "description": "Chrome Extension, TypeScript, Visual Studio Code",
   "version": "1.0",
-  "devtools_page": "devtools.html",
   "content_scripts": [
     {
       "run_at": "document_end",
@@ -22,7 +21,17 @@
     ]
   },
   "permissions": [
-    "activeTab"
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "storage",
+    "https://*/*",
+    "http://*/*",
+    "downloads"
   ],
-  "web_accessible_resources": ["js/exec_script.js", "js/inject_ko.js"]
+  "web_accessible_resources": [
+    "js/exec_script.js",
+    "monaco-editor/dev/vs/*",
+    "monaco-editor/dist/**"
+  ]
 }

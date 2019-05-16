@@ -7,6 +7,12 @@
         "rootDir": "src",
         "outDir": "dist/js",
         "noEmitOnError": true,
-        "typeRoots": [ "node_modules/@types" ]
-    }
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    },
+    "include": [
+        "src/**/*.ts",
+        "node_modules/monaco-editor/monaco.d.ts"
+    ]
 }

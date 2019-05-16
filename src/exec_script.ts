@@ -1,77 +1,120 @@
-declare var __non_webpack_require__: any;
+import * as monaco from '@timkendrick/monaco-editor';
+//import * as monaco from '@timkendrick/monaco-editor/dist/external';
 
-(() => {
+import { ColumnFormattingSchema } from "./schema";
 
-    var itemSetKey;
+let findColumnDesignerInterval = setInterval(() => {
+    let columnDesigner = document.querySelector('.sp-ColumnDesigner');
 
-    function findReact(dom) {
-        let key = Object.keys(dom).find(key => key.startsWith('__reactInternalInstance$'));
-        let internalInstance = dom[key];
-        if (internalInstance == null) return null;
+    if (!columnDesigner) return;
 
-        if (internalInstance.return) { // react 16+
-            return internalInstance._debugOwner
-                ? internalInstance._debugOwner.stateNode
-                : internalInstance.return.stateNode;
-        } else { // react <16
-            return internalInstance._currentElement._owner._instance;
-        }
-    }
+    clearInterval(findColumnDesignerInterval);
 
-    window.addEventListener('message', (event) => {
-        if (event.origin !== location.origin || !event.data || event.data.name !== 'column_formatting') {
-            return;
-        }
+    let designerArea = columnDesigner.querySelector('textarea');
+    designerArea.style.position = 'absolute';
 
-        if (event.data.type === 'refresh_preview') {
-            applyFormatting(event.data.fieldInternalName, event.data.jsonFormatting);
-        }
-    });
-
-    function findItemSet(reactNode: any): any {
-        if (!reactNode) {
-            return null;
-        }
-
-        if (reactNode && reactNode.return && reactNode.return.stateNode && reactNode.return.stateNode.props
-            && (reactNode.return.stateNode.props.resources)) {
-            return reactNode.return.stateNode;
-        }
-
-        return findItemSet(reactNode.return);
-    }
-
-    function applyFormatting(fieldInternalName: string, json: string) {
-        let reactNode = findReact(document.querySelectorAll('.root-100')[0]);
-        let stateNode = findItemSet(reactNode._reactInternalFiber);
-        console.log(fieldInternalName);
-        console.log(json);
-
-        console.log(stateNode.props.resources.consume(itemSetKey).peek());
-        var items = stateNode.props.resources.consume(itemSetKey).peek();
-        var schema = items.schema.peek();
-
-        for (let i = 0; i < schema.length; i++) {
-            const fieldInfo = schema[i];
-
-            if (fieldInfo && fieldInfo.internalName === fieldInternalName) {
-                var newSchema = schema.slice(0, i).concat(Object.assign({}, fieldInfo, {
-                    customFormatter: JSON.stringify(json)
-                }), schema.slice(i + 1));
-                items.schema(newSchema);
-                items.schema.valueHasMutated();
-                break;
+    let jsonCode = JSON.stringify({
+        "elmType": "div",
+        "children": [
+            {
+                "forEach": "personIterator in @currentField",
+                "elmType": "div",
+                "style": {
+                    "width": "32px",
+                    "height": "32px",
+                    "overflow": "hidden",
+                    "border-radius": "50%",
+                    "margin": "2px",
+                    "display": "=if(loopIndex('personIterator') >= 3, 'none', '')"
+                },
+                "children": [
+                    {
+                        "elmType": "img",
+                        "attributes": {
+                            "src": "='/_layouts/15/userphoto.aspx?size=S&accountname=' + [$personIterator.email]",
+                            "title": "[$personIterator.title]"
+                        },
+                        "style": {
+                            "position": "relative",
+                            "top": "50%",
+                            "left": "50%",
+                            "width": "100%",
+                            "height": "auto",
+                            "margin-left": "-50%",
+                            "margin-top": "-50%",
+                            "display": "=if(length(@currentField) > 3 && loopIndex('personIterator') >= 2, 'none', '')"
+                        }
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "title": "=join(@currentField.title, ', ')",
+                            "class": "ms-bgColor-neutralLight ms-fontColor-neutralSecondary"
+                        },
+                        "style": {
+                            "width": "100%",
+                            "height": "100%",
+                            "text-align": "center",
+                            "line-height": "30px",
+                            "font-size": "14px",
+                            "display": "=if(length(@currentField) > 3 && loopIndex('personIterator') == 2, '', 'none')"
+                        },
+                        "children": [
+                            {
+                                "elmType": "span",
+                                "txtContent": "='+' + toString(length(@currentField) - (2))"
+                            }
+                        ]
+                    }
+                ]
             }
-        }
-    }
+        ]
+    }, null, 2);
 
-    __non_webpack_require__(['a', 'eE'], function (data, eE) {
-        (window as any).CustomFormatter = data.CustomFormatter;
-        console.log(eE);
-        itemSetKey = eE.currentItemSet;
-        window.postMessage({ loaded: true, type: 'init', name: 'column_formatting' }, "*");
-    }, function (err) {
-        console.error('Error loading SharePoint Column Formatter: ');
-        console.error(err);
+    let json2 = JSON.stringify({
+        "elmType": "div",
+        "txtContent": "@currentField",
+        "style": {
+            "text-decoration": "=if([$Complete],'line-through','inherit')"
+        },
+        "attributes": {
+            "class": "ms-fontColor-neutralPrimary"
+        }
+    }, null, 2);
+
+    let modelUri = monaco.Uri.parse("a://b/foo.json"); // a made up unique URI for our model
+    let model = monaco.editor.createModel(json2, "json", modelUri);
+
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemas: [{
+            uri: "http://myserver/foo-schema.json", // id of the first schema
+            fileMatch: [modelUri.toString()], // associate with our model
+            schema: ColumnFormattingSchema
+        }]
     });
-})();
+
+    let editor = monaco.editor.create(designerArea.parentElement, {
+        model: model,
+        language: 'json',
+        theme: 'vs',
+        folding: true,
+        renderIndentGuides: true,
+        automaticLayout: false
+    });
+
+    editor.getModel().onDidChangeContent(e => {
+        designerArea.value = editor.getModel().getValue();
+        let event = new Event('input', { bubbles: true });
+        designerArea.dispatchEvent(event);
+        
+        // hack
+        let reactHandlers = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
+
+        designerArea[reactHandlers]["onFocus"]();
+        designerArea[reactHandlers]["onBlur"]();
+
+        (document.querySelector('.sp-ColumnDesigner-footerButton button') as HTMLButtonElement).click();
+    });
+    
+}, 1000);

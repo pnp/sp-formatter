@@ -8,5 +8,27 @@
             ],
             "url": "http://json.schemastore.org/chrome-manifest"
         }
+    ],
+    "cSpell.enabledLanguageIds": [
+        "asciidoc",
+        "c",
+        "cpp",
+        "csharp",
+        "go",
+        "handlebars",
+        "jade",
+        "javascriptreact",
+        "latex",
+        "less",
+        "markdown",
+        "php",
+        "plaintext",
+        "pub",
+        "python",
+        "restructuredtext",
+        "rust",
+        "scss",
+        "text",
+        "yml"
     ]
 }

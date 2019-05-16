@@ -14,12 +14,17 @@
     "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
   },
   "dependencies": {
+    "@timkendrick/monaco-editor": "0.0.9",
     "jquery": "~3.3.1",
     "moment": "~2.22.2"
   },
   "devDependencies": {
     "@types/chrome": "~0.0.72",
     "@types/jquery": "~3.3.1",
+    "css-loader": "^2.1.1",
+    "monaco-editor": "^0.16.2",
+    "monaco-editor-webpack-plugin": "^1.7.0",
+    "style-loader": "^0.23.1",
     "ts-loader": "~5.0.0",
     "typescript": "~3.0.3",
     "webpack": "~4.17.2",

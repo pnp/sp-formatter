@@ -1,6 +1,5 @@
-const webpack = require("webpack");
 const path = require('path');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: {
@@ -22,10 +21,27 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
-            }
+            },
+            {
+				"test": "/\\.js$/",
+				"enforce": "pre",
+				"use": "source-map-loader"
+			}
         ]
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
+    },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    chunks: 'all',
+                    test: /\@timkendrick[\\/]monaco-editor/,
+                    name: 'monaco-build',
+                    enforce: true
+                }
+            }
+        }
     }
 };

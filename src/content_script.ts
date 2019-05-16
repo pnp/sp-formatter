@@ -15,20 +15,22 @@
         if (!injected) {
             injected = true;
 
-            /*
             injectCssFile('monaco-editor/dist/external/monaco.css');
 
             injectScript(`
                 window.MonacoEnvironment = {
-                    baseUrl: 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/dist/external',
+                    baseUrl: 'chrome-extension://${chrome.runtime.id}/monaco-editor/dist/external',
                 };
                 console.log('added require.config');
             `);
+            
             /*
             await injectScriptFile('monaco-editor/dev/vs/loader.js');
             await injectScriptFile('monaco-editor/dev/vs/editor/editor.main.nls.js');
             await injectScriptFile('monaco-editor/dev/vs/editor/editor.main.js');
             */
+
+            await injectScriptFile('js/monaco-build.js');
             await injectScriptFile('js/exec_script.js');
         }
         executeRefresh(data);

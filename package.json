@@ -24,6 +24,7 @@
     "css-loader": "^2.1.1",
     "monaco-editor": "^0.16.2",
     "monaco-editor-webpack-plugin": "^1.7.0",
+    "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "ts-loader": "~5.0.0",
     "typescript": "~3.0.3",

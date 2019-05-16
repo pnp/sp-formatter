@@ -1,5 +1,4 @@
-import * as monaco from '@timkendrick/monaco-editor';
-//import * as monaco from '@timkendrick/monaco-editor/dist/external';
+import * as monaco from '@timkendrick/monaco-editor/dist/external';
 
 import { ColumnFormattingSchema } from "./schema";
 

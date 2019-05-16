@@ -1,4 +1,5 @@
-import * as monaco from '@timkendrick/monaco-editor/dist/external';
+const monaco = require('./../app/monaco-editor/');
+console.log(monaco);
 
 import { ColumnFormattingSchema } from "./schema";
 

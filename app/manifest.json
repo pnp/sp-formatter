@@ -31,7 +31,6 @@
   ],
   "web_accessible_resources": [
     "js/*",
-    "monaco-editor/dev/vs/*",
-    "monaco-editor/dist/**"
+    "monaco-editor/*"
   ]
 }

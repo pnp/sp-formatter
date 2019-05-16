@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",
-    "build": "webpack --config webpack/webpack.prod.js"
+    "build": "webpack --config webpack/webpack.prod.js",
+    "monaco": "webpack --config webpack/webpack.monaco.js"
   },
   "author": "",
   "license": "MIT",
@@ -22,7 +23,7 @@
     "@types/chrome": "~0.0.72",
     "@types/jquery": "~3.3.1",
     "css-loader": "^2.1.1",
-    "monaco-editor": "^0.16.2",
+    "monaco-editor": "^0.17.0",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
@@ -30,6 +31,7 @@
     "typescript": "~3.0.3",
     "webpack": "~4.17.2",
     "webpack-cli": "~3.1.0",
-    "webpack-merge": "~4.1.4"
+    "webpack-merge": "~4.1.4",
+    "worker-loader": "^2.0.0"
   }
 }

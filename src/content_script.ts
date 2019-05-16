@@ -16,11 +16,26 @@
             injected = true;
 
             injectCssFile('monaco-editor/dist/external/monaco.css');
-
+            
             injectScript(`
+                
                 window.MonacoEnvironment = {
-                    baseUrl: 'chrome-extension://${chrome.runtime.id}/monaco-editor/dist/external',
-                };
+                    getWorkerUrl: function (moduleId, label) {
+                        if (label === 'json') {
+                            return 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/json.worker.js';
+                        }
+                        if (label === 'css') {
+                            return 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/css.worker.js';
+                        }
+                        if (label === 'html') {
+                            return 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/html.worker.js';
+                        }
+                        if (label === 'typescript' || label === 'javascript') {
+                            return 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/ts.worker.js';
+                        }
+                        return 'chrome-extension://onfclojcicikoklbembokpbakficjghg/monaco-editor/editor.worker.js';
+                    }
+                }
                 console.log('added require.config');
             `);
             
@@ -30,7 +45,7 @@
             await injectScriptFile('monaco-editor/dev/vs/editor/editor.main.js');
             */
 
-            await injectScriptFile('js/monaco-build.js');
+            //await injectScriptFile('monaco-editor/monaco.min.js');
             await injectScriptFile('js/exec_script.js');
         }
         executeRefresh(data);

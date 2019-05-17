@@ -30,7 +30,6 @@
     "downloads"
   ],
   "web_accessible_resources": [
-    "js/*",
-    "monaco-editor/*"
+    "js/*"
   ]
 }

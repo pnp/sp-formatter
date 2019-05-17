@@ -30,5 +30,6 @@
         "scss",
         "text",
         "yml"
-    ]
+    ],
+    "liveServer.settings.port": 5501
 }

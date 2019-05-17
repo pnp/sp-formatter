@@ -1,22 +1,23 @@
 const path = require('path');
 const webpack = require('webpack');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     mode: 'development',
+    devtool: 'none',
     entry: {
-        "index": path.join(__dirname, '../monaco/index.js'),
+        "index": path.join(__dirname, '../app/js/monaco/index.js'),
         "editor.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
-        "json.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),
-        "css.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
-        "html.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker'),
-        "ts.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker')
+        "json.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker')
     },
     output: {
+        globalObject: 'self',
         filename: '[name].js',
-        path: path.resolve(__dirname, '../app/monaco-editor'),
-        library: 'mylib',
-        libraryTarget: 'umd'
+        path: path.resolve(__dirname, '../app/js/monaco/dist'),
+        libraryTarget: 'amd'
+    },
+    performance: {
+        hints: false
     },
     module: {
         rules: [{
@@ -32,5 +33,5 @@ module.exports = {
         new webpack.optimize.LimitChunkCountPlugin({
             maxChunks: 1,
         })
-    ],
+    ]
 };

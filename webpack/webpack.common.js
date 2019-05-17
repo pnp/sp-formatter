@@ -3,9 +3,9 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        background: path.join(__dirname, '../src/background.ts'),
-        content_script: path.join(__dirname, '../src/content_script.ts'),
-        exec_script: path.join(__dirname, '../src/exec_script.ts'),
+        "background": path.join(__dirname, '../src/background.ts'),
+        "content_script": path.join(__dirname, '../src/content_script.ts'),
+        "exec_script": path.join(__dirname, '../src/exec_script.ts')
     },
     output: {
         path: path.join(__dirname, '../app/js'),
@@ -21,12 +21,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
-            },
-            {
-				"test": "/\\.js$/",
-				"enforce": "pre",
-				"use": "source-map-loader"
-			}
+            }
         ]
     },
     resolve: {
@@ -37,7 +32,7 @@ module.exports = {
             cacheGroups: {
                 vendor: {
                     chunks: 'all',
-                    test: /\@timkendrick[\\/]monaco-editor/,
+                    test: /monaco[\\/]dist/,
                     name: 'monaco-build',
                     enforce: true
                 }

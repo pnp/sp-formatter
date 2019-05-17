@@ -1,5 +1,4 @@
-const monaco = require('./../app/monaco-editor/');
-console.log(monaco);
+import * as monaco from '../app/js/monaco/dist';
 
 import { ColumnFormattingSchema } from "./schema";
 
@@ -107,14 +106,14 @@ let findColumnDesignerInterval = setInterval(() => {
         designerArea.value = editor.getModel().getValue();
         let event = new Event('input', { bubbles: true });
         designerArea.dispatchEvent(event);
-        
-        // hack
-        let reactHandlers = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
 
-        designerArea[reactHandlers]["onFocus"]();
-        designerArea[reactHandlers]["onBlur"]();
+        // hack
+        let reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
+
+        designerArea[reactHandler]["onFocus"]();
+        designerArea[reactHandler]["onBlur"]();
+        // end hack
 
         (document.querySelector('.sp-ColumnDesigner-footerButton button') as HTMLButtonElement).click();
     });
-    
 }, 1000);

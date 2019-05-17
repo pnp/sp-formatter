@@ -7,13 +7,13 @@ self.MonacoEnvironment = {
 			return new PseudoWorker('chrome-extension://onfclojcicikoklbembokpbakficjghg/js/monaco/dist/json.worker.js');
 		}
 		if (label === 'css') {
-			throw new Error(`${label} worker isn't supported`);
+			return new PseudoWorker('chrome-extension://onfclojcicikoklbembokpbakficjghg/js/monaco/dist/css.worker.js');
 		}
 		if (label === 'html') {
-			throw new Error(`${label} worker isn't supported`);
+			return new PseudoWorker('chrome-extension://onfclojcicikoklbembokpbakficjghg/js/monaco/dist/html.worker.js');
 		}
 		if (label === 'typescript' || label === 'javascript') {
-			throw new Error(`${label} worker isn't supported`);
+			return new PseudoWorker('chrome-extension://onfclojcicikoklbembokpbakficjghg/js/monaco/dist/ts.worker.js');
 		}
 
 		return new PseudoWorker('chrome-extension://onfclojcicikoklbembokpbakficjghg/js/monaco/dist/editor.worker.js');

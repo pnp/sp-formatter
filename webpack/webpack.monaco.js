@@ -8,13 +8,16 @@ module.exports = {
     entry: {
         "index": path.join(__dirname, '../app/js/monaco/index.js'),
         "editor.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
-        "json.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker')
+        "json.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),
+        "css.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
+        "html.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker'),
+        "ts.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker')
     },
     output: {
         globalObject: 'self',
         filename: '[name].js',
         path: path.resolve(__dirname, '../app/js/monaco/dist'),
-        libraryTarget: 'amd'
+        libraryTarget: 'umd'
     },
     performance: {
         hints: false

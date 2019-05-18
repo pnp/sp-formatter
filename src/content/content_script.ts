@@ -15,8 +15,8 @@
         if (!injected) {
             injected = true;
 
-            await injectScriptFile('js/monaco-build.js');
-            await injectScriptFile('js/exec_script.js');
+            await injectScriptFile('dist/monaco-build.js');
+            await injectScriptFile('dist/inject.js');
         }
         executeRefresh(data);
     }

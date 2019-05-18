@@ -1,4 +1,4 @@
-import * as monaco from '../app/js/monaco/dist';
+import * as monaco from '../../app/dist/monaco';
 
 import { ColumnFormattingSchema } from "./schema";
 

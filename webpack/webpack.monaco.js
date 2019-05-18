@@ -5,7 +5,7 @@ module.exports = {
     mode: 'none',
     devtool: 'none',
     entry: {
-        "index": path.join(__dirname, '../app/js/monaco/index.js'),
+        "index": path.join(__dirname, '../src/monaco/index.js'),
         "editor.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
         "json.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),
         "css.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
@@ -15,7 +15,7 @@ module.exports = {
     output: {
         globalObject: 'self',
         filename: '[name].js',
-        path: path.resolve(__dirname, '../app/js/monaco/dist'),
+        path: path.resolve(__dirname, '../app/dist/monaco'),
         libraryTarget: 'umd'
     },
     performance: {

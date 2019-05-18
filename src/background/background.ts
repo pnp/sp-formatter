@@ -11,15 +11,12 @@ chrome.runtime.onConnect.addListener((port) => {
         tabConnections[port.sender.tab.id] = port;
         port.postMessage({
             type: 'refresh_preview'
-        })
-    }
-
-    if (port.name === 'devtools-column-formatting') {
-        port.onMessage.addListener((message, port: chrome.runtime.Port) => {
-            console.log('received in background:');
-            console.log(message);
-
-            tabConnections[message.tabId].postMessage(message.data);
         });
+
+        if (process.env.NODE_ENV === 'development') {
+            chrome.tabs.executeScript(port.sender.tab.id, {
+                file: 'src/hot-reload.js'
+            })
+        }
     }
 });

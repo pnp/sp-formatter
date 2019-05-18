@@ -10,14 +10,13 @@
         "<all_urls>"
       ],
       "js": [
-        "js/content_script.js"
+        "dist/content.js"
       ]
     }
   ],
   "background": {
     "scripts": [
-      "js/hot-reload.js",
-      "js/background.js"
+      "dist/background.js"
     ]
   },
   "permissions": [
@@ -27,9 +26,11 @@
     "storage",
     "https://*/*",
     "http://*/*",
-    "downloads"
+    "downloads",
+    "activeTab"
   ],
   "web_accessible_resources": [
-    "js/*"
+    "dist/*",
+    "hot-reload.js"
   ]
 }

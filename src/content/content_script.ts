@@ -2,11 +2,11 @@
     console.log('running content.js');
     let injected = false;
 
-    let port = chrome.runtime.connect(null, { name: 'tab-column-formatting' });
+    const port = chrome.runtime.connect(null, { name: 'tab-column-formatting' });
 
-    port.onMessage.addListener((message, port) => {
+    port.onMessage.addListener(async (message, port) => {
         if (message.type === 'refresh_preview') {
-            refreshPreview(message);
+            await refreshPreview(message);
         }
     });
 
@@ -27,7 +27,7 @@
 
     function injectScriptFile(src: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            let scriptTag = document.createElement('script');
+            const scriptTag = document.createElement('script');
             scriptTag.src = src.startsWith('http') ? src : chrome.runtime.getURL(src);
 
             scriptTag.onload = function () {

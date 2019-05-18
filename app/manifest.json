@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "name": "SharePoint Column \\ View Formatting extender",
+  "description": "Extends SharePoint Column \\ View Formatting with convinient editing experience",
   "version": "1.0",
   "content_scripts": [
     {
@@ -16,21 +16,13 @@
   ],
   "background": {
     "scripts": [
+      "hot-reload.js",
       "dist/background.js"
     ]
   },
   "permissions": [
-    "webRequest",
-    "webRequestBlocking",
-    "tabs",
-    "storage",
-    "https://*/*",
-    "http://*/*",
-    "downloads",
-    "activeTab"
   ],
   "web_accessible_resources": [
-    "dist/*",
-    "hot-reload.js"
+    "dist/*"
   ]
 }

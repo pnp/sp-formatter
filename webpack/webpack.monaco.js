@@ -1,9 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
+    mode: 'none',
     devtool: 'none',
     entry: {
         "index": path.join(__dirname, '../app/js/monaco/index.js'),
@@ -28,6 +27,25 @@ module.exports = {
             use: ['style-loader', 'css-loader']
         }]
     },
+    optimization: {
+        namedModules: true,
+        namedChunks: true,
+        nodeEnv: 'development',
+        flagIncludedChunks: false,
+        occurrenceOrder: false,
+        sideEffects: false,
+        usedExports: false,
+        concatenateModules: false,
+        splitChunks: {
+            hidePathInfo: false,
+            minSize: 10000,
+            maxAsyncRequests: Infinity,
+            maxInitialRequests: Infinity,
+        },
+        noEmitOnErrors: false,
+        checkWasmTypes: false,
+        minimize: true,
+    },
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
     },
@@ -35,6 +53,8 @@ module.exports = {
         new webpack.IgnorePlugin(/^((fs)|(path)|(os)|(crypto)|(source-map-support))$/, /vs\/language\/typescript\/lib/),
         new webpack.optimize.LimitChunkCountPlugin({
             maxChunks: 1,
-        })
+        }),
+        new webpack.NamedModulesPlugin(),
+        new webpack.NamedChunksPlugin()
     ]
 };

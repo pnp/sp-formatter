@@ -3,10 +3,6 @@ import * as monaco from '../../app/dist/monaco';
 import { ColumnFormattingSchema } from './Schema';
 import { ComponentInjector } from './ComponentInjector';
 import { ColumnFormatter } from './components/ColumnFormatter';
-import { WebEventEmitter } from '../common/WebEventEmitter';
-import { SharedEventEmiterKey } from '../common/Consts';
-
-window[SharedEventEmiterKey] = WebEventEmitter.instance;
 
 const componentInjector = new ComponentInjector(ColumnFormatter, () => {
     const columnDesigner = document.querySelector('.sp-ColumnDesigner');
@@ -15,8 +11,6 @@ const componentInjector = new ComponentInjector(ColumnFormatter, () => {
 
     return columnDesigner.querySelector('.od-ColumnCustomizationPane-description');
 });
-
-componentInjector.inject(true);
 
 const findColumnDesignerInterval = window.setInterval(() => {
     const columnDesigner = document.querySelector('.sp-ColumnDesigner');

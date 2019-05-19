@@ -1,9 +1,9 @@
-import { ChromeEventEmitter } from '../common/chrome/ChromeEventEmitter';
+import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { TabConnectEventName, SharedEventEmiterKey } from '../common/Consts';
 import { IChangeData } from '../common/IChangeData';
-import { Popup, Content } from '../common/Events';
+import { Popup, Content } from '../common/events/Events';
 import { ExtensionStateManager } from '../common/ExtensionStateManager';
-import { WebEventEmitter } from '../common/WebEventEmitter';
+import { WebEventEmitter } from '../common/events/WebEventEmitter';
 
 export class ContentManager {
 
@@ -14,20 +14,24 @@ export class ContentManager {
     constructor() {
         const port = chrome.runtime.connect(null, { name: TabConnectEventName });
         this.backgroundPipe = new ChromeEventEmitter(port);
+        this.pageEventEmitter = new WebEventEmitter();
 
         this.backgroundPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
             console.log('changed');
             console.log(data);
 
             await this.initInjectScripts(data.enabled);
+            this.pageEventEmitter.emit(Popup.onChangeEnabled, data);
         });
-
     }
 
     public async init(): Promise<void> {
         const tabId = await this.getCurrentTabId();
         const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
         await this.initInjectScripts(isEnabledForCurrentTab);
+        this.pageEventEmitter.emit(Popup.onChangeEnabled, {
+            enabled: isEnabledForCurrentTab
+        });
     }
 
     private async getCurrentTabId(): Promise<number> {
@@ -38,7 +42,7 @@ export class ContentManager {
             };
 
             this.backgroundPipe.on(Content.onSendTabId, onGetTabId);
-            this.backgroundPipe.trigger(Content.onGetTabId, {});
+            this.backgroundPipe.emit(Content.onGetTabId, {});
         });
     }
 
@@ -53,8 +57,6 @@ export class ContentManager {
     private async injectScripts(): Promise<void> {
         await this.injectScriptFile('dist/monaco-build.js');
         await this.injectScriptFile('dist/inject.js');
-
-        this.pageEventEmitter = window[SharedEventEmiterKey];
     }
 
     private injectScriptFile(src: string): Promise<void> {

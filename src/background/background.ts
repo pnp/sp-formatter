@@ -1,5 +1,5 @@
-import { ChromeEventEmitter } from '../common/chrome/ChromeEventEmitter';
-import { Popup, Content } from '../common/Events';
+import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
+import { Popup, Content } from '../common/events/Events';
 import { IChangeData } from '../common/IChangeData';
 import { PopupConnectEventName, TabConnectEventName } from '../common/Consts';
 
@@ -21,7 +21,7 @@ function initContentPipe(port: chrome.runtime.Port): void {
     tabConnections[port.sender.tab.id] = contentPipe;
 
     contentPipe.on(Content.onGetTabId, () => {
-        contentPipe.trigger(Content.onSendTabId, { tabId: port.sender.tab.id });
+        contentPipe.emit(Content.onSendTabId, { tabId: port.sender.tab.id });
     });
 }
 
@@ -29,6 +29,6 @@ function initPopupPipe(port: chrome.runtime.Port): void {
     popupPipe = new ChromeEventEmitter(port);
 
     popupPipe.on<IChangeData>(Popup.onChangeEnabled, (data) => {
-        tabConnections[data.tabId].trigger<IChangeData>(Popup.onChangeEnabled, data);
+        tabConnections[data.tabId].emit<IChangeData>(Popup.onChangeEnabled, data);
     });
 }

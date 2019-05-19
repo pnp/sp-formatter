@@ -1,4 +1,4 @@
-import { ChromeStorage } from './ChromeStorage';
+import { ChromeStorage } from './chrome/ChromeStorage';
 import { IExtensionEnabledData } from './IExtensionEnabledData';
 
 export class ExtensionStateManager {
@@ -21,5 +21,7 @@ export class ExtensionStateManager {
         result[tabId] = {
             enabled
         };
+
+        await ChromeStorage.setItem<IExtensionEnabledData>(this.isEnbledKey, result);
     }
 }

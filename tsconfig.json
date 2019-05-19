@@ -11,6 +11,7 @@
     },
     "include": [
         "src/**/*.ts",
+        "src/**/*.tsx",
         "node_modules/monaco-editor/monaco.d.ts"
     ]
 }

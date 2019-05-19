@@ -7,7 +7,9 @@ export class ChromeStorage {
 
     public static async getItem<T>(key: string): Promise<T> {
         return new Promise((resolve) => {
-            chrome.storage.local.get([key], resolve);
+            chrome.storage.local.get([key], (data) => {
+                resolve(data[key]);
+            });
         });
     }
 }

@@ -1,4 +1,4 @@
-export class EventEmitter {
+export class ChromeEventEmitter {
 
     private eventList: { [key: string]: ((data: any) => void)[] } = {};
     private typeKey = '__type__';
@@ -6,6 +6,9 @@ export class EventEmitter {
     constructor(private port: chrome.runtime.Port) {
         this.port.onMessage.addListener((data: any) => {
             const key = data[this.typeKey];
+
+            if (!key) return;
+
             const events = this.eventList[key];
 
             if (!events) return;

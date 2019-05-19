@@ -3,9 +3,10 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     entry: {
-        "background": path.join(__dirname, '../src/background/background.ts'),
-        "content": path.join(__dirname, '../src/content/content_script.ts'),
-        "inject": path.join(__dirname, '../src/content/exec_script.ts')
+        'background': path.join(__dirname, '../src/background/Background.ts'),
+        'content': path.join(__dirname, '../src/content/Content.ts'),
+        'inject': path.join(__dirname, '../src/content/Inject.ts'),
+        'popup': path.join(__dirname, '../src/popup/Popup.tsx')
     },
     output: {
         path: path.join(__dirname, '../app/dist'),

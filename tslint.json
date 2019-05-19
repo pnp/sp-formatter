@@ -7,6 +7,10 @@
       true,
       "always"
     ],
+    "typedef": [
+      true,
+      "call-signature"
+    ],
     "prefer-const": true,
     "no-unnecessary-type-assertion": false,
     "space-before-function-paren": [

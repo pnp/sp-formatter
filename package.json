@@ -15,7 +15,13 @@
     "url": "https://github.com/s-KaiNet/Column-Formatting-Live-Preview"
   },
   "dependencies": {
-    "pseudo-worker": "^1.2.0"
+    "@types/react": "^16.8.17",
+    "@types/react-dom": "^16.8.4",
+    "office-ui-fabric-react": "^6.182.1",
+    "pseudo-worker": "^1.2.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "semantic-ui-react": "^0.87.1"
   },
   "devDependencies": {
     "@types/chrome": "0.0.85",

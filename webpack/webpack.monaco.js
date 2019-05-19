@@ -5,12 +5,12 @@ module.exports = {
     mode: 'none',
     devtool: 'none',
     entry: {
-        "index": path.join(__dirname, '../src/monaco/index.js'),
-        "editor.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
-        "json.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),
-        "css.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
-        "html.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker'),
-        "ts.worker": path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker')
+        'index': path.join(__dirname, '../src/monaco/index.js'),
+        'editor.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
+        'json.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),
+        'css.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
+        'html.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker'),
+        'ts.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker')
     },
     output: {
         globalObject: 'self',

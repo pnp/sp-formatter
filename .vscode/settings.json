@@ -12,6 +12,7 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     },
+    "files.autoSave": "onFocusChange",
     "cSpell.enabledLanguageIds": [
         "asciidoc",
         "c",

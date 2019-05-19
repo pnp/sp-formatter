@@ -5,8 +5,9 @@
         "noImplicitAny": false,
         "sourceMap": true,
         "rootDir": "src",
-        "outDir": "app/js",
-        "noEmitOnError": true
+        "noEmitOnError": true,
+        "jsx": "react",
+        "forceConsistentCasingInFileNames": true
     },
     "include": [
         "src/**/*.ts",

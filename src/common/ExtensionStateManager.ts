@@ -1,12 +1,14 @@
 import { ChromeStorage } from './chrome/ChromeStorage';
-import { IExtensionEnabledData } from './IExtensionEnabledData';
+import { IExtensionTabEnabledData } from './IExtensionEnabledData';
+import { IExtensionSettings } from './IExtensionSettings';
 
 export class ExtensionStateManager {
 
     private static isEnbledKey = 'tab_enabled';
+    private static extensionSettingsKey = 'extension_settings';
 
     public static async isEnabledForTab(tabId: number): Promise<boolean> {
-        const result = await ChromeStorage.getItem<IExtensionEnabledData>(this.isEnbledKey);
+        const result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
         if (!result) {
             return false;
         }
@@ -15,13 +17,26 @@ export class ExtensionStateManager {
     }
 
     public static async setIsEnabledForTab(tabId: number, enabled: boolean): Promise<void> {
-        let result = await ChromeStorage.getItem<IExtensionEnabledData>(this.isEnbledKey);
+        let result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
 
         result = result || {};
         result[tabId] = {
             enabled
         };
 
-        await ChromeStorage.setItem<IExtensionEnabledData>(this.isEnbledKey, result);
+        await ChromeStorage.setItem<IExtensionTabEnabledData>(this.isEnbledKey, result);
+    }
+
+    public static async getExtensionSettings(): Promise<IExtensionSettings> {
+        const result = await ChromeStorage.getItem<IExtensionSettings>(this.extensionSettingsKey);
+        if (!result) {
+            return null;
+        }
+
+        return result;
+    }
+
+    public static async setExtensionSettings(settings: IExtensionSettings): Promise<void> {
+        await ChromeStorage.setItem<IExtensionSettings>(this.extensionSettingsKey, settings);
     }
 }

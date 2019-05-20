@@ -2,6 +2,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { Popup } from '../common/events/Events';
+import { IEnabled } from '../common/IEnabled';
 
 export class ComponentInjector {
 
@@ -12,8 +13,8 @@ export class ComponentInjector {
     private findInterval = 500;
 
     constructor(private component: React.ComponentClass<any, any>, private domSelector: () => HTMLElement) {
-        const pageEventEmitter = new WebEventEmitter();
-        pageEventEmitter.on<any>(Popup.onChangeEnabled, (data) => {
+        const pageEventEmitter = WebEventEmitter.instance;
+        pageEventEmitter.on<IEnabled>(Popup.onChangeEnabled, (data) => {
             this.inject(data.enabled);
         });
     }
@@ -23,17 +24,18 @@ export class ComponentInjector {
     }
 
     private add(): void {
-        if (this.injected || this.searching) return;
+        if (this.searching) return;
 
-        this.searching = true;
         this.findIntervalRef = window.setInterval(() => {
+            this.searching = true;
             const domElement = this.domSelector();
 
-            if (!domElement) return;
-
-            window.clearInterval(this.findIntervalRef);
-            this.searching = false;
-            this.findIntervalRef = null;
+            if (!domElement || this.injected) {
+                if (!domElement && this.injected) {
+                    this.injected = false;
+                }
+                return;
+            }
 
             const container = document.createElement('div');
             domElement.appendChild(container);
@@ -41,13 +43,16 @@ export class ComponentInjector {
             render(<this.component />, container);
             this.injected = true;
             this.container = container;
+
         }, this.findInterval);
     }
 
     private remove(): void {
         if (!this.injected) return;
 
+        clearInterval(this.findIntervalRef);
         this.container.parentElement.removeChild(this.container);
         this.injected = false;
+        this.searching = false;
     }
 }

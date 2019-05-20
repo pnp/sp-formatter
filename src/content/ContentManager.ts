@@ -1,27 +1,39 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
-import { TabConnectEventName, SharedEventEmiterKey } from '../common/Consts';
+import { TabConnectEventName, CommunicationTimeout } from '../common/Consts';
 import { IChangeData } from '../common/IChangeData';
 import { Popup, Content } from '../common/events/Events';
 import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
+import { promiseTimeout } from '../common/PromiseTimeout';
+import { IExtensionSettings } from '../common/IExtensionSettings';
 
 export class ContentManager {
 
     private scriptsInjected = false;
     private backgroundPipe: ChromeEventEmitter;
-    private pageEventEmitter: WebEventEmitter;
+    private pagePipe: WebEventEmitter;
 
     constructor() {
         const port = chrome.runtime.connect(null, { name: TabConnectEventName });
         this.backgroundPipe = new ChromeEventEmitter(port);
-        this.pageEventEmitter = new WebEventEmitter();
+        this.pagePipe = WebEventEmitter.instance;
 
         this.backgroundPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
             console.log('changed');
             console.log(data);
 
             await this.initInjectScripts(data.enabled);
-            this.pageEventEmitter.emit(Popup.onChangeEnabled, data);
+            this.pagePipe.emit(Popup.onChangeEnabled, data);
+        });
+
+        this.pagePipe.on(Content.onGetExtensionSettings, async () => {
+            const settings = await ExtensionStateManager.getExtensionSettings();
+            this.pagePipe.emit(Content.onSendExtensionSettings, settings);
+        });
+
+        this.pagePipe.on<IExtensionSettings>(Content.onSaveExtensionSettings, async (settings) => {
+            await ExtensionStateManager.setExtensionSettings(settings);
+            this.pagePipe.emit(Content.onSavedExtensionSettings, {});
         });
     }
 
@@ -29,21 +41,24 @@ export class ContentManager {
         const tabId = await this.getCurrentTabId();
         const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
         await this.initInjectScripts(isEnabledForCurrentTab);
-        this.pageEventEmitter.emit(Popup.onChangeEnabled, {
+        this.pagePipe.emit(Popup.onChangeEnabled, {
             enabled: isEnabledForCurrentTab
         });
     }
 
     private async getCurrentTabId(): Promise<number> {
-        return new Promise(async (resolve, reject) => {
+        const promise = new Promise(async (resolve) => {
 
             const onGetTabId = (data) => {
                 resolve(data.tabId);
+                this.backgroundPipe.off(Content.onSendTabId, onGetTabId);
             };
 
             this.backgroundPipe.on(Content.onSendTabId, onGetTabId);
             this.backgroundPipe.emit(Content.onGetTabId, {});
         });
+
+        return promiseTimeout(CommunicationTimeout, promise);
     }
 
     private async initInjectScripts(enable: boolean): Promise<void> {

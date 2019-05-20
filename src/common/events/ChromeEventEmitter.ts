@@ -12,7 +12,9 @@ export class ChromeEventEmitter extends EventEmitter {
 
             const events = this.eventList[key];
 
-            if (!events) return;
+            if (!events || events.length === 0) return;
+
+            delete data[this.typeKey];
 
             events.forEach((callback) => {
                 callback(data);

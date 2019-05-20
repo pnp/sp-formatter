@@ -5,7 +5,7 @@ module.exports = {
     entry: {
         'background': path.join(__dirname, '../src/background/Background.ts'),
         'content': path.join(__dirname, '../src/content/Content.ts'),
-        'inject': path.join(__dirname, '../src/content/Inject.ts'),
+        'inject': path.join(__dirname, '../src/content/page/Inject.ts'),
         'popup': path.join(__dirname, '../src/popup/Popup.tsx')
     },
     output: {

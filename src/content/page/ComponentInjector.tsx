@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { WebEventEmitter } from '../common/events/WebEventEmitter';
-import { Popup } from '../common/events/Events';
-import { IEnabled } from '../common/IEnabled';
+import { WebEventEmitter } from '../../common/events/WebEventEmitter';
+import { Popup, Content } from '../../common/events/Events';
+import { IEnabled } from '../../common/IEnabled';
 
 export class ComponentInjector {
 
@@ -13,8 +13,7 @@ export class ComponentInjector {
     private findInterval = 500;
 
     constructor(private component: React.ComponentClass<any, any>, private domSelector: () => HTMLElement) {
-        const pageEventEmitter = WebEventEmitter.instance;
-        pageEventEmitter.on<IEnabled>(Popup.onChangeEnabled, (data) => {
+        WebEventEmitter.instance.on<IEnabled>(Popup.onChangeEnabled, (data) => {
             this.inject(data.enabled);
         });
     }
@@ -54,5 +53,9 @@ export class ComponentInjector {
         this.container.parentElement.removeChild(this.container);
         this.injected = false;
         this.searching = false;
+
+        WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledFormatter, {
+            enabled: false
+        });
     }
 }

@@ -1,17 +1,25 @@
 import * as React from 'react';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { ContentService } from '../services/ContentService';
+import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
+import { Content } from '../../../common/events/Events';
+import { IEnabled } from '../../../common/IEnabled';
 
 interface IState {
     enabled: boolean;
 }
 
 export class ColumnFormatter extends React.Component<{}, IState> {
+
     private contentService: ContentService;
+    private pagePipe: WebEventEmitter;
+
     constructor(props: any) {
         super(props);
 
         this.contentService = new ContentService();
+        this.pagePipe = WebEventEmitter.instance;
+
         this.state = {
             enabled: false
         };
@@ -20,6 +28,10 @@ export class ColumnFormatter extends React.Component<{}, IState> {
     public async componentDidMount(): Promise<void> {
         const settings = await this.contentService.getExtensionSettings();
         this.setState({
+            enabled: settings.enhancedFormatterEnabled
+        });
+
+        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledFormatter, {
             enabled: settings.enhancedFormatterEnabled
         });
     }
@@ -44,5 +56,9 @@ export class ColumnFormatter extends React.Component<{}, IState> {
         const settings = await this.contentService.getExtensionSettings();
         settings.enhancedFormatterEnabled = checked;
         await this.contentService.saveExtensionSettings(settings);
+
+        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledFormatter, {
+            enabled: settings.enhancedFormatterEnabled
+        });
     }
 }

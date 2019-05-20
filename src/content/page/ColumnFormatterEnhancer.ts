@@ -13,7 +13,7 @@ export class ColumnFormatterEnhancer {
     constructor() {
         this.pagePipe = WebEventEmitter.instance;
 
-        this.pagePipe.on<IEnabled>(Content.onToggleEnabledFormatter, (data) => {
+        this.pagePipe.on<IEnabled>(Content.onToggleEnabledColumngFormatter, (data) => {
             data.enabled ? this.injectCustomFormatter() : this.destroyFormatter();
         });
     }

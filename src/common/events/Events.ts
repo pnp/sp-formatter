@@ -14,5 +14,5 @@ export class Content {
     public static onSaveExtensionSettings = `${Content.prefix}save_ext_settings`;
     public static onSavedExtensionSettings = `${Content.prefix}saved_ext_settings`;
 
-    public static onToggleEnabledFormatter = `${Content.prefix}toggle_enable_formatter`;
+    public static onToggleEnabledColumngFormatter = `${Content.prefix}toggle_enable_column_formatter`;
 }

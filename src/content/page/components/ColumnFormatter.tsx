@@ -31,7 +31,7 @@ export class ColumnFormatter extends React.Component<{}, IState> {
             enabled: settings.enhancedFormatterEnabled
         });
 
-        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledFormatter, {
+        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
             enabled: settings.enhancedFormatterEnabled
         });
     }
@@ -57,7 +57,7 @@ export class ColumnFormatter extends React.Component<{}, IState> {
         settings.enhancedFormatterEnabled = checked;
         await this.contentService.saveExtensionSettings(settings);
 
-        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledFormatter, {
+        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
             enabled: settings.enhancedFormatterEnabled
         });
     }

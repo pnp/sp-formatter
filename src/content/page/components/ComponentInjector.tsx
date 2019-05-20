@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { WebEventEmitter } from '../../common/events/WebEventEmitter';
-import { Popup, Content } from '../../common/events/Events';
-import { IEnabled } from '../../common/IEnabled';
+import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
+import { Popup, Content } from '../../../common/events/Events';
+import { IEnabled } from '../../../common/IEnabled';
 
 export class ComponentInjector {
 
@@ -32,6 +32,7 @@ export class ComponentInjector {
             if (!domElement || this.injected) {
                 if (!domElement && this.injected) {
                     this.injected = false;
+                    this.triggerRemoveFormatter();
                 }
                 return;
             }
@@ -54,7 +55,11 @@ export class ComponentInjector {
         this.injected = false;
         this.searching = false;
 
-        WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledFormatter, {
+        this.triggerRemoveFormatter();
+    }
+
+    private triggerRemoveFormatter(): void {
+        WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
             enabled: false
         });
     }

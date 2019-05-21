@@ -1,6 +1,6 @@
 import { WebEventEmitter } from '../../common/events/WebEventEmitter';
 import { Content } from '../../common/events/Events';
-import { IEnabled } from '../../common/IEnabled';
+import { IEnabled } from '../../common/data/IEnabled';
 import { ContentService } from './services/ContentService';
 
 const monaco: typeof import('monaco-editor') = require('../../../app/dist/monaco');
@@ -8,6 +8,7 @@ const monaco: typeof import('monaco-editor') = require('../../../app/dist/monaco
 export class ColumnFormatterEnhancer {
     private pagePipe: WebEventEmitter;
     private contentService: ContentService;
+    private schema: any;
 
     private editor: import('monaco-editor').editor.IStandaloneCodeEditor;
 
@@ -34,14 +35,17 @@ export class ColumnFormatterEnhancer {
 
         const modelUri = monaco.Uri.parse('https://chrome-column-formatting'); // a made up unique URI for our model
         const model = monaco.editor.createModel(jsonModel, 'json', modelUri);
-        const schema = await this.contentService.getColumnFormatterSchema();
+
+        if (!this.schema) {
+            this.schema = await this.contentService.getColumnFormatterSchema();
+        }
 
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
                 uri: 'http://chrome-column-formatting/schema.json', // id of the first schema
                 fileMatch: [modelUri.toString()], // associate with our model
-                schema: schema
+                schema: this.schema
             }]
         });
 
@@ -51,7 +55,8 @@ export class ColumnFormatterEnhancer {
             theme: 'vs',
             folding: true,
             renderIndentGuides: true,
-            automaticLayout: false
+            automaticLayout: true, // TODO check different scenarios
+            fixedOverflowWidgets: true
         });
 
         this.editor.getModel().onDidChangeContent(e => {

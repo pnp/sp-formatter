@@ -1,7 +1,8 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup, Content } from '../common/events/Events';
-import { IChangeData } from '../common/IChangeData';
+import { IChangeData } from '../common/data/IChangeData';
 import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl } from '../common/Consts';
+import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
 
 const tabConnections: { [id: number]: ChromeEventEmitter } = {};
 let popupPipe: ChromeEventEmitter;
@@ -43,6 +44,8 @@ async function fetchColumnSchema(): Promise<any> {
     if (!columnSchema) {
         const res = await fetch(ColumnSchemaUrl);
         columnSchema = await res.json();
+        const schemaEnhancer = new ColumnSchemaEnhancer(columnSchema);
+        columnSchema = schemaEnhancer.extend();
     }
 
     return columnSchema;

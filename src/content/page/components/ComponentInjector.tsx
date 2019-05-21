@@ -4,7 +4,7 @@ import { observe, Observer } from 'selector-observer';
 
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Popup, Content } from '../../../common/events/Events';
-import { IEnabled } from '../../../common/IEnabled';
+import { IEnabled } from '../../../common/data/IEnabled';
 
 export class ComponentInjector {
 

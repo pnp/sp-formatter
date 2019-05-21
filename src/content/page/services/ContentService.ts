@@ -1,6 +1,6 @@
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Content } from '../../../common/events/Events';
-import { IExtensionSettings } from '../../../common/IExtensionSettings';
+import { IExtensionSettings } from '../../../common/data/IExtensionSettings';
 import { promiseTimeout } from '../../../common/PromiseTimeout';
 import { CommunicationTimeout } from '../../../common/Consts';
 

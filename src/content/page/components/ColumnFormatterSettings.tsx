@@ -3,7 +3,7 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { ContentService } from '../services/ContentService';
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Content } from '../../../common/events/Events';
-import { IEnabled } from '../../../common/IEnabled';
+import { IEnabled } from '../../../common/data/IEnabled';
 
 interface IState {
     enabled: boolean;

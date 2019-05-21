@@ -1,6 +1,6 @@
 import { ChromeStorage } from './chrome/ChromeStorage';
-import { IExtensionTabEnabledData } from './IExtensionEnabledData';
-import { IExtensionSettings } from './IExtensionSettings';
+import { IExtensionTabEnabledData } from './data/IExtensionEnabledData';
+import { IExtensionSettings } from './data/IExtensionSettings';
 
 export class ExtensionStateManager {
 

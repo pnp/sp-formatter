@@ -1,11 +1,11 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { TabConnectEventName, CommunicationTimeout } from '../common/Consts';
-import { IChangeData } from '../common/IChangeData';
+import { IChangeData } from '../common/data/IChangeData';
 import { Popup, Content } from '../common/events/Events';
 import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { promiseTimeout } from '../common/PromiseTimeout';
-import { IExtensionSettings } from '../common/IExtensionSettings';
+import { IExtensionSettings } from '../common/data/IExtensionSettings';
 
 export class ContentManager {
 
@@ -79,13 +79,6 @@ export class ContentManager {
         });
 
         return promiseTimeout(6 * 1000, promise);
-    }
-
-    private injectScript(code: string): void {
-        const scriptElement = document.createElement('script');
-        scriptElement.textContent = code;
-        (document.head || document.documentElement).appendChild(scriptElement);
-        scriptElement.remove();
     }
 
     private async initInjectScripts(enable: boolean): Promise<void> {

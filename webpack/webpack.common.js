@@ -12,6 +12,9 @@ module.exports = {
         path: path.join(__dirname, '../app/dist'),
         filename: '[name].js'
     },
+    performance: {
+        hints: false
+    },
     module: {
         rules: [
             {

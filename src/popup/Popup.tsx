@@ -5,7 +5,7 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup } from '../common/events/Events';
-import { IChangeData } from '../common/IChangeData';
+import { IChangeData } from '../common/data/IChangeData';
 import { PopupConnectEventName } from '../common/Consts';
 import { ChromeUtils } from '../common/chrome/ChromeUtils';
 

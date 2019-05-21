@@ -12,6 +12,7 @@ export class ContentManager {
     private scriptsInjected = false;
     private backgroundPipe: ChromeEventEmitter;
     private pagePipe: WebEventEmitter;
+    private columnFormatterSchema: any;
 
     constructor() {
         const port = chrome.runtime.connect(null, { name: TabConnectEventName });
@@ -19,9 +20,6 @@ export class ContentManager {
         this.pagePipe = WebEventEmitter.instance;
 
         this.backgroundPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
-            console.log('changed');
-            console.log(data);
-
             await this.initInjectScripts(data.enabled);
             this.pagePipe.emit(Popup.onChangeEnabled, data);
         });
@@ -35,12 +33,19 @@ export class ContentManager {
             await ExtensionStateManager.setExtensionSettings(settings);
             this.pagePipe.emit(Content.onSavedExtensionSettings, {});
         });
+
+        this.pagePipe.on(Content.onGetColumnFormattingSchema, () => {
+            this.pagePipe.emit(Content.onSendColumnFormattingSchema, this.columnFormatterSchema);
+        });
     }
 
     public async init(): Promise<void> {
         const tabId = await this.getCurrentTabId();
         const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
+        this.columnFormatterSchema = await this.getColumnFormattingSchema();
+
         await this.initInjectScripts(isEnabledForCurrentTab);
+
         this.pagePipe.emit(Popup.onChangeEnabled, {
             enabled: isEnabledForCurrentTab
         });
@@ -49,16 +54,38 @@ export class ContentManager {
     private async getCurrentTabId(): Promise<number> {
         const promise = new Promise(async (resolve) => {
 
-            const onGetTabId = (data) => {
+            const onRecievedCallback = (data) => {
                 resolve(data.tabId);
-                this.backgroundPipe.off(Content.onSendTabId, onGetTabId);
+                this.backgroundPipe.off(Content.onSendTabId, onRecievedCallback);
             };
 
-            this.backgroundPipe.on(Content.onSendTabId, onGetTabId);
+            this.backgroundPipe.on(Content.onSendTabId, onRecievedCallback);
             this.backgroundPipe.emit(Content.onGetTabId, {});
         });
 
         return promiseTimeout(CommunicationTimeout, promise);
+    }
+
+    private async getColumnFormattingSchema(): Promise<any> {
+        const promise = new Promise(async (resolve) => {
+
+            const onRecievedCallback = (data) => {
+                resolve(data);
+                this.backgroundPipe.off(Content.onSendColumnFormattingSchema, onRecievedCallback);
+            };
+
+            this.backgroundPipe.on(Content.onSendColumnFormattingSchema, onRecievedCallback);
+            this.backgroundPipe.emit(Content.onGetColumnFormattingSchema, {});
+        });
+
+        return promiseTimeout(6 * 1000, promise);
+    }
+
+    private injectScript(code: string): void {
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = code;
+        (document.head || document.documentElement).appendChild(scriptElement);
+        scriptElement.remove();
     }
 
     private async initInjectScripts(enable: boolean): Promise<void> {
@@ -80,7 +107,6 @@ export class ContentManager {
             scriptTag.src = src.startsWith('http') ? src : chrome.runtime.getURL(src);
 
             scriptTag.onload = () => {
-                console.log('loaded!! ' + src);
                 resolve();
             };
 

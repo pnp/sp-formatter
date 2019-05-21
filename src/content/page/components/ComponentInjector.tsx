@@ -1,18 +1,17 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import { observe, Observer } from 'selector-observer';
+
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Popup, Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/IEnabled';
 
 export class ComponentInjector {
 
-    private searching = false;
-    private injected = false;
     private container: HTMLElement;
-    private findIntervalRef?: number;
-    private findInterval = 500;
+    private observer: Observer;
 
-    constructor(private component: React.ComponentClass<any, any>, private domSelector: () => HTMLElement) {
+    constructor(private component: React.ComponentClass<any, any>, private domSelector: string) {
         WebEventEmitter.instance.on<IEnabled>(Popup.onChangeEnabled, (data) => {
             this.inject(data.enabled);
         });
@@ -23,38 +22,28 @@ export class ComponentInjector {
     }
 
     private add(): void {
-        if (this.searching) return;
+        if (this.observer) return;
 
-        this.findIntervalRef = window.setInterval(() => {
-            this.searching = true;
-            const domElement = this.domSelector();
-
-            if (!domElement || this.injected) {
-                if (!domElement && this.injected) {
-                    this.injected = false;
-                    this.triggerRemoveFormatter();
-                }
-                return;
+        this.observer = observe(this.domSelector, {
+            add: (domElement): void => {
+                this.container = document.createElement('div');
+                domElement.appendChild(this.container);
+                render(<this.component />, this.container);
+            },
+            remove: (): void => {
+                this.triggerRemoveFormatter();
             }
-
-            const container = document.createElement('div');
-            domElement.appendChild(container);
-
-            render(<this.component />, container);
-            this.injected = true;
-            this.container = container;
-
-        }, this.findInterval);
+        });
     }
 
     private remove(): void {
-        if (!this.injected) return;
-
-        clearInterval(this.findIntervalRef);
-        this.container.parentElement.removeChild(this.container);
-        this.injected = false;
-        this.searching = false;
-
+        if (this.observer) {
+            this.observer.abort();
+            this.observer = null;
+        }
+        if (this.container) {
+            this.container.parentElement.removeChild(this.container);
+        }
         this.triggerRemoveFormatter();
     }
 

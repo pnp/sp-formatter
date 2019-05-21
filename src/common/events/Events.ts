@@ -15,4 +15,7 @@ export class Content {
     public static onSavedExtensionSettings = `${Content.prefix}saved_ext_settings`;
 
     public static onToggleEnabledColumngFormatter = `${Content.prefix}toggle_enable_column_formatter`;
+
+    public static onGetColumnFormattingSchema = `${Content.prefix}get_column_schema`;
+    public static onSendColumnFormattingSchema = `${Content.prefix}send_column_schema`;
 }

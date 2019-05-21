@@ -11,7 +11,6 @@ export class ContentService {
 
         const promise = new Promise((resolve) => {
             const getData = data => {
-                console.log(data);
                 this.pagePipe.off(Content.onSendExtensionSettings, getData);
                 resolve(data);
             };
@@ -27,13 +26,26 @@ export class ContentService {
 
         const promise = new Promise((resolve) => {
             const getData = data => {
-                console.log(data);
                 this.pagePipe.off(Content.onSavedExtensionSettings, getData);
                 resolve(data);
             };
 
             this.pagePipe.on<IExtensionSettings>(Content.onSavedExtensionSettings, getData);
             this.pagePipe.emit(Content.onSaveExtensionSettings, settings);
+        });
+
+        return promiseTimeout(CommunicationTimeout, promise);
+    }
+
+    public async getColumnFormatterSchema(): Promise<any> {
+        const promise = new Promise((resolve) => {
+            const getData = data => {
+                this.pagePipe.off(Content.onSendColumnFormattingSchema, getData);
+                resolve(data);
+            };
+
+            this.pagePipe.on<IExtensionSettings>(Content.onSendColumnFormattingSchema, getData);
+            this.pagePipe.emit(Content.onGetColumnFormattingSchema, {});
         });
 
         return promiseTimeout(CommunicationTimeout, promise);

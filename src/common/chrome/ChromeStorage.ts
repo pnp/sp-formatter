@@ -12,4 +12,12 @@ export class ChromeStorage {
             });
         });
     }
+
+    public static async removeItem(key: string): Promise<void> {
+        return new Promise((resolve) => {
+            chrome.storage.local.remove([key], () => {
+                resolve();
+            });
+        });
+    }
 }

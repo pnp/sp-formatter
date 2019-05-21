@@ -21,7 +21,7 @@
     "pseudo-worker": "^1.2.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "semantic-ui-react": "^0.87.1"
+    "selector-observer": "^2.1.5"
   },
   "devDependencies": {
     "@types/chrome": "0.0.85",

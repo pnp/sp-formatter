@@ -1,24 +1,26 @@
 import { WebEventEmitter } from '../../common/events/WebEventEmitter';
 import { Content } from '../../common/events/Events';
 import { IEnabled } from '../../common/IEnabled';
-import { ColumnFormattingSchema } from './Schema';
+import { ContentService } from './services/ContentService';
 
 const monaco: typeof import('monaco-editor') = require('../../../app/dist/monaco');
 
 export class ColumnFormatterEnhancer {
     private pagePipe: WebEventEmitter;
+    private contentService: ContentService;
 
     private editor: import('monaco-editor').editor.IStandaloneCodeEditor;
 
     constructor() {
         this.pagePipe = WebEventEmitter.instance;
+        this.contentService = new ContentService();
 
-        this.pagePipe.on<IEnabled>(Content.onToggleEnabledColumngFormatter, (data) => {
+        this.pagePipe.on<IEnabled>(Content.onToggleEnabledColumngFormatter, async (data) => {
             data.enabled ? this.injectCustomFormatter() : this.destroyFormatter();
         });
     }
 
-    private injectCustomFormatter(): void {
+    private async injectCustomFormatter(): Promise<void> {
         if (this.editor) return;
 
         const columnDesigner = document.querySelector('.sp-ColumnDesigner');
@@ -32,13 +34,14 @@ export class ColumnFormatterEnhancer {
 
         const modelUri = monaco.Uri.parse('https://chrome-column-formatting'); // a made up unique URI for our model
         const model = monaco.editor.createModel(jsonModel, 'json', modelUri);
+        const schema = await this.contentService.getColumnFormatterSchema();
 
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
                 uri: 'http://chrome-column-formatting/schema.json', // id of the first schema
                 fileMatch: [modelUri.toString()], // associate with our model
-                schema: ColumnFormattingSchema
+                schema: schema
             }]
         });
 

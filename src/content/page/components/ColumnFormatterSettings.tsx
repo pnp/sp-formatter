@@ -9,7 +9,11 @@ interface IState {
     enabled: boolean;
 }
 
-export class ColumnFormatterSettings extends React.Component<{}, IState> {
+interface IProps {
+    type: string;
+}
+
+export class ColumnFormatterSettings extends React.Component<IProps, IState> {
 
     private contentService: ContentService;
     private pagePipe: WebEventEmitter;
@@ -41,8 +45,8 @@ export class ColumnFormatterSettings extends React.Component<{}, IState> {
             <div>
                 <Toggle
                     checked={this.state.enabled}
-                    onText='Enhanced column formatter enabled'
-                    offText='Enhanced column formatter disabled'
+                    onText={`Enhanced ${this.props.type} formatter is enabled`}
+                    offText={`Enhanced ${this.props.type} formatter is disabled`}
                     onChange={this.onChange.bind(this)} />
             </div>
         );

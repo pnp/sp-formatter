@@ -18,4 +18,7 @@ export class Content {
 
     public static onGetColumnFormattingSchema = `${Content.prefix}get_column_schema`;
     public static onSendColumnFormattingSchema = `${Content.prefix}send_column_schema`;
+
+    public static onGetViewFormattingSchema = `${Content.prefix}get_view_schema`;
+    public static onSendViewFormattingSchema = `${Content.prefix}send_view_schema`;
 }

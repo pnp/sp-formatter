@@ -6,13 +6,19 @@ import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { promiseTimeout } from '../common/PromiseTimeout';
 import { IExtensionSettings } from '../common/data/IExtensionSettings';
+import { Logger } from '../common/Logger';
 
+/**
+ * Communicates with background page with port, injects page scripts and communicate with page using postMessage
+ */
 export class ContentManager {
 
     private scriptsInjected = false;
     private backgroundPipe: ChromeEventEmitter;
     private pagePipe: WebEventEmitter;
     private columnFormatterSchema: any;
+    private viewFormatterSchema: any;
+    private schemaRequstTimeout = 1 * 1000;
 
     constructor() {
         const port = chrome.runtime.connect(null, { name: TabConnectEventName });
@@ -37,12 +43,17 @@ export class ContentManager {
         this.pagePipe.on(Content.onGetColumnFormattingSchema, () => {
             this.pagePipe.emit(Content.onSendColumnFormattingSchema, this.columnFormatterSchema);
         });
+
+        this.pagePipe.on(Content.onGetViewFormattingSchema, () => {
+            this.pagePipe.emit(Content.onSendViewFormattingSchema, this.viewFormatterSchema);
+        });
     }
 
     public async init(): Promise<void> {
         const tabId = await this.getCurrentTabId();
         const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
         this.columnFormatterSchema = await this.getColumnFormattingSchema();
+        this.viewFormatterSchema = await this.getViewFormattingSchema();
 
         await this.initInjectScripts(isEnabledForCurrentTab);
 
@@ -70,6 +81,7 @@ export class ContentManager {
         const promise = new Promise(async (resolve) => {
 
             const onRecievedCallback = (data) => {
+                Logger.log('ContentManager.getColumnFormattingSchema: onRecievedCallback');
                 resolve(data);
                 this.backgroundPipe.off(Content.onSendColumnFormattingSchema, onRecievedCallback);
             };
@@ -78,7 +90,25 @@ export class ContentManager {
             this.backgroundPipe.emit(Content.onGetColumnFormattingSchema, {});
         });
 
-        return promiseTimeout(6 * 1000, promise);
+        Logger.log('ContentManager.getColumnFormattingSchema');
+
+        return promiseTimeout(this.schemaRequstTimeout, promise);
+    }
+
+    private async getViewFormattingSchema(): Promise<any> {
+        const promise = new Promise(async (resolve) => {
+
+            const onRecievedCallback = (data) => {
+                Logger.log('ContentManager.getViewFormattingSchema: onRecievedCallback');
+                resolve(data);
+                this.backgroundPipe.off(Content.onSendViewFormattingSchema, onRecievedCallback);
+            };
+
+            this.backgroundPipe.on(Content.onSendViewFormattingSchema, onRecievedCallback);
+            this.backgroundPipe.emit(Content.onGetViewFormattingSchema, {});
+        });
+        Logger.log('ContentManager.getViewFormattingSchema');
+        return promiseTimeout(this.schemaRequstTimeout, promise);
     }
 
     private async initInjectScripts(enable: boolean): Promise<void> {

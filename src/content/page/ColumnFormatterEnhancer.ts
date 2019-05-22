@@ -3,12 +3,22 @@ import { Content } from '../../common/events/Events';
 import { IEnabled } from '../../common/data/IEnabled';
 import { ContentService } from './services/ContentService';
 
-const monaco: typeof import('monaco-editor') = require('../../../app/dist/monaco');
+type MonacoEditor = typeof import('monaco-editor');
+
+const monaco: MonacoEditor = require('../../../app/dist/monaco');
+
+enum ViewType {
+    Column,
+    View
+}
 
 export class ColumnFormatterEnhancer {
     private pagePipe: WebEventEmitter;
     private contentService: ContentService;
-    private schema: any;
+    private columnSchema: any;
+    private viewSchema: any;
+    private RootColumnHtmlSelector = '.sp-ColumnDesigner';
+    private RootViewHtmlSelector = '.od-ColumnCustomizationPane';
 
     private editor: import('monaco-editor').editor.IStandaloneCodeEditor;
 
@@ -24,29 +34,20 @@ export class ColumnFormatterEnhancer {
     private async injectCustomFormatter(): Promise<void> {
         if (this.editor) return;
 
-        const columnDesigner = document.querySelector('.sp-ColumnDesigner');
+        await this.ensureSchemas();
 
-        if (!columnDesigner) throw new Error('Unable to find sp-ColumnDesigner container');
-
-        const designerArea = columnDesigner.querySelector('textarea');
+        const designerArea = this.getDesignArea();
         designerArea.style.position = 'absolute';
 
         const jsonModel = designerArea.value;
 
-        const modelUri = monaco.Uri.parse('https://chrome-column-formatting'); // a made up unique URI for our model
+        const modelUri = monaco.Uri.parse('https://chrome-column-formatting');
         const model = monaco.editor.createModel(jsonModel, 'json', modelUri);
-
-        if (!this.schema) {
-            this.schema = await this.contentService.getColumnFormatterSchema();
-        }
+        const schemas = await this.createSchemas(modelUri.toString());
 
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
-            schemas: [{
-                uri: 'http://chrome-column-formatting/schema.json', // id of the first schema
-                fileMatch: [modelUri.toString()], // associate with our model
-                schema: this.schema
-            }]
+            schemas
         });
 
         this.editor = monaco.editor.create(designerArea.parentElement, {
@@ -56,23 +57,82 @@ export class ColumnFormatterEnhancer {
             folding: true,
             renderIndentGuides: true,
             automaticLayout: true, // TODO check different scenarios
-            fixedOverflowWidgets: true
+            fixedOverflowWidgets: true,
+            lineDecorationsWidth: 0,
+            minimap: {
+                maxColumn: 80,
+                renderCharacters: false
+            },
+            wordWrap: 'on'
         });
 
         this.editor.getModel().onDidChangeContent(e => {
-            designerArea.value = this.editor.getModel().getValue();
-            const event = new Event('input', { bubbles: true });
-            designerArea.dispatchEvent(event);
-
-            // hack
-            const reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
-
-            designerArea[reactHandler]['onFocus']();
-            designerArea[reactHandler]['onBlur']();
-            // end hack
-
-            (document.querySelector('.sp-ColumnDesigner-footerButton button') as HTMLButtonElement).click();
+            this.syncWithDefaultFormatter(designerArea);
         });
+    }
+
+    private async createSchemas(fileUri: string): Promise<any[]> {
+        const viewType = this.getInjectionType();
+
+        if (viewType === ViewType.Column) {
+
+            return [{
+                uri: 'http://chrome-column-formatting/schema.json',
+                fileMatch: [fileUri],
+                schema: this.columnSchema
+            }];
+        }
+
+        return [{
+            uri: 'http://chrome-column-formatting/schema.json',
+            fileMatch: [fileUri],
+            schema: this.viewSchema
+        }, {
+            uri: 'https://developer.microsoft.com/json-schemas/sp/column-formatting.schema.json',
+            schema: this.columnSchema
+        }];
+    }
+
+    private async ensureSchemas(): Promise<void> {
+        if (!this.columnSchema) {
+            this.columnSchema = await this.contentService.getColumnFormatterSchema();
+        }
+        if (!this.viewSchema) {
+            this.viewSchema = await this.contentService.getViewFormatterSchema();
+        }
+    }
+
+    private getInjectionType(): ViewType {
+        const columnDesigner = document.querySelector(this.RootColumnHtmlSelector);
+        if (columnDesigner) return ViewType.Column;
+
+        return ViewType.View;
+    }
+
+    private getDesignArea(): HTMLTextAreaElement {
+        let columnDesigner = document.querySelector(this.RootColumnHtmlSelector);
+
+        if (!columnDesigner) {
+            columnDesigner = document.querySelector(this.RootViewHtmlSelector);
+            if (!columnDesigner) throw new Error('Unable to find column \\ view container');
+        }
+
+        return columnDesigner.querySelector('textarea');
+    }
+
+    private syncWithDefaultFormatter(designerArea: HTMLTextAreaElement): void {
+        designerArea.value = this.editor.getModel().getValue();
+        const event = new Event('input', { bubbles: true });
+        designerArea.dispatchEvent(event);
+
+        // hack
+        const reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
+        designerArea[reactHandler]['onFocus']();
+        designerArea[reactHandler]['onBlur']();
+        // end hack
+
+        const previewButton = (document.querySelector(`${this.RootColumnHtmlSelector}-footerButton button`) as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
+        previewButton.click();
     }
 
     private destroyFormatter(): void {

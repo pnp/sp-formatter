@@ -4,6 +4,9 @@ import { IExtensionSettings } from '../../../common/data/IExtensionSettings';
 import { promiseTimeout } from '../../../common/PromiseTimeout';
 import { CommunicationTimeout } from '../../../common/Consts';
 
+/**
+ * Communicates with content script using postMessage
+ */
 export class ContentService {
     private pagePipe = WebEventEmitter.instance;
 
@@ -46,6 +49,20 @@ export class ContentService {
 
             this.pagePipe.on<IExtensionSettings>(Content.onSendColumnFormattingSchema, getData);
             this.pagePipe.emit(Content.onGetColumnFormattingSchema, {});
+        });
+
+        return promiseTimeout(CommunicationTimeout, promise);
+    }
+
+    public async getViewFormatterSchema(): Promise<any> {
+        const promise = new Promise((resolve) => {
+            const getData = data => {
+                this.pagePipe.off(Content.onSendViewFormattingSchema, getData);
+                resolve(data);
+            };
+
+            this.pagePipe.on<IExtensionSettings>(Content.onSendViewFormattingSchema, getData);
+            this.pagePipe.emit(Content.onGetViewFormattingSchema, {});
         });
 
         return promiseTimeout(CommunicationTimeout, promise);

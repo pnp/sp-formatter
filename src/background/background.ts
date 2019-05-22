@@ -1,12 +1,14 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup, Content } from '../common/events/Events';
 import { IChangeData } from '../common/data/IChangeData';
-import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl } from '../common/Consts';
+import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl, ViewSchemaUrl } from '../common/Consts';
 import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
+import { Logger } from '../common/Logger';
 
 const tabConnections: { [id: number]: ChromeEventEmitter } = {};
 let popupPipe: ChromeEventEmitter;
 let columnSchema: any;
+let viewSchema: any;
 
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === TabConnectEventName) {
@@ -30,6 +32,12 @@ function initContentPipe(port: chrome.runtime.Port): void {
         const schema = await fetchColumnSchema();
         contentPipe.emit(Content.onSendColumnFormattingSchema, schema);
     });
+
+    contentPipe.on(Content.onGetViewFormattingSchema, async () => {
+        Logger.log('background.onGetViewFormattingSchema');
+        const schema = await fetchViewSchema();
+        contentPipe.emit(Content.onSendViewFormattingSchema, schema);
+    });
 }
 
 function initPopupPipe(port: chrome.runtime.Port): void {
@@ -49,4 +57,13 @@ async function fetchColumnSchema(): Promise<any> {
     }
 
     return columnSchema;
+}
+
+async function fetchViewSchema(): Promise<any> {
+    if (!viewSchema) {
+        const res = await fetch(ViewSchemaUrl);
+        viewSchema = await res.json();
+    }
+
+    return viewSchema;
 }

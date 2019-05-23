@@ -1,6 +1,7 @@
 import { fabricIcons } from './FabricIcons';
 import { cssData, IPropertyData } from './CssData';
 import { colors } from './Colors';
+import { allowedProperties } from './AllowedProperties';
 
 export class ColumnSchemaEnhancer {
     constructor(private baseSchema: any) { }
@@ -154,7 +155,8 @@ export class ColumnSchemaEnhancer {
 
         const results = {};
         cssData.properties.forEach(prop => {
-            if (prop.name.startsWith('-')) return;
+            // filter out not supported properties
+            if (allowedProperties.indexOf(prop.name) === -1) return;
 
             if (prop.status && (prop.status === 'experimental' || prop.status === 'obsolete' || prop.status === 'nonstandard')) return;
 

@@ -2,6 +2,7 @@ import { WebEventEmitter } from '../../common/events/WebEventEmitter';
 import { Content } from '../../common/events/Events';
 import { IEnabled } from '../../common/data/IEnabled';
 import { ContentService } from './services/ContentService';
+import { ColumnSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
 
 type MonacoEditor = typeof import('monaco-editor');
 
@@ -19,6 +20,8 @@ export class ColumnFormatterEnhancer {
     private viewSchema: any;
     private RootColumnHtmlSelector = '.sp-ColumnDesigner';
     private RootViewHtmlSelector = '.od-ColumnCustomizationPane';
+    private schemaProperty = '$schema';
+    private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
 
     private editor: import('monaco-editor').editor.IStandaloneCodeEditor;
 
@@ -39,7 +42,7 @@ export class ColumnFormatterEnhancer {
         const designerArea = this.getDesignArea();
         designerArea.style.position = 'absolute';
 
-        const jsonModel = designerArea.value;
+        const jsonModel = this.getMonacoJsonValue(designerArea.value);
 
         const modelUri = monaco.Uri.parse('https://chrome-column-formatting');
         const model = monaco.editor.createModel(jsonModel, 'json', modelUri);
@@ -55,6 +58,7 @@ export class ColumnFormatterEnhancer {
             language: 'json',
             theme: 'vs',
             folding: true,
+            formatOnPaste: true,
             renderIndentGuides: true,
             automaticLayout: true, // TODO check different scenarios
             fixedOverflowWidgets: true,
@@ -66,8 +70,8 @@ export class ColumnFormatterEnhancer {
             wordWrap: 'on'
         });
 
-        this.editor.getModel().onDidChangeContent(e => {
-            this.syncWithDefaultFormatter(designerArea);
+        this.editor.getModel().onDidChangeContent(async (e) => {
+            await this.syncWithDefaultFormatter(designerArea);
         });
     }
 
@@ -77,18 +81,18 @@ export class ColumnFormatterEnhancer {
         if (viewType === ViewType.Column) {
 
             return [{
-                uri: 'http://chrome-column-formatting/schema.json',
+                uri: this.spFormatterSchemaUri,
                 fileMatch: [fileUri],
                 schema: this.columnSchema
             }];
         }
 
         return [{
-            uri: 'http://chrome-column-formatting/schema.json',
+            uri: this.spFormatterSchemaUri,
             fileMatch: [fileUri],
             schema: this.viewSchema
         }, {
-            uri: 'https://developer.microsoft.com/json-schemas/sp/column-formatting.schema.json',
+            uri: ColumnSchemaUrl,
             schema: this.columnSchema
         }];
     }
@@ -120,8 +124,13 @@ export class ColumnFormatterEnhancer {
         return columnDesigner.querySelector('textarea');
     }
 
-    private syncWithDefaultFormatter(designerArea: HTMLTextAreaElement): void {
-        designerArea.value = this.editor.getModel().getValue();
+    private async syncWithDefaultFormatter(designerArea: HTMLTextAreaElement): Promise<void> {
+
+        if (!(await this.ensureSchemaRemoved(this.editor.getValue()))) {
+            return;
+        }
+
+        designerArea.value = this.getDefaultEditorValue(this.editor.getValue());
         const event = new Event('input', { bubbles: true });
         designerArea.dispatchEvent(event);
 
@@ -133,6 +142,73 @@ export class ColumnFormatterEnhancer {
 
         const previewButton = (document.querySelector(`${this.RootColumnHtmlSelector}-footerButton button`) as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
         previewButton.click();
+    }
+
+    private getDefaultEditorValue(initialValue): string {
+        if (!initialValue) return initialValue;
+
+        let objectValue: any;
+        try {
+            objectValue = JSON.parse(initialValue);
+        } catch (error) {
+            // schema is being edited, most likely it's not a valid JSON at the moment
+            // so just skip schema removal and return initial value
+            return initialValue;
+        }
+
+        if (!objectValue[this.schemaProperty]) {
+            const type = this.getInjectionType();
+            if (type === ViewType.Column) {
+                objectValue = {
+                    [this.schemaProperty]: ColumnSchemaUrl,
+                    ...objectValue
+                };
+            } else {
+                objectValue = {
+                    [this.schemaProperty]: ViewSchemaUrl,
+                    ...objectValue
+                };
+            }
+
+            return JSON.stringify(objectValue, null, 2);
+        }
+
+        return initialValue;
+    }
+
+    private async ensureSchemaRemoved(value: string): Promise<boolean> {
+        if (!value) return true;
+
+        const monacoValue = this.getMonacoJsonValue(value);
+
+        if (monacoValue !== value) {
+            this.editor.setValue(monacoValue);
+            await this.editor.getAction('editor.action.formatDocument').run();
+            return false;
+        }
+
+        return true;
+    }
+
+    private getMonacoJsonValue(initialValue: string): string {
+        if (!initialValue) return initialValue;
+
+        let objectValue: any;
+        try {
+            objectValue = JSON.parse(initialValue);
+        } catch (error) {
+            // schema is being edited, most likely it's not a valid JSON at the moment
+            // so just skip schema removal and return true
+            return initialValue;
+        }
+
+        if (objectValue[this.schemaProperty]) {
+            delete objectValue[this.schemaProperty];
+
+            return JSON.stringify(objectValue, null, 2);
+        }
+
+        return initialValue;
     }
 
     private destroyFormatter(): void {

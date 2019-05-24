@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",
-    "build": "webpack --config webpack/webpack.prod.js && gulp zip",
+    "build": "npm run monaco && webpack --config webpack/webpack.prod.js && gulp zip",
     "monaco": "webpack --config webpack/webpack.monaco.js"
   },
   "author": "",

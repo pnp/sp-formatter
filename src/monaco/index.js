@@ -1,6 +1,6 @@
 const monaco = require('monaco-editor');
 const PseudoWorker = require('pseudo-worker');
-const extensionId = 'onfclojcicikoklbembokpbakficjghg';
+const extensionId = window.__sp_formatter_id__;
 
 self.MonacoEnvironment = {
 	getWorker: function (moduleId, label) {

@@ -119,7 +119,16 @@ export class ContentManager {
         }
     }
 
+    private injectScript(code): void {
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = code;
+        (document.head || document.documentElement).appendChild(scriptElement);
+        scriptElement.remove();
+    }
+
     private async injectScripts(): Promise<void> {
+        const id = chrome.runtime.id;
+        this.injectScript(`window.__sp_formatter_id__ = '${id}'`);
         await this.injectScriptFile('dist/monaco-build.js');
         await this.injectScriptFile('dist/inject.js');
     }

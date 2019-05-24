@@ -2,6 +2,7 @@
   "manifest_version": 2,
   "name": "SP Formatter",
   "short_name": "SP Formatter",
+  "homepage_url": "https://github.com/s-KaiNet/sp-formatter",
   "description": "Extends SharePoint Column / View Formatting feature with convenient editing experience",
   "version": "0.0.1",
   "content_scripts": [

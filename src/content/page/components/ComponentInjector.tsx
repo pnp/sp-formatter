@@ -11,7 +11,7 @@ export class ComponentInjector {
     private container: HTMLElement;
     private observer: Observer;
 
-    constructor(private component: React.ComponentClass<any, any>, private domSelector: string, private props: any = {}) {
+    constructor(private component: React.ComponentClass<any, any>, private domSelector: string, private propsSelector: () => any) {
         WebEventEmitter.instance.on<IEnabled>(Popup.onChangeEnabled, (data) => {
             this.inject(data.enabled);
         });
@@ -28,7 +28,8 @@ export class ComponentInjector {
             add: (domElement): void => {
                 this.container = document.createElement('div');
                 domElement.appendChild(this.container);
-                render(<this.component {...this.props} />, this.container);
+                const props = this.propsSelector();
+                render(<this.component {...props} />, this.container);
             },
             remove: (): void => {
                 this.triggerRemoveFormatter();

@@ -1,13 +1,20 @@
 import { ComponentInjector } from './components/ComponentInjector';
 import { ColumnFormatterSettings } from './components/ColumnFormatterSettings';
 import { ColumnFormatterEnhancer } from './ColumnFormatterEnhancer';
+import { DomService, ViewType } from './services/DomService';
 
-const enhancedColumnFormatterInjector = new ComponentInjector(ColumnFormatterSettings,'.sp-ColumnDesigner .od-ColumnCustomizationPane-description', {
-    type: 'column'
-});
+const enhancedColumnFormatterInjector = new ComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]', () => {
+    const viewType = DomService.getInjectionType();
+    let type;
 
-const enhancedViewFormatterInjector = new ComponentInjector(ColumnFormatterSettings, '.od-ColumnCustomizationPane .od-ColumnCustomizationPane-description', {
-    type: 'view'
+    if (viewType === ViewType.Column) {
+        type = 'column';
+    } else {
+        type = 'view';
+    }
+    return {
+        type
+    };
 });
 
 const enhancer = new ColumnFormatterEnhancer();

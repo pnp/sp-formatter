@@ -3,23 +3,17 @@ import { Content } from '../../common/events/Events';
 import { IEnabled } from '../../common/data/IEnabled';
 import { ContentService } from './services/ContentService';
 import { ColumnSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
+import { DomService, ViewType } from './services/DomService';
 
 type MonacoEditor = typeof import('monaco-editor');
 
 const monaco: MonacoEditor = require('../../../app/dist/monaco');
-
-enum ViewType {
-    Column,
-    View
-}
 
 export class ColumnFormatterEnhancer {
     private pagePipe: WebEventEmitter;
     private contentService: ContentService;
     private columnSchema: any;
     private viewSchema: any;
-    private RootColumnHtmlSelector = '.sp-ColumnDesigner';
-    private RootViewHtmlSelector = '.od-ColumnCustomizationPane';
     private schemaProperty = '$schema';
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
 
@@ -39,7 +33,7 @@ export class ColumnFormatterEnhancer {
 
         await this.ensureSchemas();
 
-        const designerArea = this.getDesignArea();
+        const designerArea = DomService.getEditableTextArea();
         designerArea.style.position = 'absolute';
 
         const jsonModel = this.getMonacoJsonValue(designerArea.value);
@@ -76,7 +70,7 @@ export class ColumnFormatterEnhancer {
     }
 
     private async createSchemas(fileUri: string): Promise<any[]> {
-        const viewType = this.getInjectionType();
+        const viewType = DomService.getInjectionType();
 
         if (viewType === ViewType.Column) {
 
@@ -106,24 +100,6 @@ export class ColumnFormatterEnhancer {
         }
     }
 
-    private getInjectionType(): ViewType {
-        const columnDesigner = document.querySelector(this.RootColumnHtmlSelector);
-        if (columnDesigner) return ViewType.Column;
-
-        return ViewType.View;
-    }
-
-    private getDesignArea(): HTMLTextAreaElement {
-        let columnDesigner = document.querySelector(this.RootColumnHtmlSelector);
-
-        if (!columnDesigner) {
-            columnDesigner = document.querySelector(this.RootViewHtmlSelector);
-            if (!columnDesigner) throw new Error('Unable to find column \\ view container');
-        }
-
-        return columnDesigner.querySelector('textarea');
-    }
-
     private async syncWithDefaultFormatter(designerArea: HTMLTextAreaElement): Promise<void> {
 
         if (!(await this.ensureSchemaRemoved(this.editor.getValue()))) {
@@ -140,7 +116,7 @@ export class ColumnFormatterEnhancer {
         designerArea[reactHandler]['onBlur']();
         // end hack
 
-        const previewButton = (document.querySelector(`${this.RootColumnHtmlSelector}-footerButton button`) as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
+        const previewButton = DomService.resolvePreviewButton();
         previewButton.click();
     }
 
@@ -157,7 +133,7 @@ export class ColumnFormatterEnhancer {
         }
 
         if (!objectValue[this.schemaProperty]) {
-            const type = this.getInjectionType();
+            const type = DomService.getInjectionType();
             if (type === ViewType.Column) {
                 objectValue = {
                     [this.schemaProperty]: ColumnSchemaUrl,

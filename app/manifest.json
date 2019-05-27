@@ -33,9 +33,7 @@
     "default_popup": "popup/popup.html"
   },
   "permissions": [
-    "storage",
-    "tabs",
-    "https://developer.microsoft.com/*"
+    "storage"
   ],
   "web_accessible_resources": [
     "dist/*"

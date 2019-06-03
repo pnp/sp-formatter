@@ -10,16 +10,20 @@ export class DomService {
     private static RootViewHtmlSelector = '.od-ColumnCustomizationPane';
 
     public static getInjectionType(): ViewType {
-        const textarea = document.querySelector(this.textAreaSelector);
-        if (!textarea) throw new Error('Unable to find formatting textarea');
+        const descriptionText = document.querySelector('.od-ColumnCustomizationPane-description a');
+        if (!descriptionText) throw new Error('Unable to find formatting description text');
 
-        const placeholder = textarea.getAttribute('placeholder');
+        const href = descriptionText.getAttribute('href').toLowerCase();
 
-        if (placeholder.indexOf('column') !== -1) {
+        if (href.indexOf('column') !== -1) {
             return ViewType.Column;
         }
 
-        return ViewType.View;
+        if (href.indexOf('view') !== -1) {
+            return ViewType.View;
+        }
+
+        throw new Error('Unable to resolve injection type');
     }
 
     public static getEditableTextArea(): HTMLTextAreaElement {

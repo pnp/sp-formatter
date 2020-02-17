@@ -6,6 +6,7 @@ import { ColumnSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
 import { DomService, ViewType } from './services/DomService';
 
 type MonacoEditor = typeof import('monaco-editor');
+type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
 
 const monaco: MonacoEditor = require('../../../app/dist/monaco');
 
@@ -17,7 +18,7 @@ export class ColumnFormatterEnhancer {
     private schemaProperty = '$schema';
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
 
-    private editor: import('monaco-editor').editor.IStandaloneCodeEditor;
+    private editor: CodeEditor;
 
     constructor() {
         this.pagePipe = WebEventEmitter.instance;

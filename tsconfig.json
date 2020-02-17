@@ -6,6 +6,7 @@
         "sourceMap": true,
         "rootDir": "src",
         "noEmitOnError": true,
+        "skipLibCheck": true,
         "jsx": "react",
         "forceConsistentCasingInFileNames": true
     },

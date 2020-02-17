@@ -9,8 +9,7 @@ module.exports = {
         'editor.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
         'json.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),
         'css.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
-        'html.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker'),
-        'ts.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker')
+        'html.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker')
     },
     output: {
         globalObject: 'self',
@@ -25,6 +24,10 @@ module.exports = {
         rules: [{
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
+        },
+        {
+            test: /\.ttf$/,
+            use: 'base64-inline-loader?name=[name].[ext]'
         }]
     },
     optimization: {

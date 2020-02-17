@@ -19,6 +19,7 @@ export class ColumnFormatterEnhancer {
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
 
     private editor: CodeEditor;
+    private resizeObserver: ResizeObserver;
 
     constructor() {
         this.pagePipe = WebEventEmitter.instance;
@@ -55,7 +56,6 @@ export class ColumnFormatterEnhancer {
             folding: true,
             formatOnPaste: true,
             renderIndentGuides: true,
-            automaticLayout: true, // TODO check different scenarios
             fixedOverflowWidgets: true,
             lineDecorationsWidth: 0,
             minimap: {
@@ -68,6 +68,15 @@ export class ColumnFormatterEnhancer {
         this.editor.getModel().onDidChangeContent(async (e) => {
             await this.syncWithDefaultFormatter(designerArea);
         });
+
+        this.resizeObserver = new ResizeObserver(() => {
+            if (this.editor) {
+                this.editor.layout();
+            }
+        });
+
+        this.resizeObserver.observe(designerArea.parentElement);
+        DomService.getCustomizationPaneArea().style.overflow = 'hidden';
     }
 
     private async createSchemas(fileUri: string): Promise<any[]> {
@@ -197,5 +206,6 @@ export class ColumnFormatterEnhancer {
 
         this.editor.getModel().dispose();
         this.editor.dispose();
+        this.resizeObserver.disconnect();
     }
 }

@@ -6,6 +6,7 @@ export enum ViewType {
 export class DomService {
 
     private static textAreaSelector = '[class$=ColumnCustomizationPane-textArea] textarea';
+    private static customizationContentSelector = '[class$=sp-ColumnCustomizationPane-content]';
     private static RootColumnHtmlSelector = '.sp-ColumnDesigner';
     private static RootViewHtmlSelector = '.od-ColumnCustomizationPane';
 
@@ -34,6 +35,16 @@ export class DomService {
         }
 
         return textarea;
+    }
+
+    public static getCustomizationPaneArea(): HTMLDivElement {
+        const content = document.querySelector(this.customizationContentSelector) as HTMLDivElement;
+
+        if (!content) {
+            throw new Error('Unable to find customization content');
+        }
+
+        return content;
     }
 
     public static resolvePreviewButton(): HTMLButtonElement {

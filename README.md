@@ -1,5 +1,9 @@
 # SP Formatter
 
+Customize your SharePoint Column or View Formatting JSON using full-featured editor instead of default one.
+
+> **NOTE:** Support for Chromium Edge on its way. Please stay tuned!
+
 [![IMAGE ALT TEXT HERE](app/icons/column-formatter-yt.jpg)](https://www.youtube.com/watch?v=UbTsI73qW7Q)
 
 SP Formatter editor features:

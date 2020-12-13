@@ -30,3 +30,10 @@ Some useful HOT KEYS:
 - SHIFT + ALT + F: Format document  
 - F1: Show command palette  
  ... and some others available in VSCode's monaco editor.
+
+## Development
+
+1. `npm i`
+2. `npm run watch`
+3. Create a new Chrome user profile. Go to extension and enable Developer mode toggle (top right corner).
+4. Load unpacked extension by selecting `<path to sp-formatter repository>/app` folder.

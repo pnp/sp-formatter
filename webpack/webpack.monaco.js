@@ -3,7 +3,6 @@ const webpack = require('webpack');
 
 module.exports = {
     mode: 'none',
-    devtool: 'none',
     entry: {
         'index': path.join(__dirname, '../src/monaco/index.js'),
         'editor.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
@@ -31,11 +30,10 @@ module.exports = {
         }]
     },
     optimization: {
-        namedModules: true,
-        namedChunks: true,
+        chunkIds: 'named',
+        moduleIds: 'named',
         nodeEnv: 'development',
         flagIncludedChunks: false,
-        occurrenceOrder: false,
         sideEffects: false,
         usedExports: false,
         concatenateModules: false,
@@ -45,7 +43,7 @@ module.exports = {
             maxAsyncRequests: Infinity,
             maxInitialRequests: Infinity,
         },
-        noEmitOnErrors: false,
+        emitOnErrors: true,
         checkWasmTypes: false,
         minimize: true,
     },
@@ -55,9 +53,7 @@ module.exports = {
     plugins: [
         new webpack.IgnorePlugin(/^((fs)|(path)|(os)|(crypto)|(source-map-support))$/, /vs\/language\/typescript\/lib/),
         new webpack.optimize.LimitChunkCountPlugin({
-            maxChunks: 1,
-        }),
-        new webpack.NamedModulesPlugin(),
-        new webpack.NamedChunksPlugin()
+            maxChunks: 1
+        })
     ]
 };

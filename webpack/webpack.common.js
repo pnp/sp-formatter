@@ -37,7 +37,7 @@ module.exports = {
     optimization: {
         splitChunks: {
             cacheGroups: {
-                vendor: {
+                defaultVendors: {
                     chunks: 'all',
                     test: /dist[\\/]monaco/,
                     name: 'monaco-build',
@@ -47,6 +47,8 @@ module.exports = {
         }
     },
     plugins: [new ForkTsCheckerWebpackPlugin({
-        tslint: true
+        eslint: {
+            files: './src/**/*.{ts,tsx}'
+        }
     })]
 };

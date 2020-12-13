@@ -12,6 +12,7 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     },
+    "editor.detectIndentation": true,
     "files.autoSave": "onFocusChange",
     "cSpell.enabledLanguageIds": [
         "asciidoc",

@@ -18,7 +18,7 @@ interface IState {
 const port = chrome.runtime.connect(null, { name: PopupConnectEventName });
 const backgroundPipe = new ChromeEventEmitter(port);
 
-export class App extends React.Component<{}, IState> {
+export class App extends React.Component<any, IState> {
   constructor(props: any) {
     super(props);
 

@@ -1,9 +1,9 @@
-import { ComponentInjector } from './components/ComponentInjector';
+import { enableComponentInjector } from './components/ComponentInjector';
 import { ColumnFormatterSettings } from './components/ColumnFormatterSettings';
-import { ColumnFormatterEnhancer } from './ColumnFormatterEnhancer';
+import { enableFormatter } from './ColumnFormatterEnhancer';
 import { DomService, ViewType } from './services/DomService';
 
-const enhancedColumnFormatterInjector = new ComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]', () => {
+enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]', () => {
     const viewType = DomService.getInjectionType();
     let type;
 
@@ -17,4 +17,4 @@ const enhancedColumnFormatterInjector = new ComponentInjector(ColumnFormatterSet
     };
 });
 
-const enhancer = new ColumnFormatterEnhancer();
+enableFormatter();

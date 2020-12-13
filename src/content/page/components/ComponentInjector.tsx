@@ -6,15 +6,22 @@ import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Popup, Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
 
-export class ComponentInjector {
+export function enableComponentInjector(component: React.ComponentClass<any, any>, domSelector: string, propsSelector: () => any) {
+    const pagePipe = WebEventEmitter.instance;
+    const injector = new ComponentInjector(component, domSelector, propsSelector);
+
+    pagePipe.on<IEnabled>(Popup.onChangeEnabled, (data) => {
+        injector.inject(data.enabled);
+    });
+}
+
+class ComponentInjector {
 
     private container: HTMLElement;
     private observer: Observer;
 
     constructor(private component: React.ComponentClass<any, any>, private domSelector: string, private propsSelector: () => any) {
-        WebEventEmitter.instance.on<IEnabled>(Popup.onChangeEnabled, (data) => {
-            this.inject(data.enabled);
-        });
+        //
     }
 
     public inject(enable: boolean): void {

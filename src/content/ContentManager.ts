@@ -63,7 +63,7 @@ export class ContentManager {
     }
 
     private async getCurrentTabId(): Promise<number> {
-        const promise = new Promise(async (resolve) => {
+        const promise = new Promise((resolve) => {
 
             const onRecievedCallback = (data) => {
                 resolve(data.tabId);
@@ -78,7 +78,7 @@ export class ContentManager {
     }
 
     private async getColumnFormattingSchema(): Promise<any> {
-        const promise = new Promise(async (resolve) => {
+        const promise = new Promise((resolve) => {
 
             const onRecievedCallback = (data) => {
                 Logger.log('ContentManager.getColumnFormattingSchema: onRecievedCallback');
@@ -96,7 +96,7 @@ export class ContentManager {
     }
 
     private async getViewFormattingSchema(): Promise<any> {
-        const promise = new Promise(async (resolve) => {
+        const promise = new Promise((resolve) => {
 
             const onRecievedCallback = (data) => {
                 Logger.log('ContentManager.getViewFormattingSchema: onRecievedCallback');
@@ -134,7 +134,7 @@ export class ContentManager {
     }
 
     private injectScriptFile(src: string): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const scriptTag = document.createElement('script');
             scriptTag.src = src.startsWith('http') ? src : chrome.runtime.getURL(src);
 

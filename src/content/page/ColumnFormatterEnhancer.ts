@@ -8,10 +8,19 @@ import { DomService, ViewType } from './services/DomService';
 type MonacoEditor = typeof import('monaco-editor');
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
 
+/* eslint-disable-next-line */
 const monaco: MonacoEditor = require('../../../app/dist/monaco');
 
-export class ColumnFormatterEnhancer {
-    private pagePipe: WebEventEmitter;
+export function enableFormatter() {
+    const pagePipe = WebEventEmitter.instance;
+    const enhancer = new ColumnFormatterEnhancer();
+
+    pagePipe.on<IEnabled>(Content.onToggleEnabledColumngFormatter, async (data) => {
+        data.enabled ? enhancer.injectCustomFormatter() : enhancer.destroyFormatter();
+    });
+}
+
+class ColumnFormatterEnhancer {
     private contentService: ContentService;
     private columnSchema: any;
     private viewSchema: any;
@@ -22,15 +31,22 @@ export class ColumnFormatterEnhancer {
     private resizeObserver: ResizeObserver;
 
     constructor() {
-        this.pagePipe = WebEventEmitter.instance;
         this.contentService = new ContentService();
-
-        this.pagePipe.on<IEnabled>(Content.onToggleEnabledColumngFormatter, async (data) => {
-            data.enabled ? this.injectCustomFormatter() : this.destroyFormatter();
-        });
     }
 
-    private async injectCustomFormatter(): Promise<void> {
+    public destroyFormatter(): void {
+        if (!this.editor) return;
+
+        this.editor.onDidDispose(() => {
+            this.editor = null;
+        });
+
+        this.editor.getModel().dispose();
+        this.editor.dispose();
+        this.resizeObserver.disconnect();
+    }
+
+    public async injectCustomFormatter(): Promise<void> {
         if (this.editor) return;
 
         await this.ensureSchemas();
@@ -65,7 +81,7 @@ export class ColumnFormatterEnhancer {
             wordWrap: 'on'
         });
 
-        this.editor.getModel().onDidChangeContent(async (e) => {
+        this.editor.getModel().onDidChangeContent(async () => {
             await this.syncWithDefaultFormatter(designerArea);
         });
 
@@ -195,17 +211,5 @@ export class ColumnFormatterEnhancer {
         }
 
         return initialValue;
-    }
-
-    private destroyFormatter(): void {
-        if (!this.editor) return;
-
-        this.editor.onDidDispose(() => {
-            this.editor = null;
-        });
-
-        this.editor.getModel().dispose();
-        this.editor.dispose();
-        this.resizeObserver.disconnect();
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface IPropertyData {
     name: string;
     description?: string;

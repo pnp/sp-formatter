@@ -195,6 +195,7 @@ export class ColumnSchemaEnhancer {
 
         const result: string[] = [];
         browsers.forEach(b => {
+          /* eslint-disable-next-line */
             const shorthand = b.replace(/[0-9\.-]/g, '');
             let name = this.getBrowserName(shorthand);
             if (b !== shorthand) {

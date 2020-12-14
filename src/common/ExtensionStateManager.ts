@@ -32,6 +32,9 @@ export class ExtensionStateManager {
         if (!result) {
             return null;
         }
+        if (result.useDarkMode == null) {
+            result.useDarkMode = false;
+        }
 
         return result;
     }

@@ -98,11 +98,11 @@ class ColumnFormatterEnhancer {
             validate: true,
             schemas
         });
-
+        const settings = await this.contentService.getExtensionSettings();
         this.editor = monaco.editor.create(designerArea.parentElement, {
             model: model,
             language: 'json',
-            theme: 'vs',
+            theme: settings.useDarkMode ? 'vs-dark' : 'vs',
             folding: true,
             formatOnPaste: true,
             renderIndentGuides: true,

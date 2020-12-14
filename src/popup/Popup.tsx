@@ -10,45 +10,16 @@ import { PopupConnectEventName } from '../common/Consts';
 import { ChromeUtils } from '../common/chrome/ChromeUtils';
 
 import './popup.css';
-
-interface IState {
-  enabled: boolean;
-}
+import { FC } from 'react';
 
 const port = chrome.runtime.connect(null, { name: PopupConnectEventName });
 const backgroundPipe = new ChromeEventEmitter(port);
 
-export class App extends React.Component<any, IState> {
-  constructor(props: any) {
-    super(props);
+export const App: FC = () => {
+  const [enabled, setEnabled] = React.useState(false);
+  const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
 
-    this.state = {
-      enabled: false
-    };
-  }
-
-  public async componentDidMount(): Promise<void> {
-    const tab = await ChromeUtils.getActiveTab();
-    const enabled = await ExtensionStateManager.isEnabledForTab(tab.id);
-    this.setState({
-      enabled
-    });
-  }
-
-  public render(): JSX.Element {
-    return (
-      <div>
-        <Toggle
-          checked={this.state.enabled}
-          label='Enable enhanced column formatting for this tab'
-          onText='Enabled'
-          offText='Disabled'
-          onChange={this.onChange.bind(this)} />
-      </div>
-    );
-  }
-
-  private async onChange(ev: React.MouseEvent<HTMLElement>, checked: boolean): Promise<void> {
+  const onToggleFormatter = async (ev: React.MouseEvent<HTMLElement>, checked: boolean): Promise<void> => {
     const tab = await ChromeUtils.getActiveTab();
     await ExtensionStateManager.setIsEnabledForTab(tab.id, checked);
 
@@ -57,10 +28,46 @@ export class App extends React.Component<any, IState> {
       tabId: tab.id
     });
 
-    this.setState({
-      enabled: checked
-    });
+    setEnabled(checked);
   }
+
+  const onToggleDarkMode = async (ev: React.MouseEvent<HTMLElement>, checked: boolean) => {
+    const settings = await ExtensionStateManager.getExtensionSettings();
+    settings.useDarkMode = checked;
+    setDarkModeEnabled(settings.useDarkMode);
+    await ExtensionStateManager.setExtensionSettings(settings);
+  }
+
+  React.useEffect(() => {
+    const setData = async () => {
+      const tab = await ChromeUtils.getActiveTab();
+      const enabled = await ExtensionStateManager.isEnabledForTab(tab.id);
+      setEnabled(enabled);
+
+      const settings = await ExtensionStateManager.getExtensionSettings();
+      setDarkModeEnabled(settings.useDarkMode);
+    }
+
+    setData();
+  }, []);
+
+  return (
+    <div>
+      <h2>SP Formatter settings</h2>
+      <Toggle
+        checked={enabled}
+        label='Enable enhanced column formatting for this tab'
+        onText='Enabled'
+        offText='Disabled'
+        onChange={onToggleFormatter} />
+      <Toggle
+        checked={darkModeEnabled}
+        label='Use dark mode'
+        onText='On'
+        offText='Off'
+        onChange={onToggleDarkMode} />
+    </div>
+  );
 }
 
 render(<App />, document.getElementById('app'));

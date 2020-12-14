@@ -1,68 +1,84 @@
 import * as React from 'react';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
+import { Toggle, IconButton } from 'office-ui-fabric-react/';
 import { ContentService } from '../services/ContentService';
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
-
-interface IState {
-    enabled: boolean;
-}
+import { FC, MouseEvent, useState } from 'react';
 
 interface IProps {
     type: string;
 }
 
-export class ColumnFormatterSettings extends React.Component<IProps, IState> {
+const contentService = new ContentService();
+const pagePipe = WebEventEmitter.instance;
 
-    private contentService: ContentService;
-    private pagePipe: WebEventEmitter;
+export const ColumnFormatterSettings: FC<IProps> = (props) => {
+    const [enabled, setEnabled] = useState(false);
+    const [inFullScreenMode, setInFullScreenMode] = useState(false);
 
-    constructor(props: any) {
-        super(props);
+    React.useEffect(() => {
+        const setData = async () => {
+            const settings = await contentService.getExtensionSettings();
+            setEnabled(settings.enhancedFormatterEnabled);
 
-        this.contentService = new ContentService();
-        this.pagePipe = WebEventEmitter.instance;
+            pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
+                enabled: settings.enhancedFormatterEnabled
+            });
+        }
 
-        this.state = {
-            enabled: false
-        };
-    }
+        setData();
+    }, []);
 
-    public async componentDidMount(): Promise<void> {
-        const settings = await this.contentService.getExtensionSettings();
-        this.setState({
-            enabled: settings.enhancedFormatterEnabled
-        });
+    const onEnableChanged = async (ev: MouseEvent<HTMLElement>, checked: boolean) => {
+        setEnabled(checked);
 
-        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
-            enabled: settings.enhancedFormatterEnabled
-        });
-    }
-
-    public render(): JSX.Element {
-        return (
-            <div>
-                <Toggle
-                    checked={this.state.enabled}
-                    onText={`Enhanced ${this.props.type} formatter is enabled`}
-                    offText={`Enhanced ${this.props.type} formatter is disabled`}
-                    onChange={this.onChange.bind(this)} />
-            </div>
-        );
-    }
-
-    private async onChange(ev: React.MouseEvent<HTMLElement>, checked: boolean): Promise<void> {
-        this.setState({
-            enabled: checked
-        });
-
-        const settings = await this.contentService.getExtensionSettings();
+        const settings = await contentService.getExtensionSettings();
         settings.enhancedFormatterEnabled = checked;
-        await this.contentService.saveExtensionSettings(settings);
+        await contentService.saveExtensionSettings(settings);
 
-        this.pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
+        pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
             enabled: settings.enhancedFormatterEnabled
         });
     }
+
+    const onMoveToFullScreenClick = () => {
+        setInFullScreenMode(true);
+        pagePipe.emit<IEnabled>(Content.onToggleFullScreenMode, {
+            enabled: true
+        });
+    }
+
+    const onExitFullScreenClick = () => {
+        setInFullScreenMode(false);
+        pagePipe.emit<IEnabled>(Content.onToggleFullScreenMode, {
+            enabled: false
+        });
+    }
+
+    return (
+        <div style={{ position: 'relative' }}>
+            <Toggle
+                checked={enabled}
+                onText={`Enhanced ${props.type} formatter is enabled`}
+                offText={`Enhanced ${props.type} formatter is disabled`}
+                onChange={onEnableChanged} />
+
+            {enabled && !inFullScreenMode && <IconButton style={{
+                position: 'absolute',
+                bottom: '-55px',
+                right: '15px',
+                zIndex: 3000,
+                backgroundColor: 'rgb(233 233 239)'
+            }} iconProps={{ iconName: 'MiniExpand' }} title="Full screen mode" onClick={onMoveToFullScreenClick} />}
+            {enabled && inFullScreenMode && <IconButton style={{
+                position: 'fixed',
+                top: '3px',
+                right: '33px',
+                zIndex: 3000,
+                backgroundColor: 'rgb(233 233 239)'
+            }} iconProps={{ iconName: 'MiniContract' }} title="Exit full screen mode" onClick={onExitFullScreenClick} />}
+
+        </div>
+    );
 }

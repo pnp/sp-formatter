@@ -18,6 +18,10 @@ export function enableFormatter() {
     pagePipe.on<IEnabled>(Content.onToggleEnabledColumngFormatter, async (data) => {
         data.enabled ? enhancer.injectCustomFormatter() : enhancer.destroyFormatter();
     });
+
+    pagePipe.on<IEnabled>(Content.onToggleFullScreenMode, async (data) => {
+        enhancer.toggleFullScreen(data.enabled);
+    });
 }
 
 class ColumnFormatterEnhancer {
@@ -26,6 +30,7 @@ class ColumnFormatterEnhancer {
     private viewSchema: any;
     private schemaProperty = '$schema';
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
+    private isInFullScreen: boolean;
 
     private editor: CodeEditor;
     private resizeObserver: ResizeObserver;
@@ -44,6 +49,35 @@ class ColumnFormatterEnhancer {
         this.editor.getModel().dispose();
         this.editor.dispose();
         this.resizeObserver.disconnect();
+    }
+
+    public toggleFullScreen(enable: boolean): void {
+        this.isInFullScreen = enable;
+        if (!this.editor) return;
+
+        const customizationPaneArea = DomService.getCustomizationPaneArea();
+        const monacoElement = document.querySelector<HTMLElement>('.monaco-editor');
+        const designerArea = DomService.getEditableTextArea();
+
+        if (enable) {
+
+            monacoElement.style.position = 'fixed';
+            monacoElement.style.zIndex = '2000';
+            monacoElement.style.top = '0';
+            monacoElement.style.marginLeft = '-1px';
+
+            this.editor.layout({
+                height: window.innerHeight,
+                width: customizationPaneArea.offsetWidth
+            });
+        } else {
+            this.editor.layout({
+                height: designerArea.offsetHeight - 2,
+                width: customizationPaneArea.offsetWidth
+            });
+            monacoElement.style.position = 'initial';
+            monacoElement.style.marginLeft = '0';
+        }
     }
 
     public async injectCustomFormatter(): Promise<void> {
@@ -88,12 +122,12 @@ class ColumnFormatterEnhancer {
         const customizationPaneArea = DomService.getCustomizationPaneArea();
 
         this.resizeObserver = new ResizeObserver(() => {
-            if (this.editor) {
-                this.editor.layout({
-                    height: designerArea.offsetHeight - 2,
-                    width: customizationPaneArea.offsetWidth
-                });
-            }
+            if (!this.editor) return;
+
+            this.editor.layout({
+                height: this.isInFullScreen ? window.innerHeight : designerArea.offsetHeight - 2,
+                width: customizationPaneArea.offsetWidth
+            });
         });
 
         this.resizeObserver.observe(DomService.getRightFilesPane());

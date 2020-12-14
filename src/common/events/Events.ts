@@ -21,4 +21,6 @@ export class Content {
 
     public static onGetViewFormattingSchema = `${Content.prefix}get_view_schema`;
     public static onSendViewFormattingSchema = `${Content.prefix}send_view_schema`;
+
+    public static onToggleFullScreenMode = '${Content.prefix}toggle_full_screen_mode';
 }

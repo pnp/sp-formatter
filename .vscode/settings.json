@@ -13,7 +13,7 @@
         "source.fixAll": true
     },
     "editor.detectIndentation": true,
-    "files.autoSave": "onFocusChange",
+    "files.autoSave": "off",
     "cSpell.enabledLanguageIds": [
         "asciidoc",
         "c",

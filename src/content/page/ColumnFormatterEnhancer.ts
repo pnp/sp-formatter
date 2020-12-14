@@ -85,14 +85,19 @@ class ColumnFormatterEnhancer {
             await this.syncWithDefaultFormatter(designerArea);
         });
 
+        const customizationPaneArea = DomService.getCustomizationPaneArea();
+
         this.resizeObserver = new ResizeObserver(() => {
             if (this.editor) {
-                this.editor.layout();
+                this.editor.layout({
+                    height: designerArea.offsetHeight - 2,
+                    width: customizationPaneArea.offsetWidth
+                });
             }
         });
 
-        this.resizeObserver.observe(designerArea.parentElement);
-        DomService.getCustomizationPaneArea().style.overflow = 'hidden';
+        this.resizeObserver.observe(DomService.getRightFilesPane());
+        customizationPaneArea.style.overflow = 'hidden';
     }
 
     private async createSchemas(fileUri: string): Promise<any[]> {

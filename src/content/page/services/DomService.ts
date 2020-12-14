@@ -9,6 +9,7 @@ export class DomService {
     private static customizationContentSelector = '[class$=sp-ColumnCustomizationPane-content]';
     private static RootColumnHtmlSelector = '.sp-ColumnDesigner';
     private static RootViewHtmlSelector = '.od-ColumnCustomizationPane';
+    private static FilesRightSidePaneSelector = '.Files-rightPane';
 
     public static getInjectionType(): ViewType {
         const descriptionText = document.querySelector('.od-ColumnCustomizationPane-description a');
@@ -25,6 +26,16 @@ export class DomService {
         }
 
         throw new Error('Unable to resolve injection type');
+    }
+
+    public static getRightFilesPane(): HTMLTextAreaElement {
+        const rightSidePane = document.querySelector(this.FilesRightSidePaneSelector) as HTMLTextAreaElement;
+
+        if (!rightSidePane) {
+            throw new Error('Unable to find right side pane files container');
+        }
+
+        return rightSidePane;
     }
 
     public static getEditableTextArea(): HTMLTextAreaElement {

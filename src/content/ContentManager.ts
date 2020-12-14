@@ -52,6 +52,8 @@ export class ContentManager {
     public async init(): Promise<void> {
         const tabId = await this.getCurrentTabId();
         const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
+        if (!isEnabledForCurrentTab) return;
+
         this.columnFormatterSchema = await this.getColumnFormattingSchema();
         this.viewFormatterSchema = await this.getViewFormattingSchema();
 

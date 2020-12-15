@@ -8,7 +8,9 @@
         "noEmitOnError": true,
         "skipLibCheck": true,
         "jsx": "react",
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
     },
     "include": [
         "src/**/*.ts",

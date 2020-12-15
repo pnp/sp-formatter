@@ -5,11 +5,13 @@ export enum ViewType {
 
 export class DomService {
 
-    private static textAreaSelector = '[class$=ColumnCustomizationPane-textArea] textarea';
-    private static customizationContentSelector = '[class$=sp-ColumnCustomizationPane-content]';
+    private static TextAreaSelector = '[class$=ColumnCustomizationPane-textArea] textarea';
+    private static CustomizationContentSelector = '[class$=sp-ColumnCustomizationPane-content]';
     private static RootColumnHtmlSelector = '.sp-ColumnDesigner';
     private static RootViewHtmlSelector = '.od-ColumnCustomizationPane';
     private static FilesRightSidePaneSelector = '.Files-rightPane';
+    private static MonacoSelector = '.monaco-editor';
+    public static InsertFieldSelector = '#sp-field-selector';
 
     public static getInjectionType(): ViewType {
         const descriptionText = document.querySelector('.od-ColumnCustomizationPane-description a');
@@ -28,34 +30,33 @@ export class DomService {
         throw new Error('Unable to resolve injection type');
     }
 
+    public static getFieldSelector(): HTMLElement {
+        return this.getElement(this.InsertFieldSelector, 'Unable to find field selector container');
+    }
+
+    public static getMonacoEditor(): HTMLElement {
+        return this.getElement(this.MonacoSelector, 'Unable to find monaco editor container');
+    }
+
     public static getRightFilesPane(): HTMLTextAreaElement {
-        const rightSidePane = document.querySelector(this.FilesRightSidePaneSelector) as HTMLTextAreaElement;
-
-        if (!rightSidePane) {
-            throw new Error('Unable to find right side pane files container');
-        }
-
-        return rightSidePane;
+        return this.getElement(this.FilesRightSidePaneSelector, 'Unable to find right side pane files container');
     }
 
     public static getEditableTextArea(): HTMLTextAreaElement {
-        const textarea = document.querySelector(this.textAreaSelector) as HTMLTextAreaElement;
-
-        if (!textarea) {
-            throw new Error('Unable to find column \\ view container');
-        }
-
-        return textarea;
+        return this.getElement(this.TextAreaSelector, 'Unable to find column \\ view container');
     }
 
     public static getCustomizationPaneArea(): HTMLDivElement {
-        const content = document.querySelector(this.customizationContentSelector) as HTMLDivElement;
+        return this.getElement(this.CustomizationContentSelector, 'Unable to find customization content');
+    }
 
-        if (!content) {
-            throw new Error('Unable to find customization content');
+    private static getElement<T extends Element>(selector: string, errorText: string): T {
+        const element = document.querySelector<T>(selector);
+        if (!element) {
+            throw new Error(errorText + ' Selector: ' + selector);
         }
 
-        return content;
+        return element;
     }
 
     public static resolvePreviewButton(): HTMLButtonElement {

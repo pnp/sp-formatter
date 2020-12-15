@@ -4,6 +4,10 @@ import { IEnabled } from '../../common/data/IEnabled';
 import { ContentService } from './services/ContentService';
 import { ColumnSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
 import { DomService, ViewType } from './services/DomService';
+import { render, unmountComponentAtNode } from 'react-dom';
+import * as React from 'react';
+import { FieldSelector } from './components/FieldSelector';
+import { IField } from '../../common/data/IField';
 
 type MonacoEditor = typeof import('monaco-editor');
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
@@ -31,12 +35,30 @@ class ColumnFormatterEnhancer {
     private schemaProperty = '$schema';
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
     private isInFullScreen: boolean;
+    private pagePipe: WebEventEmitter;
 
     private editor: CodeEditor;
     private resizeObserver: ResizeObserver;
 
     constructor() {
         this.contentService = new ContentService();
+        this.pagePipe = WebEventEmitter.instance;
+
+        this.pagePipe.on<IField>(Content.onSelectField, (field) => {
+            this.editor.getModel().applyEdits([{
+                range: monaco.Range.fromPositions(this.editor.getPosition()),
+                text: field.InternalName.indexOf('@') === 0 ? field.InternalName : `[$${field.InternalName}]`
+            }]);
+
+            const container = DomService.getFieldSelector();
+            unmountComponentAtNode(container);
+            container.remove();
+        });
+        this.pagePipe.on(Content.onCloseSelectField, () => {
+            const container = DomService.getFieldSelector();
+            unmountComponentAtNode(container);
+            container.remove();
+        });
     }
 
     public destroyFormatter(): void {
@@ -56,7 +78,7 @@ class ColumnFormatterEnhancer {
         if (!this.editor) return;
 
         const customizationPaneArea = DomService.getCustomizationPaneArea();
-        const monacoElement = document.querySelector<HTMLElement>('.monaco-editor');
+        const monacoElement = DomService.getMonacoEditor();
         const designerArea = DomService.getEditableTextArea();
 
         if (enable) {
@@ -115,6 +137,8 @@ class ColumnFormatterEnhancer {
             wordWrap: 'on'
         });
 
+        this.addInsertFieldOption();
+
         this.editor.getModel().onDidChangeContent(async () => {
             await this.syncWithDefaultFormatter(designerArea);
         });
@@ -132,6 +156,32 @@ class ColumnFormatterEnhancer {
 
         this.resizeObserver.observe(DomService.getRightFilesPane());
         customizationPaneArea.style.overflow = 'hidden';
+    }
+
+    private addInsertFieldOption(): void {
+        this.editor.addAction({
+            id: 'insert-sp-field',
+            label: 'Insert list field',
+            keybindings: [
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.F10,
+                monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_I, monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_F)
+            ],
+            contextMenuGroupId: 'navigation',
+            contextMenuOrder: 1.5,
+            run: (editor) => {
+                const container = document.createElement('div');
+                container.id = DomService.InsertFieldSelector.substr(1);
+                container.style.position = 'relative';
+
+                const domElement = DomService.getCustomizationPaneArea();
+
+                domElement.appendChild(container);
+
+                render(<FieldSelector useFullScreen={this.isInFullScreen} width={editor.getScrollWidth()} />, container);
+
+                return null;
+            }
+        });
     }
 
     private async createSchemas(fileUri: string): Promise<any[]> {

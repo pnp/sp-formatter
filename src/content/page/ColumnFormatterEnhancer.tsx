@@ -2,12 +2,13 @@ import { WebEventEmitter } from '../../common/events/WebEventEmitter';
 import { Content } from '../../common/events/Events';
 import { IEnabled } from '../../common/data/IEnabled';
 import { ContentService } from './services/ContentService';
-import { ColumnSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
+import { ColumnSchemaUrl, RowSchemaUrl, TileSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
 import { DomService, ViewType } from './services/DomService';
 import { render, unmountComponentAtNode } from 'react-dom';
 import * as React from 'react';
 import { FieldSelector } from './components/FieldSelector';
 import { IField } from '../../common/data/IField';
+import { IViewFormattingSchema } from '../../common/data/IViewFormattingSchema';
 
 type MonacoEditor = typeof import('monaco-editor');
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
@@ -31,7 +32,7 @@ export function enableFormatter() {
 class ColumnFormatterEnhancer {
     private contentService: ContentService;
     private columnSchema: any;
-    private viewSchema: any;
+    private viewSchema: IViewFormattingSchema;
     private schemaProperty = '$schema';
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
     private isInFullScreen: boolean;
@@ -199,10 +200,17 @@ class ColumnFormatterEnhancer {
         return [{
             uri: this.spFormatterSchemaUri,
             fileMatch: [fileUri],
-            schema: this.viewSchema
+            schema: this.viewSchema.view
         }, {
             uri: ColumnSchemaUrl,
             schema: this.columnSchema
+        }, {
+            uri: TileSchemaUrl,
+            schema: this.viewSchema.tile
+        },
+        {
+            uri: RowSchemaUrl,
+            schema: this.viewSchema.row
         }];
     }
 

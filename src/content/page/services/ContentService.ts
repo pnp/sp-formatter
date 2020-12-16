@@ -3,6 +3,7 @@ import { Content } from '../../../common/events/Events';
 import { IExtensionSettings } from '../../../common/data/IExtensionSettings';
 import { promiseTimeout } from '../../../common/PromiseTimeout';
 import { CommunicationTimeout } from '../../../common/Consts';
+import { IViewFormattingSchema } from '../../../common/data/IViewFormattingSchema';
 
 /**
  * Communicates with content script using postMessage
@@ -54,14 +55,14 @@ export class ContentService {
         return promiseTimeout(CommunicationTimeout, promise);
     }
 
-    public async getViewFormatterSchema(): Promise<any> {
+    public async getViewFormatterSchema(): Promise<IViewFormattingSchema> {
         const promise = new Promise((resolve) => {
             const getData = data => {
                 this.pagePipe.off(Content.onSendViewFormattingSchema, getData);
                 resolve(data);
             };
 
-            this.pagePipe.on<IExtensionSettings>(Content.onSendViewFormattingSchema, getData);
+            this.pagePipe.on(Content.onSendViewFormattingSchema, getData);
             this.pagePipe.emit(Content.onGetViewFormattingSchema, {});
         });
 

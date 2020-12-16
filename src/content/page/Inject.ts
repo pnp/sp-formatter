@@ -2,9 +2,12 @@ import { enableComponentInjector } from './components/ComponentInjector';
 import { ColumnFormatterSettings } from './components/ColumnFormatterSettings';
 import { enableFormatter } from './ColumnFormatterEnhancer';
 import { DomService, ViewType } from './services/DomService';
-import { registerProvider } from './services/ContextCompletionProvider';
+import { getListFields } from './services/SPService';
 
 (async () => {
+    // prefetch fields - for performance - they will be cached
+    getListFields();
+
     enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]', () => {
         const viewType = DomService.getInjectionType();
         let type;
@@ -20,5 +23,4 @@ import { registerProvider } from './services/ContextCompletionProvider';
     });
 
     enableFormatter();
-    await registerProvider();
 })();

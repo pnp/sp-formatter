@@ -243,7 +243,7 @@ function createDependencyProposals(range, fields: IField[]) {
       label: field.InternalName,
       kind: monaco.languages.CompletionItemKind.Field,
       detail: `${field.Title} [${field.TypeAsString}]`,
-      insertText: `$${field.InternalName}`,
+      insertText: `[$${field.InternalName}]`,
       filterText: `$${field.InternalName} ${field.Title}`,
       range: range
     });

@@ -9,12 +9,15 @@ import * as React from 'react';
 import { FieldSelector } from './components/FieldSelector';
 import { IField } from '../../common/data/IField';
 import { IViewFormattingSchema } from '../../common/data/IViewFormattingSchema';
+import { registerProvider } from './services/ContextCompletionProvider';
 
 type MonacoEditor = typeof import('monaco-editor');
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
 
 /* eslint-disable-next-line */
 const monaco: MonacoEditor = require('../../../app/dist/monaco');
+
+let completionProviderRegistered = false;
 
 export function enableFormatter() {
     const pagePipe = WebEventEmitter.instance;
@@ -105,7 +108,10 @@ class ColumnFormatterEnhancer {
 
     public async injectCustomFormatter(): Promise<void> {
         if (this.editor) return;
-
+        if (!completionProviderRegistered) {
+            await registerProvider();
+            completionProviderRegistered = true;
+        }
         await this.ensureSchemas();
 
         const designerArea = DomService.getEditableTextArea();

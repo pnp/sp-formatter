@@ -47,7 +47,7 @@ class ColumnFormatterEnhancer {
         this.pagePipe.on<IField>(Content.onSelectField, (field) => {
             this.editor.getModel().applyEdits([{
                 range: monaco.Range.fromPositions(this.editor.getPosition()),
-                text: field.InternalName.indexOf('@') === 0 ? field.InternalName : `[$${field.InternalName}]`
+                text: `[$${field.InternalName}]`
             }]);
 
             const container = DomService.getFieldSelector();

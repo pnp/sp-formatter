@@ -37,7 +37,7 @@ module.exports = {
     optimization: {
         splitChunks: {
             cacheGroups: {
-                defaultVendors: {
+                vendor: {
                     chunks: 'all',
                     test: /dist[\\/]monaco/,
                     name: 'monaco-build',

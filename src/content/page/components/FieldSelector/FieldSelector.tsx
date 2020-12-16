@@ -7,6 +7,7 @@ import Autosuggest from 'react-autosuggest';
 
 import './AutoSelector.css';
 import { IconButton } from 'office-ui-fabric-react';
+import { getListFields } from '../../services/SPService';
 
 interface IProps {
   useFullScreen: boolean;
@@ -22,23 +23,8 @@ export const FieldSelector: FC<IProps> = (props) => {
   const allFields = React.useRef<IField[]>();
 
   React.useEffect(() => {
-    const getData = async () => {
-      const listTitle: string = (window as any)._spPageContextInfo.listTitle;
-      let webAbsUrl: string = (window as any)._spPageContextInfo.webAbsoluteUrl;
-      if (webAbsUrl.substr(-1) !== '/') {
-        webAbsUrl = webAbsUrl + '/';
-      }
-      const fields: IField[] = (await (await fetch(`${webAbsUrl}_api/web/lists/getByTitle('${listTitle}')/fields`, {
-        headers: {
-          'Accept': 'application/json;odata=verbose'
-        }
-      })).json()).d.results;
-
-      fields.push({
-        Title: '@currentField',
-        InternalName: '@currentField'
-      });
-
+    const getData = async () => {      
+      const fields = await getListFields();
       allFields.current = fields;
       setFields(fields);
     }
@@ -86,7 +72,9 @@ export const FieldSelector: FC<IProps> = (props) => {
 
     pagePipe.emit<IField>(Content.onSelectField, {
       Title: suggestion.Title,
-      InternalName: suggestion.InternalName
+      InternalName: suggestion.InternalName,
+      TypeAsString: suggestion.TypeAsString,
+      TypeDisplayName: suggestion.TypeDisplayName
     });
   }
 

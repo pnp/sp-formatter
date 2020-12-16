@@ -1,5 +1,5 @@
 .react-autosuggest__suggestions-list {
-  height: 260px;
+  max-height: 260px;
   margin: 0;
   padding: 0;
   list-style-type: none;
@@ -57,4 +57,6 @@
   font-size: 16px;
   border: 1px solid #aaa;
   border-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }

@@ -27,4 +27,12 @@ export class Content {
     public static onSelectField = `${Content.prefix}select_field`;
 
     public static onCloseSelectField = `${Content.prefix}close_select_field`;
+
+    public static Vscode = {
+        onConnected: 'vscode_connected',
+        onGetFileName: 'vscode_get_file_name',
+        onSendFileName: 'vscode_send_file_name',
+        onSendFileContent: 'vscode_send_file_content',
+        onReceivedFileContent: 'vscode_received_file_content'
+    }
 }

@@ -6,7 +6,6 @@ import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { promiseTimeout } from '../common/PromiseTimeout';
 import { IExtensionSettings } from '../common/data/IExtensionSettings';
-import { Logger } from '../common/Logger';
 
 /**
  * Communicates with background page with port, injects page scripts and communicate with page using postMessage
@@ -76,14 +75,13 @@ export class ContentManager {
             this.backgroundPipe.emit(Content.onGetTabId, {});
         });
 
-        return promiseTimeout(CommunicationTimeout, promise);
+        return promiseTimeout(CommunicationTimeout, promise, 'getCurrentTabId');
     }
 
     private async getColumnFormattingSchema(): Promise<any> {
         const promise = new Promise((resolve) => {
 
             const onRecievedCallback = (data) => {
-                Logger.log('ContentManager.getColumnFormattingSchema: onRecievedCallback');
                 resolve(data);
                 this.backgroundPipe.off(Content.onSendColumnFormattingSchema, onRecievedCallback);
             };
@@ -92,16 +90,13 @@ export class ContentManager {
             this.backgroundPipe.emit(Content.onGetColumnFormattingSchema, {});
         });
 
-        Logger.log('ContentManager.getColumnFormattingSchema');
-
-        return promiseTimeout(this.schemaRequstTimeout, promise);
+        return promiseTimeout(this.schemaRequstTimeout, promise, 'getColumnFormattingSchema');
     }
 
     private async getViewFormattingSchema(): Promise<any> {
         const promise = new Promise((resolve) => {
 
             const onRecievedCallback = (data) => {
-                Logger.log('ContentManager.getViewFormattingSchema: onRecievedCallback');
                 resolve(data);
                 this.backgroundPipe.off(Content.onSendViewFormattingSchema, onRecievedCallback);
             };
@@ -109,8 +104,7 @@ export class ContentManager {
             this.backgroundPipe.on(Content.onSendViewFormattingSchema, onRecievedCallback);
             this.backgroundPipe.emit(Content.onGetViewFormattingSchema, {});
         });
-        Logger.log('ContentManager.getViewFormattingSchema');
-        return promiseTimeout(this.schemaRequstTimeout, promise);
+        return promiseTimeout(this.schemaRequstTimeout, promise, 'getViewFormattingSchema');
     }
 
     private async initInjectScripts(enable: boolean): Promise<void> {

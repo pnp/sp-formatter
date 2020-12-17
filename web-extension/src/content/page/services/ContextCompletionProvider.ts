@@ -223,18 +223,20 @@ function createDependencyProposals(range, fields: IField[]) {
       kind: templateKind,
       documentation: 'Provides the url of thumbnail for a file inside a document library. Does not work for lists.',
       detail: 'Custom thumbnail url (specify parameters)',
-      insertText: '@thumbnail.[width]x[height]',
+      insertText: '@thumbnail.${1:[width]}x${2:[height]}',
       filterText: '@thumbnail',
-      range: range
+      range: range,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
     },
     {
       label: '@thumbnail.[width]',
       kind: templateKind,
       documentation: 'Provides the url of thumbnail for a file inside a document library. Does not work for lists.',
       detail: 'Custom thumbnail url (specify width)',
-      insertText: '@thumbnail.[width]',
+      insertText: '@thumbnail.${1:[width]}',
       filterText: '@thumbnail',
-      range: range
+      range: range,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
     }
   ];
 

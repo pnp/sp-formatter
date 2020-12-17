@@ -10,6 +10,9 @@ import { FieldSelector } from './components/FieldSelector';
 import { IField } from '../../common/data/IField';
 import { IViewFormattingSchema } from '../../common/data/IViewFormattingSchema';
 import { registerProvider } from './services/ContextCompletionProvider';
+import { VscodeService } from './services/VscodeService';
+import { Logger } from '../../common/Logger';
+import { IFileContent } from '../../common/data/IFileContent';
 
 type MonacoEditor = typeof import('monaco-editor');
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
@@ -40,6 +43,7 @@ class ColumnFormatterEnhancer {
     private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
     private isInFullScreen: boolean;
     private pagePipe: WebEventEmitter;
+    private inConnectedMode = false;
 
     private editor: CodeEditor;
     private resizeObserver: ResizeObserver;
@@ -58,11 +62,25 @@ class ColumnFormatterEnhancer {
             unmountComponentAtNode(container);
             container.remove();
         });
+
         this.pagePipe.on(Content.onCloseSelectField, () => {
             const container = DomService.getFieldSelector();
             unmountComponentAtNode(container);
             container.remove();
         });
+
+        this.pagePipe.on<IEnabled>(Content.Vscode.onConnected, data => {
+            if (!this.editor) return;
+
+            this.inConnectedMode = data.enabled;
+            this.editor.updateOptions({ readOnly: data.enabled });
+        });
+
+        this.pagePipe.on<IFileContent>(Content.Vscode.onSendFileContent, fileContent => {
+            if (!this.editor) return;
+            Logger.log('CF: onSendFileContent');
+            this.editor.setValue(fileContent.text);
+        })
     }
 
     public destroyFormatter(): void {
@@ -75,6 +93,7 @@ class ColumnFormatterEnhancer {
         this.editor.getModel().dispose();
         this.editor.dispose();
         this.resizeObserver.disconnect();
+        VscodeService.instance.disconnect();
     }
 
     public toggleFullScreen(enable: boolean): void {
@@ -108,6 +127,7 @@ class ColumnFormatterEnhancer {
 
     public async injectCustomFormatter(): Promise<void> {
         if (this.editor) return;
+
         if (!completionProviderRegistered) {
             await registerProvider();
             completionProviderRegistered = true;
@@ -147,7 +167,11 @@ class ColumnFormatterEnhancer {
         this.addInsertFieldOption();
 
         this.editor.getModel().onDidChangeContent(async () => {
-            await this.syncWithDefaultFormatter(designerArea);
+            if (this.inConnectedMode) {
+                this.dispatchDefaultReactFormatterValue(this.editor.getValue());
+            } else {
+                await this.syncWithDefaultFormatter();
+            }
         });
 
         const customizationPaneArea = DomService.getCustomizationPaneArea();
@@ -163,6 +187,9 @@ class ColumnFormatterEnhancer {
 
         this.resizeObserver.observe(DomService.getRightFilesPane());
         customizationPaneArea.style.overflow = 'hidden';
+
+        // don't wait cause it's event-based
+        VscodeService.instance.connect();
     }
 
     private addInsertFieldOption(): void {
@@ -229,13 +256,19 @@ class ColumnFormatterEnhancer {
         }
     }
 
-    private async syncWithDefaultFormatter(designerArea: HTMLTextAreaElement): Promise<void> {
+    private async syncWithDefaultFormatter(): Promise<void> {
 
         if (!(await this.ensureSchemaRemoved(this.editor.getValue()))) {
             return;
         }
 
-        designerArea.value = this.getDefaultEditorValue(this.editor.getValue());
+        const value = this.getDefaultEditorValue(this.editor.getValue());
+        this.dispatchDefaultReactFormatterValue(value);
+    }
+
+    private dispatchDefaultReactFormatterValue(value: string) {
+        const designerArea = DomService.getEditableTextArea();
+        designerArea.value = value;
         const event = new Event('input', { bubbles: true });
         designerArea.dispatchEvent(event);
 

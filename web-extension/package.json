@@ -26,7 +26,8 @@
     "react": "16.14.0",
     "react-autosuggest": "10.0.4",
     "react-dom": "16.14.0",
-    "selector-observer": "2.1.6"
+    "selector-observer": "2.1.6",
+    "socket.io-client": "^3.0.4"
   },
   "devDependencies": {
     "@types/chrome": "0.0.127",

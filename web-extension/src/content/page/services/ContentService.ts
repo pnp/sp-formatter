@@ -23,7 +23,7 @@ export class ContentService {
             this.pagePipe.emit(Content.onGetExtensionSettings, {});
         });
 
-        return promiseTimeout(CommunicationTimeout, promise);
+        return promiseTimeout(CommunicationTimeout, promise, 'getExtensionSettings');
     }
 
     public async saveExtensionSettings(settings: IExtensionSettings): Promise<void> {
@@ -38,7 +38,7 @@ export class ContentService {
             this.pagePipe.emit(Content.onSaveExtensionSettings, settings);
         });
 
-        return promiseTimeout(CommunicationTimeout, promise);
+        return promiseTimeout(CommunicationTimeout, promise, 'saveExtensionSettings');
     }
 
     public async getColumnFormatterSchema(): Promise<any> {
@@ -52,7 +52,7 @@ export class ContentService {
             this.pagePipe.emit(Content.onGetColumnFormattingSchema, {});
         });
 
-        return promiseTimeout(CommunicationTimeout, promise);
+        return promiseTimeout(CommunicationTimeout, promise, 'getColumnFormatterSchema');
     }
 
     public async getViewFormatterSchema(): Promise<IViewFormattingSchema> {
@@ -66,6 +66,6 @@ export class ContentService {
             this.pagePipe.emit(Content.onGetViewFormattingSchema, {});
         });
 
-        return promiseTimeout(CommunicationTimeout, promise);
+        return promiseTimeout(CommunicationTimeout, promise, 'getViewFormatterSchema');
     }
 }

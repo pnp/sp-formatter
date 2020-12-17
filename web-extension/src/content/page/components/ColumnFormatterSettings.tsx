@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Toggle, IconButton } from 'office-ui-fabric-react/';
+import { Toggle, IconButton, FontIcon } from 'office-ui-fabric-react/';
 import { ContentService } from '../services/ContentService';
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
 import { FC, MouseEvent, useState } from 'react';
+import { VscodeService } from '../services/VscodeService';
 
 interface IProps {
     type: string;
@@ -15,6 +16,8 @@ const pagePipe = WebEventEmitter.instance;
 
 export const ColumnFormatterSettings: FC<IProps> = (props) => {
     const [enabled, setEnabled] = useState(false);
+    const [vscodeConnected, setVSCodeConnected] = useState(false);
+    const [fileName, setFileName] = useState('');
     const [inFullScreenMode, setInFullScreenMode] = useState(false);
 
     React.useEffect(() => {
@@ -24,6 +27,14 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
 
             pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
                 enabled: settings.enhancedFormatterEnabled
+            });
+
+            pagePipe.on<IEnabled>(Content.Vscode.onConnected, async (data) => {
+                if (data.enabled) {
+                    const fileName = await VscodeService.instance.getConnectedFileName();
+                    setFileName(fileName);
+                } 
+                setVSCodeConnected(data.enabled);
             });
         }
 
@@ -64,10 +75,23 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
                 offText={`Enhanced ${props.type} formatter is disabled`}
                 onChange={onEnableChanged} />
 
+            {vscodeConnected && (<div style={{
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '13px',
+                color: '#015601',
+                fontWeight: 500
+            }}>
+                <FontIcon style={{
+                    alignSelf: 'flex-end',
+                    marginRight: '2px'
+                }} iconName={'SkypeCheck'} /> <span>VSCode is connected [{fileName}]</span>
+            </div>)}
+
             {enabled && !inFullScreenMode && <IconButton style={{
                 position: 'absolute',
                 bottom: '-55px',
-                right: '15px',
+                right: '10px',
                 zIndex: 3000,
                 backgroundColor: 'rgb(233 233 239)'
             }} iconProps={{ iconName: 'MiniExpand' }} title="Full screen mode" onClick={onMoveToFullScreenClick} />}

@@ -1,11 +1,11 @@
-export function promiseTimeout(ms, promise): Promise<any> {
+export function promiseTimeout(miliSeconds, promise, message): Promise<any> {
 
     return new Promise((resolve, reject) => {
 
       // create a timeout to reject promise if not resolved
       const timer = setTimeout(() => {
-          reject(new Error('promise timeout'));
-      }, ms);
+          reject(new Error(message));
+      }, miliSeconds);
 
       promise
           .then((res) => {

@@ -25,7 +25,7 @@ export async function registerProvider(): Promise<void> {
       const range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
+        startColumn: word.endColumn - 1,
         endColumn: word.endColumn
       };
       return {

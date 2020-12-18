@@ -8,17 +8,17 @@ import { getListFields } from './services/SPService';
 getListFields();
 
 enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]', () => {
-    const viewType = DomService.getInjectionType();
-    let type;
+  const viewType = DomService.getInjectionType();
+  let type;
 
-    if (viewType === ViewType.Column) {
-        type = 'column';
-    } else {
-        type = 'view';
-    }
-    return {
-        type
-    };
+  if (viewType === ViewType.Column) {
+    type = 'column';
+  } else {
+    type = 'view';
+  }
+  return {
+    type
+  };
 });
 
 enableFormatter();

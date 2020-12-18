@@ -1,5 +1,5 @@
 export interface IExtensionTabEnabledData {
-    [key: number]: {
-        enabled: boolean;
-    };
+  [key: number]: {
+    enabled: boolean;
+  };
 }

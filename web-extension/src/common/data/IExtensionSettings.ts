@@ -1,4 +1,4 @@
 export interface IExtensionSettings {
-    enhancedFormatterEnabled: boolean;
-    useDarkMode: boolean;
+  enhancedFormatterEnabled: boolean;
+  useDarkMode: boolean;
 }

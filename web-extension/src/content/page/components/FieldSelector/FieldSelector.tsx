@@ -23,7 +23,7 @@ export const FieldSelector: FC<IProps> = (props) => {
   const allFields = React.useRef<IField[]>();
 
   React.useEffect(() => {
-    const getData = async () => {      
+    const getData = async () => {
       const fields = await getListFields();
       allFields.current = fields;
       setFields(fields);

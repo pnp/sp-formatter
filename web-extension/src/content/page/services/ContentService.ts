@@ -9,63 +9,63 @@ import { IViewFormattingSchema } from '../../../common/data/IViewFormattingSchem
  * Communicates with content script using postMessage
  */
 export class ContentService {
-    private pagePipe = WebEventEmitter.instance;
+  private pagePipe = WebEventEmitter.instance;
 
-    public async getExtensionSettings(): Promise<IExtensionSettings> {
+  public async getExtensionSettings(): Promise<IExtensionSettings> {
 
-        const promise = new Promise((resolve) => {
-            const getData = data => {
-                this.pagePipe.off(Content.onSendExtensionSettings, getData);
-                resolve(data);
-            };
+    const promise = new Promise((resolve) => {
+      const getData = data => {
+        this.pagePipe.off(Content.onSendExtensionSettings, getData);
+        resolve(data);
+      };
 
-            this.pagePipe.on<IExtensionSettings>(Content.onSendExtensionSettings, getData);
-            this.pagePipe.emit(Content.onGetExtensionSettings, {});
-        });
+      this.pagePipe.on<IExtensionSettings>(Content.onSendExtensionSettings, getData);
+      this.pagePipe.emit(Content.onGetExtensionSettings, {});
+    });
 
-        return promiseTimeout(CommunicationTimeout, promise, 'getExtensionSettings');
-    }
+    return promiseTimeout(CommunicationTimeout, promise, 'getExtensionSettings');
+  }
 
-    public async saveExtensionSettings(settings: IExtensionSettings): Promise<void> {
+  public async saveExtensionSettings(settings: IExtensionSettings): Promise<void> {
 
-        const promise = new Promise((resolve) => {
-            const getData = data => {
-                this.pagePipe.off(Content.onSavedExtensionSettings, getData);
-                resolve(data);
-            };
+    const promise = new Promise((resolve) => {
+      const getData = data => {
+        this.pagePipe.off(Content.onSavedExtensionSettings, getData);
+        resolve(data);
+      };
 
-            this.pagePipe.on<IExtensionSettings>(Content.onSavedExtensionSettings, getData);
-            this.pagePipe.emit(Content.onSaveExtensionSettings, settings);
-        });
+      this.pagePipe.on<IExtensionSettings>(Content.onSavedExtensionSettings, getData);
+      this.pagePipe.emit(Content.onSaveExtensionSettings, settings);
+    });
 
-        return promiseTimeout(CommunicationTimeout, promise, 'saveExtensionSettings');
-    }
+    return promiseTimeout(CommunicationTimeout, promise, 'saveExtensionSettings');
+  }
 
-    public async getColumnFormatterSchema(): Promise<any> {
-        const promise = new Promise((resolve) => {
-            const getData = data => {
-                this.pagePipe.off(Content.onSendColumnFormattingSchema, getData);
-                resolve(data);
-            };
+  public async getColumnFormatterSchema(): Promise<any> {
+    const promise = new Promise((resolve) => {
+      const getData = data => {
+        this.pagePipe.off(Content.onSendColumnFormattingSchema, getData);
+        resolve(data);
+      };
 
-            this.pagePipe.on<IExtensionSettings>(Content.onSendColumnFormattingSchema, getData);
-            this.pagePipe.emit(Content.onGetColumnFormattingSchema, {});
-        });
+      this.pagePipe.on<IExtensionSettings>(Content.onSendColumnFormattingSchema, getData);
+      this.pagePipe.emit(Content.onGetColumnFormattingSchema, {});
+    });
 
-        return promiseTimeout(CommunicationTimeout, promise, 'getColumnFormatterSchema');
-    }
+    return promiseTimeout(CommunicationTimeout, promise, 'getColumnFormatterSchema');
+  }
 
-    public async getViewFormatterSchema(): Promise<IViewFormattingSchema> {
-        const promise = new Promise((resolve) => {
-            const getData = data => {
-                this.pagePipe.off(Content.onSendViewFormattingSchema, getData);
-                resolve(data);
-            };
+  public async getViewFormatterSchema(): Promise<IViewFormattingSchema> {
+    const promise = new Promise((resolve) => {
+      const getData = data => {
+        this.pagePipe.off(Content.onSendViewFormattingSchema, getData);
+        resolve(data);
+      };
 
-            this.pagePipe.on(Content.onSendViewFormattingSchema, getData);
-            this.pagePipe.emit(Content.onGetViewFormattingSchema, {});
-        });
+      this.pagePipe.on(Content.onSendViewFormattingSchema, getData);
+      this.pagePipe.emit(Content.onGetViewFormattingSchema, {});
+    });
 
-        return promiseTimeout(CommunicationTimeout, promise, 'getViewFormatterSchema');
-    }
+    return promiseTimeout(CommunicationTimeout, promise, 'getViewFormatterSchema');
+  }
 }

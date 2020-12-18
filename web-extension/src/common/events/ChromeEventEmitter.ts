@@ -2,30 +2,30 @@ import { EventEmitter } from './EventEmitter';
 
 export class ChromeEventEmitter extends EventEmitter {
 
-    constructor(private port: chrome.runtime.Port) {
-        super();
+  constructor(private port: chrome.runtime.Port) {
+    super();
 
-        this.port.onMessage.addListener((data: any) => {
-            const key = data[this.typeKey];
+    this.port.onMessage.addListener((data: any) => {
+      const key = data[this.typeKey];
 
-            if (!key) return;
+      if (!key) return;
 
-            const events = this.eventList[key];
+      const events = this.eventList[key];
 
-            if (!events || events.length === 0) return;
+      if (!events || events.length === 0) return;
 
-            delete data[this.typeKey];
+      delete data[this.typeKey];
 
-            events.forEach((callback) => {
-                callback(data);
-            });
-        });
-    }
+      events.forEach((callback) => {
+        callback(data);
+      });
+    });
+  }
 
-    public emit<T>(eventName: string, data: T): void {
-        this.port.postMessage({
-            [this.typeKey]: eventName,
-            ...data
-        });
-    }
+  public emit<T>(eventName: string, data: T): void {
+    this.port.postMessage({
+      [this.typeKey]: eventName,
+      ...data
+    });
+  }
 }

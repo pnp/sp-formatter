@@ -1,4 +1,4 @@
 export interface IChangeData {
-    enabled: boolean;
-    tabId: number;
+  enabled: boolean;
+  tabId: number;
 }

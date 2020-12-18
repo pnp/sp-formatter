@@ -1,6 +1,6 @@
 import { ContentManager } from './ContentManager';
 
 new ContentManager().init()
-.catch(e => {
+  .catch(e => {
     throw e;
-});
+  });

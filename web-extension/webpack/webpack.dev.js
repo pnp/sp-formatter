@@ -3,14 +3,14 @@ const common = require('./webpack.common.js');
 const webpack = require('webpack');
 
 module.exports = merge(common, {
-    mode: 'none',
-    plugins: [
-        new webpack.SourceMapDevToolPlugin({
-            filename: null,
-            exclude: /monaco-build/
-        }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
-        })
-    ]
+  mode: 'none',
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      filename: null,
+      exclude: /monaco-build/
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development')
+    })
+  ]
 });

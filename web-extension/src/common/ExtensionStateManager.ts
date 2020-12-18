@@ -4,42 +4,42 @@ import { IExtensionSettings } from './data/IExtensionSettings';
 
 export class ExtensionStateManager {
 
-    private static isEnbledKey = 'tab_enabled';
-    private static extensionSettingsKey = 'extension_settings';
+  private static isEnbledKey = 'tab_enabled';
+  private static extensionSettingsKey = 'extension_settings';
 
-    public static async isEnabledForTab(tabId: number): Promise<boolean> {
-        const result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
-        if (!result) {
-            return false;
-        }
-
-        return result[tabId] && result[tabId].enabled;
+  public static async isEnabledForTab(tabId: number): Promise<boolean> {
+    const result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
+    if (!result) {
+      return false;
     }
 
-    public static async setIsEnabledForTab(tabId: number, enabled: boolean): Promise<void> {
-        let result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
+    return result[tabId] && result[tabId].enabled;
+  }
 
-        result = result || {};
-        result[tabId] = {
-            enabled
-        };
+  public static async setIsEnabledForTab(tabId: number, enabled: boolean): Promise<void> {
+    let result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
 
-        await ChromeStorage.setItem<IExtensionTabEnabledData>(this.isEnbledKey, result);
+    result = result || {};
+    result[tabId] = {
+      enabled
+    };
+
+    await ChromeStorage.setItem<IExtensionTabEnabledData>(this.isEnbledKey, result);
+  }
+
+  public static async getExtensionSettings(): Promise<IExtensionSettings> {
+    const result = await ChromeStorage.getItem<IExtensionSettings>(this.extensionSettingsKey);
+    if (!result) {
+      return null;
+    }
+    if (result.useDarkMode == null) {
+      result.useDarkMode = false;
     }
 
-    public static async getExtensionSettings(): Promise<IExtensionSettings> {
-        const result = await ChromeStorage.getItem<IExtensionSettings>(this.extensionSettingsKey);
-        if (!result) {
-            return null;
-        }
-        if (result.useDarkMode == null) {
-            result.useDarkMode = false;
-        }
+    return result;
+  }
 
-        return result;
-    }
-
-    public static async setExtensionSettings(settings: IExtensionSettings): Promise<void> {
-        await ChromeStorage.setItem<IExtensionSettings>(this.extensionSettingsKey, settings);
-    }
+  public static async setExtensionSettings(settings: IExtensionSettings): Promise<void> {
+    await ChromeStorage.setItem<IExtensionSettings>(this.extensionSettingsKey, settings);
+  }
 }

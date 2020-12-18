@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { ConnectionManager } from './ConnectionManager';
+import { Logger } from './utils/Logger';
 
 let connectionManager: ConnectionManager;
 
@@ -7,11 +8,23 @@ export function activate(context: vscode.ExtensionContext) {
   connectionManager = new ConnectionManager();
 
   const connect = vscode.commands.registerCommand('sp-formatter.connect', async () => {
-    await connectionManager.start();
+    try {
+      await connectionManager.start();
+    }
+    catch (e) {
+      Logger.error(e);
+      throw e;
+    }
   });
 
   const disconnect = vscode.commands.registerCommand('sp-formatter.disconnect', async () => {
-    await connectionManager.stop();
+    try {
+      await connectionManager.stop();
+    }
+    catch (e) {
+      Logger.error(e);
+      throw e;
+    }
   });
 
   context.subscriptions.push(connect);

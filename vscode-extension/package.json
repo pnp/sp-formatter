@@ -1,74 +1,78 @@
 {
-	"name": "sp-formatter",
-	"displayName": "SP Formatter",
-	"description": "SP Formatter connects to the corresponding Chrome extension and makes Column Formatting JSON development a lot more convenient",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.52.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:sp-formatter.connect"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "sp-formatter.connect",
-				"title": "Start a new SP Formatter session"
-			},
-			{
-				"command": "sp-formatter.disconnect",
-				"title": "Close current SP Formatter session"
-			}
-		],
-		"menus": {
-			"editor/context": [
-				{
-					"command": "sp-formatter.connect",
-					"group": "default@sp-formatter",
-					"when": "resourceLangId == json"
+  "name": "sp-formatter",
+  "displayName": "SP Formatter",
+  "description": "SP Formatter connects to the corresponding Chrome extension and makes Column Formatting JSON development a lot more convenient",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.52.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:sp-formatter.connect"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sp-formatter.connect",
+        "title": "SP Formatter: start a new session"
+      },
+      {
+        "command": "sp-formatter.disconnect",
+        "title": "SP Formatter: close current session"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "sp-formatter.disconnect",
+          "group": "sp-formatter@2",
+          "when": "resourceLangId == json"
         },
         {
-					"command": "sp-formatter.disconnect",
-					"group": "default@sp-formatter",
-					"when": "resourceLangId == json"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "sp-formatter.connect",
-					"when": "resourceLangId == json"
-				}
-			]
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"@types/stoppable": "^1.1.0",
-		"@types/vscode": "^1.52.0",
-		"@typescript-eslint/eslint-plugin": "^4.9.0",
-		"@typescript-eslint/parser": "^4.9.0",
-		"eslint": "^7.15.0",
-		"glob": "^7.1.6",
-		"mocha": "^8.1.3",
-		"typescript": "^4.1.2",
-		"vscode-test": "^1.4.1"
-	},
-	"dependencies": {
-		"socket.io": "^3.0.4",
-		"stoppable": "^1.1.0"
-	}
+          "command": "sp-formatter.connect",
+          "group": "sp-formatter@1",
+          "when": "resourceLangId == json"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sp-formatter.connect",
+          "when": "resourceLangId == json"
+        },
+        {
+          "command": "sp-formatter.disconnect",
+          "when": "resourceLangId == json"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^12.11.7",
+    "@types/stoppable": "^1.1.0",
+    "@types/vscode": "^1.52.0",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "eslint": "^7.15.0",
+    "glob": "^7.1.6",
+    "mocha": "^8.1.3",
+    "typescript": "^4.1.2",
+    "vscode-test": "^1.4.1"
+  },
+  "dependencies": {
+    "socket.io": "^3.0.4",
+    "stoppable": "^1.1.0"
+  }
 }

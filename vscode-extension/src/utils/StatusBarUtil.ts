@@ -1,38 +1,38 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 
-export class StatusBarManager {
+export class StatusBarUtil {
   private static _statusBarItem: StatusBarItem;
 
   private static get statusbar() {
-    if (!StatusBarManager._statusBarItem) {
-      StatusBarManager._statusBarItem = window
+    if (!StatusBarUtil._statusBarItem) {
+      StatusBarUtil._statusBarItem = window
         .createStatusBarItem(StatusBarAlignment.Right, 100);
-        this.statusbar.show();
+      this.statusbar.show();
     }
 
-    return StatusBarManager._statusBarItem;
+    return StatusBarUtil._statusBarItem;
   }
 
-  static working(workingMsg = 'Working....') {
+  public static working(workingMsg = 'Working....') {
     this.statusbar.text = `$(pulse) ${workingMsg}`;
     this.statusbar.tooltip = 'In case if it takes long time, try to close all browser window.';
     this.statusbar.command = undefined;
-}
+  }
 
   public static listening(fileName: string) {
     this.statusbar.text = '$(debug-disconnect) SP Formatter: listening';
     this.statusbar.command = 'sp-formatter.disconnect';
-    this.statusbar.tooltip = `File name: ${fileName}.Click to stop listening`;
+    this.statusbar.tooltip = `File name: ${fileName}. Click to stop listening`;
   }
 
-  public static connected() {
+  public static connected(fileName: string) {
     this.statusbar.text = '$(remote-explorer) SP Formatter: connected';
     this.statusbar.command = 'sp-formatter.disconnect';
-    this.statusbar.tooltip = 'Click to disconnect';
+    this.statusbar.tooltip = `File name: ${fileName}. Click to disconnect`;
   }
 
   public static destroy() {
     this.statusbar.dispose();
-    StatusBarManager._statusBarItem = null;
+    StatusBarUtil._statusBarItem = null;
   }
 }

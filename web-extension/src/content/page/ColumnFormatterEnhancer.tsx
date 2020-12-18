@@ -11,7 +11,6 @@ import { IField } from '../../common/data/IField';
 import { IViewFormattingSchema } from '../../common/data/IViewFormattingSchema';
 import { registerProvider } from './services/ContextCompletionProvider';
 import { VscodeService } from './services/VscodeService';
-import { Logger } from '../../common/Logger';
 import { IFileContent } from '../../common/data/IFileContent';
 
 type MonacoEditor = typeof import('monaco-editor');
@@ -78,7 +77,6 @@ class ColumnFormatterEnhancer {
 
         this.pagePipe.on<IFileContent>(Content.Vscode.onSendFileContent, fileContent => {
             if (!this.editor) return;
-            Logger.log('CF: onSendFileContent');
             this.editor.setValue(fileContent.text);
         })
     }

@@ -33,6 +33,7 @@ export class VscodeService {
 
     this.socket.once('connect', () => {
       this.pagePipe.emit<IEnabled>(Content.Vscode.onConnected, { enabled: true });
+      this.socket.emit(Content.Vscode.onInitFileContent);
     });
 
     this.socket.on('disconnect', () => {
@@ -41,7 +42,6 @@ export class VscodeService {
 
     this.socket.on(Content.Vscode.onSendFileContent, (data: IFileContent) => {
       this.pagePipe.emit<IFileContent>(Content.Vscode.onSendFileContent, data);
-      this.socket.emit(Content.Vscode.onReceivedFileContent);
     });
 
     this.socket.connect();

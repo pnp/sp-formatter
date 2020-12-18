@@ -90,7 +90,7 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
 
             {enabled && !inFullScreenMode && <IconButton style={{
                 position: 'absolute',
-                bottom: '-55px',
+                bottom: '15px',
                 right: '10px',
                 zIndex: 3000,
                 backgroundColor: 'rgb(233 233 239)'

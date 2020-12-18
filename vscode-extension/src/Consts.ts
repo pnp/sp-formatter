@@ -1,0 +1,1 @@
+export const ExtensionName = 'sp-formatter';

@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import { Server as Socket } from 'socket.io';
 import { StatusBarUtil } from './utils/StatusBarUtil';
 import stoppable, { StoppableServer } from 'stoppable';
+import { ContextCompletionProvider } from './utils/ContextCompletionProvider';
 
 const onGetFileName = 'vscode_get_file_name';
 const onSendFileName = 'vscode_send_file_name';
@@ -17,7 +18,7 @@ export class ConnectionManager {
   private activeSocket: Socket;
   private subscriptions: Disposable[] = [];
 
-  public async start(): Promise<void> {
+  public async listen(): Promise<void> {
     StatusBarUtil.working();
     if (this.httpServer) {
       await this.stop();
@@ -59,7 +60,10 @@ export class ConnectionManager {
       this.activeSocket.emit(onSendFileContent, { text: e.document.getText() });
     });
 
+    const completionProvider = ContextCompletionProvider.register(this.getDocumentName());
+
     this.subscriptions.push(onDidChange);
+    this.subscriptions.push(completionProvider);
 
     StatusBarUtil.listening(this.getDocumentName());
   }

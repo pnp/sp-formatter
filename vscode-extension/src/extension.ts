@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { window } from 'vscode';
 import { ConnectionManager } from './ConnectionManager';
 import { Logger } from './utils/Logger';
 
@@ -9,10 +10,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   const connect = vscode.commands.registerCommand('sp-formatter.connect', async () => {
     try {
-      await connectionManager.start();
+      await connectionManager.listen();
     }
     catch (e) {
       Logger.error(e);
+      window.showErrorMessage('Error: ' + e?.message || e.toString());
       throw e;
     }
   });
@@ -23,6 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     catch (e) {
       Logger.error(e);
+      window.showErrorMessage('Error: ' + e?.message || e.toString());
       throw e;
     }
   });

@@ -1,0 +1,20 @@
+export function promiseTimeout(miliSeconds, promise, message): Promise<any> {
+
+  return new Promise((resolve, reject) => {
+
+    // create a timeout to reject promise if not resolved
+    const timer = setTimeout(() => {
+      reject(new Error(message));
+    }, miliSeconds);
+
+    promise
+      .then((res) => {
+        clearTimeout(timer);
+        resolve(res);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}

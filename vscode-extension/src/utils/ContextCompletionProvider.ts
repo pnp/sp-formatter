@@ -2,10 +2,10 @@ import { CompletionItem, CompletionItemKind, CompletionList, Disposable, languag
 import { Field } from '../data/Field';
 
 export class ContextCompletionProvider {
-  public static register(fileName: string): Disposable {
+  public static register(fileName: string, fields: Field[]): Disposable {
     return languages.registerCompletionItemProvider({
       language: 'json',
-      pattern: `**/${fileName}`
+      pattern: `**/*/${fileName}`
     }, {
       provideCompletionItems: (document, position) => {
         const wordRange = document.getWordRangeAtPosition(position);
@@ -15,7 +15,7 @@ export class ContextCompletionProvider {
           return new CompletionList([]);
         }
 
-        return new CompletionList(this.createSuggestionsList(position, []), false);
+        return new CompletionList(this.createSuggestionsList(position, fields), false);
       }
     }, '@', '$');
   }

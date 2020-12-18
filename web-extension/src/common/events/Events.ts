@@ -33,6 +33,8 @@ export class Content {
     onGetFileName: 'vscode_get_file_name',
     onSendFileName: 'vscode_send_file_name',
     onSendFileContent: 'vscode_send_file_content',
-    onInitFileContent: 'vscode_init_file_content'
+    onInitFileContent: 'vscode_init_file_content',
+    onGetListFields: 'vscode_get_list_fields',
+    onSendListFields: 'vscode_send_list_fields'
   }
 }

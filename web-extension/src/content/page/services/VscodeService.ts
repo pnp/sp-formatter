@@ -4,6 +4,7 @@ import { IFileContent } from '../../../common/data/IFileContent';
 import { Content } from '../../../common/events/Events';
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { promiseTimeout } from '../../../common/PromiseTimeout';
+import { getListFields } from './SPService';
 
 const port = 11232;
 const messagingTimeout = 2000;
@@ -27,11 +28,11 @@ export class VscodeService {
 
   public async connect() {
     this.socket = io(`http://localhost:${port}/`, {
-      reconnectionAttempts: 1,
+      reconnectionAttempts: 3,
       autoConnect: false
     });
 
-    this.socket.once('connect', () => {
+    this.socket.on('connect', () => {
       this.pagePipe.emit<IEnabled>(Content.Vscode.onConnected, { enabled: true });
       this.socket.emit(Content.Vscode.onInitFileContent);
     });
@@ -42,6 +43,11 @@ export class VscodeService {
 
     this.socket.on(Content.Vscode.onSendFileContent, (data: IFileContent) => {
       this.pagePipe.emit<IFileContent>(Content.Vscode.onSendFileContent, data);
+    });
+
+    this.socket.on(Content.Vscode.onGetListFields, async () => {
+      const fields = await getListFields();
+      this.socket.emit(Content.Vscode.onSendListFields, fields);
     });
 
     this.socket.connect();

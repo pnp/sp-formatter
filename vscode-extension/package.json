@@ -3,6 +3,12 @@
   "displayName": "SP Formatter",
   "description": "SP Formatter connects to the corresponding Chrome extension and makes Column Formatting JSON development a lot more convenient",
   "version": "0.0.1",
+  "license": "MIT",
+  "keywords": [
+		"SharePoint",
+    "Microsoft 365",
+    "Column formatting"
+	],
   "engines": {
     "vscode": "^1.52.0"
   },
@@ -12,7 +18,14 @@
   "activationEvents": [
     "onCommand:sp-formatter.connect"
   ],
+  "homepage": "https://github.com/pnp/sp-formatter",
+  "repository": {
+    "url": "https://github.com/pnp/sp-formatter.git",
+    "type": "git"
+  },
+  "publisher": "s-kainet",
   "main": "./out/extension.js",
+  "icon": "assets/icon128.png",
   "contributes": {
     "commands": [
       {
@@ -53,9 +66,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",

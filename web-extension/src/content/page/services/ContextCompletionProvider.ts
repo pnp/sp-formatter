@@ -16,8 +16,8 @@ export async function registerProvider(): Promise<void> {
   monaco.languages.registerCompletionItemProvider('json', {
     triggerCharacters: '@$'.split(''),
     provideCompletionItems: (model, position) => {
-      const word = model.getWordUntilPosition(position);
-      if (!word.word) {
+      const suggestRange = model.getWordUntilPosition(position);
+      if (!suggestRange.word || (!suggestRange.word.endsWith('$') && !suggestRange.word.endsWith('@'))) {
         return {
           suggestions: []
         }
@@ -25,8 +25,8 @@ export async function registerProvider(): Promise<void> {
       const range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
-        startColumn: word.endColumn - 1,
-        endColumn: word.endColumn
+        startColumn: suggestRange.endColumn - 1,
+        endColumn: suggestRange.endColumn
       };
       return {
         suggestions: createDependencyProposals(range, fields)

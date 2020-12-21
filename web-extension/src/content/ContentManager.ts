@@ -25,6 +25,9 @@ export class ContentManager {
     this.pagePipe = WebEventEmitter.instance;
 
     this.backgroundPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
+      this.columnFormatterSchema = await this.getColumnFormattingSchema();
+      this.viewFormatterSchema = await this.getViewFormattingSchema();
+
       await this.initInjectScripts(data.enabled);
       this.pagePipe.emit(Popup.onChangeEnabled, data);
     });

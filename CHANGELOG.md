@@ -1,5 +1,11 @@
 # Changelog  
 
+## 0.0.3 - 21 Dec 2020
+- added dark theme
+- added full screen mode
+- added VSCode integration
+- added better intellisense
+
 ## 0.0.2 - 03 June 2019
 - fixed issue for sites with locale other than English
 

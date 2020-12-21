@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SP Formatter",
   "short_name": "SP Formatter",
-  "homepage_url": "https://github.com/s-KaiNet/sp-formatter",
+  "homepage_url": "https://github.com/pnp/sp-formatter",
   "description": "Customize your SharePoint Column or View Formatting JSON using full-featured editor instead of default one.",
   "version": "0.0.3",
   "content_scripts": [

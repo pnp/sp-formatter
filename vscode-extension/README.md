@@ -2,7 +2,7 @@
 
 SP Formatter VSCode extension creates a bridge between VSCode and SP Formatter web extension, makes it available to modify your Column Formatting JSON inside VSCode and have it synchronized to browser with live preview.
 
-[![vscode-column-formatter](/assets/column-formatter-vscode.jpg)](https://www.youtube.com/watch?t=117&v=xnyiDdLKWOA&feature=youtu.be)  
+[![vscode-column-formatter](https://raw.githubusercontent.com/pnp/sp-formatter/master/vscode-extension/assets/column-formatter-vscode.jpg)](https://www.youtube.com/watch?t=117&v=xnyiDdLKWOA&feature=youtu.be)  
 [Watch video](https://www.youtube.com/watch?t=117&v=xnyiDdLKWOA&feature=youtu.be)
 
 ## Prerequisites

@@ -7,7 +7,7 @@ SP Formatter VSCode extension creates a bridge between VSCode and SP Formatter w
 
 ## Prerequisites
 
-- [SP Formatter](https://chrome.google.com/webstore/detail/sp-formatter/fmeihfaddhdkoogipahfcjlicglflkhg?hl=en) web extension needs to be installed.
+- SP Formatter either for [Chrome](https://chrome.google.com/webstore/detail/sp-formatter/fmeihfaddhdkoogipahfcjlicglflkhg?hl=en) or [Edge](https://microsoftedge.microsoft.com/addons/detail/sp-formatter/eenbldkdgbfcfachaccldfgiajgjmjhi?hl=en-US) web extension needs to be installed.
 - http port `11232` to be opened for connections
 
 ## How to configure

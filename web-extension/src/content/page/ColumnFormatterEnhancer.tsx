@@ -164,6 +164,14 @@ class ColumnFormatterEnhancer {
 
     this.addInsertFieldOption();
 
+    this.editor.onKeyUp((e) => {
+      const position = this.editor.getPosition();
+      const text = this.editor.getModel().getLineContent(position.lineNumber).trim();
+      if (e.keyCode === monaco.KeyCode.Enter && !text) {
+        this.editor.trigger('', 'editor.action.triggerSuggest', '');
+      }
+    });
+
     this.editor.getModel().onDidChangeContent(async () => {
       if (this.inConnectedMode) {
         this.dispatchDefaultReactFormatterValue(this.editor.getValue());

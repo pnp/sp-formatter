@@ -37,7 +37,7 @@ Additional intellisense includes:
 - full CSS styles intellisense with documentation and values based on CSS standards
 
 > IMPORTANT!  
-> To make additional intellisense to work, you should remove default `$schema` property from your JSON formatting file. If you still need it and at the same time want to leverage additional intellisense, you can setup a custom gulp task, which generates files with `$schema` proeprty, like in this [sample gist](https://gist.github.com/s-KaiNet/caa55846ae06475df3e43c28e1531784)
+> To make additional intellisense to work, you should remove default `$schema` property from your JSON formatting file. If you still need it and at the same time want to leverage additional intellisense, you can setup a custom gulp task, which generates files with `$schema` property, like in this [sample gist](https://gist.github.com/s-KaiNet/caa55846ae06475df3e43c28e1531784)
 
 ## Development
 

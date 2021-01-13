@@ -18,6 +18,27 @@ SP Formatter VSCode extension creates a bridge between VSCode and SP Formatter w
 4. Edit column formatting JSON and wait for the message "VSCode is connected".
 5. Modify the file inside VSCode and see how it is synchronized with browser.
 
+## Additional intellisense for JSON formatting files
+
+If your JSON formatting file name has one of the below endings:
+
+- `*.column-formatter.json`, `*.column.formatter.json`, `*.column-format.json`, `*.column.format.json`
+
+OR
+
+- `*.view-formatter.json`, `*.view.formatter.json`, `*.view-format.json`, `*.view.format.json`
+
+Then your `.json` file will be the subject for additional intellisense.
+
+Additional intellisense includes:
+
+- Fluent UI icon names suggestion
+- `rel`, `role`, `target` property values
+- full CSS styles intellisense with documentation and values based on CSS standards
+
+> IMPORTANT!  
+> To make additional intellisense to work, you should remove default `$schema` property from your JSON formatting file. If you still need it and at the same time want to leverage additional intellisense, you can setup a custom gulp task, which generates files with `$schema` proeprty, like in this [sample gist](https://gist.github.com/s-KaiNet/caa55846ae06475df3e43c28e1531784)
+
 ## Development
 
 1. `npm i`

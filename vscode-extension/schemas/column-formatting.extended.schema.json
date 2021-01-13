@@ -1,0 +1,4250 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "CustomFormatter JSON",
+  "description": "CustomFormatter renderer for SharePoint lists",
+  "definitions": {
+    "customAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "Action object",
+      "description": "Action object for a custom action button",
+      "properties": {
+        "action": {
+          "description": "Name of the action that the custom action button will execute",
+          "enum": [
+            "defaultClick",
+            "executeFlow",
+            "share",
+            "delete",
+            "editProps"
+          ]
+        },
+        "actionParams": {
+          "description": "Parameters for the custom action",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/expression"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/fieldValue"
+            }
+          ]
+        }
+      }
+    },
+    "expression": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "Expression object JSON",
+      "description": "Expression object for CustomFormatter JSON",
+      "properties": {
+        "operator": {
+          "description": "Operator for this expression",
+          "enum": [
+            "+",
+            "-",
+            "/",
+            "*",
+            "<",
+            ">",
+            "%",
+            "==",
+            "!=",
+            "<=",
+            ">=",
+            "||",
+            "&&",
+            "?",
+            ":",
+            "abs",
+            "cos",
+            "ceiling",
+            "Date()",
+            "endsWith",
+            "floor",
+            "getDate",
+            "getMonth",
+            "getYear",
+            "indexOf",
+            "join",
+            "lastIndexOf",
+            "length",
+            "loopIndex",
+            "Number()",
+            "padStart",
+            "padEnd",
+            "pow",
+            "replace",
+            "toDateString()",
+            "toLocaleDateString()",
+            "toLocaleString()",
+            "toLocaleTimeString()",
+            "toLowerCase",
+            "toString()",
+            "toUpperCase",
+            "sin",
+            "startsWith",
+            "substring"
+          ]
+        },
+        "operands": {
+          "description": "Operands for this expression",
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "$ref": "#/definitions/expression"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "operator",
+        "operands"
+      ]
+    },
+    "elm": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "description": "schema of the JSON",
+          "type": "string"
+        },
+        "debugMode": {
+          "description": "Is this JSON in debug mode?",
+          "type": "boolean"
+        },
+        "elmType": {
+          "description": "The type of element to create",
+          "enum": [
+            "div",
+            "button",
+            "span",
+            "a",
+            "img",
+            "svg",
+            "path"
+          ]
+        },
+        "children": {
+          "description": "Children elements",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/elm"
+          }
+        },
+        "txtContent": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/expression"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/fieldValue"
+            }
+          ]
+        },
+        "style": {
+          "type": "object",
+          "description": "Specifies the style object for this element",
+          "patternProperties": {
+            "^[a-z]+(?:-[a-z]+)?$": {
+              "description": "Specifies style attributes for this element",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "properties": {
+            "align-items": {
+              "description": "Aligns flex items along the cross axis of the current line of the flex container.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "baseline",
+                    "center",
+                    "flex-end",
+                    "flex-start",
+                    "stretch"
+                  ]
+                }
+              ]
+            },
+            "align-self": {
+              "description": "Allows the default alignment along the cross axis to be overridden for individual flex items.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "baseline",
+                    "center",
+                    "flex-end",
+                    "flex-start",
+                    "stretch"
+                  ]
+                }
+              ]
+            },
+            "background-color": {
+              "description": "Sets the background color of an element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "background-image": {
+              "description": "Sets the background image(s) of an element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "border": {
+              "description": "Shorthand property for setting border width, style, and color.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-bottom": {
+              "description": "Shorthand property for setting border width, style and color.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-bottom-color": {
+              "description": "Sets the color of the bottom border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "border-bottom-left-radius": {
+              "description": "Defines the radii of the bottom left outer border edge.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-bottom-right-radius": {
+              "description": "Defines the radii of the bottom right outer border edge.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-bottom-style": {
+              "description": "Sets the style of the bottom border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-bottom-width": {
+              "description": "Sets the thickness of the bottom border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-collapse": {
+              "description": "Selects a table's border model.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "collapse",
+                    "separate"
+                  ]
+                }
+              ]
+            },
+            "border-color": {
+              "description": "The color of the border around all four edges of an element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "border-left": {
+              "description": "Shorthand property for setting border width, style and color",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-left-color": {
+              "description": "Sets the color of the left border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "border-left-style": {
+              "description": "Sets the style of the left border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-left-width": {
+              "description": "Sets the thickness of the left border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-radius": {
+              "description": "Defines the radii of the outer border edge.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-right": {
+              "description": "Shorthand property for setting border width, style and color",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-right-color": {
+              "description": "Sets the color of the right border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "border-right-style": {
+              "description": "Sets the style of the right border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-right-width": {
+              "description": "Sets the thickness of the right border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-spacing": {
+              "description": "The lengths specify the distance that separates adjoining cell borders. If one length is specified, it gives both the horizontal and vertical spacing. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. Lengths may not be negative.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-style": {
+              "description": "The style of the border around edges of an element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-top": {
+              "description": "Shorthand property for setting border width, style and color",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-top-color": {
+              "description": "Sets the color of the top border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "border-top-left-radius": {
+              "description": "Defines the radii of the top left outer border edge.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-top-right-radius": {
+              "description": "Defines the radii of the top right outer border edge.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-top-style": {
+              "description": "Sets the style of the top border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-top-width": {
+              "description": "Sets the thickness of the top border.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "border-width": {
+              "description": "Shorthand that sets the four 'border-*-width' properties. If it has four values, they set top, right, bottom and left in that order. If left is missing, it is the same as right; if bottom is missing, it is the same as top; if right is missing, it is the same as top.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "bottom": {
+              "description": "Specifies how far an absolutely positioned box's bottom margin edge is offset above the bottom edge of the box's 'containing block'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "box-decoration-break": {
+              "description": "Specifies whether individual boxes are treated as broken pieces of one continuous box, or whether each box is individually wrapped with the border and padding.\r\nBrowsers: Firefox 32, Safary 6.1, Chrome 22, Opera 15",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "clone",
+                    "slice"
+                  ]
+                }
+              ]
+            },
+            "box-shadow": {
+              "description": "Attaches one or more drop-shadows to the box. The property is a comma-separated list of shadows, each specified by 2-4 length values, an optional color, and an optional 'inset' keyword. Omitted lengths are 0; omitted colors are a user agent chosen color.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "inset",
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "box-sizing": {
+              "description": "Specifies the behavior of the 'width' and 'height' properties.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "border-box",
+                    "content-box"
+                  ]
+                }
+              ]
+            },
+            "caption-side": {
+              "description": "Specifies the position of the caption box with respect to the table box.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "bottom",
+                    "top"
+                  ]
+                }
+              ]
+            },
+            "clear": {
+              "description": "Indicates which sides of an element's box(es) may not be adjacent to an earlier floating box. The 'clear' property does not consider floats inside the element itself or in other block formatting contexts.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "both",
+                    "left",
+                    "none",
+                    "right"
+                  ]
+                }
+              ]
+            },
+            "clip": {
+              "description": "Deprecated. Use the 'clip-path' property when support allows. Defines the visible portion of an element’s box.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "rect()"
+                  ]
+                }
+              ]
+            },
+            "color": {
+              "description": "Color of an element's text",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "column-count": {
+              "description": "Describes the optimal number of columns into which the content of the element will be flowed.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "column-fill": {
+              "description": "In continuous media, this property will only be consulted if the length of columns has been constrained. Otherwise, columns will automatically be balanced.\r\nBrowsers: Edge 12, Firefox 52, Chrome",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "balance"
+                  ]
+                }
+              ]
+            },
+            "column-gap": {
+              "description": "Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "column-rule": {
+              "description": "Shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "column-rule-color": {
+              "description": "Sets the color of the column rule",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleColor"
+                }
+              ]
+            },
+            "column-rule-style": {
+              "description": "Sets the style of the rule between columns of an element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "column-rule-width": {
+              "description": "Sets the width of the rule between columns. Negative values are not allowed.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "columns": {
+              "description": "A shorthand property which sets both 'column-width' and 'column-count'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "column-span": {
+              "description": "Describes the page/column break behavior after the generated box.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "all",
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "column-width": {
+              "description": "Describes the width of columns in multicol elements.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "cursor": {
+              "description": "Allows control over cursor appearance in an element",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "alias",
+                    "all-scroll",
+                    "auto",
+                    "cell",
+                    "col-resize",
+                    "context-menu",
+                    "copy",
+                    "crosshair",
+                    "default",
+                    "e-resize",
+                    "ew-resize",
+                    "grab",
+                    "grabbing",
+                    "help",
+                    "move",
+                    "-moz-grab",
+                    "-moz-grabbing",
+                    "-moz-zoom-in",
+                    "-moz-zoom-out",
+                    "ne-resize",
+                    "nesw-resize",
+                    "no-drop",
+                    "none",
+                    "not-allowed",
+                    "n-resize",
+                    "ns-resize",
+                    "nw-resize",
+                    "nwse-resize",
+                    "pointer",
+                    "progress",
+                    "row-resize",
+                    "se-resize",
+                    "s-resize",
+                    "sw-resize",
+                    "text",
+                    "vertical-text",
+                    "wait",
+                    "-webkit-grab",
+                    "-webkit-grabbing",
+                    "-webkit-zoom-in",
+                    "-webkit-zoom-out",
+                    "w-resize",
+                    "zoom-in",
+                    "zoom-out"
+                  ]
+                }
+              ]
+            },
+            "direction": {
+              "description": "Specifies the inline base direction or directionality of any bidi paragraph, embedding, isolate, or override established by the box. Note: for HTML content use the 'dir' attribute and 'bdo' element rather than this property.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "ltr",
+                    "rtl"
+                  ]
+                }
+              ]
+            },
+            "display": {
+              "description": "In combination with 'float' and 'position', determines the type of box or boxes that are generated for an element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "block",
+                    "contents",
+                    "flex",
+                    "flexbox",
+                    "flow-root",
+                    "grid",
+                    "inline",
+                    "inline-block",
+                    "inline-flex",
+                    "inline-flexbox",
+                    "inline-table",
+                    "list-item",
+                    "-moz-box",
+                    "-moz-deck",
+                    "-moz-grid",
+                    "-moz-grid-group",
+                    "-moz-grid-line",
+                    "-moz-groupbox",
+                    "-moz-inline-box",
+                    "-moz-inline-grid",
+                    "-moz-inline-stack",
+                    "-moz-marker",
+                    "-moz-popup",
+                    "-moz-stack",
+                    "-ms-flexbox",
+                    "-ms-grid",
+                    "-ms-inline-flexbox",
+                    "-ms-inline-grid",
+                    "none",
+                    "ruby",
+                    "ruby-base",
+                    "ruby-base-container",
+                    "ruby-text",
+                    "ruby-text-container",
+                    "run-in",
+                    "table",
+                    "table-caption",
+                    "table-cell",
+                    "table-column",
+                    "table-column-group",
+                    "table-footer-group",
+                    "table-header-group",
+                    "table-row",
+                    "table-row-group",
+                    "-webkit-box",
+                    "-webkit-flex",
+                    "-webkit-inline-box",
+                    "-webkit-inline-flex"
+                  ]
+                }
+              ]
+            },
+            "empty-cells": {
+              "description": "In the separated borders model, this property controls the rendering of borders and backgrounds around cells that have no visible content.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "hide",
+                    "-moz-show-background",
+                    "show"
+                  ]
+                }
+              ]
+            },
+            "fill": {
+              "description": "Paints the interior of the given graphical element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "url()",
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "flex": {
+              "description": "Specifies the components of a flexible length: the flex grow factor and flex shrink factor, and the flex basis.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "content",
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "flex-direction": {
+              "description": "Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "column",
+                    "column-reverse",
+                    "row",
+                    "row-reverse"
+                  ]
+                }
+              ]
+            },
+            "flex-flow": {
+              "description": "Specifies how flexbox items are placed in the flexbox.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "column",
+                    "column-reverse",
+                    "nowrap",
+                    "row",
+                    "row-reverse",
+                    "wrap",
+                    "wrap-reverse"
+                  ]
+                }
+              ]
+            },
+            "flex-grow": {
+              "description": "Sets the flex grow factor. Negative numbers are invalid.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "flex-shrink": {
+              "description": "Sets the flex shrink factor. Negative numbers are invalid.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "flex-wrap": {
+              "description": "Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "nowrap",
+                    "wrap",
+                    "wrap-reverse"
+                  ]
+                }
+              ]
+            },
+            "float": {
+              "description": "Specifies how a box should be floated. It may be set for any element, but only applies to elements that generate boxes that are not absolutely positioned.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "inline-end",
+                    "inline-start",
+                    "left",
+                    "none",
+                    "right"
+                  ]
+                }
+              ]
+            },
+            "font": {
+              "description": "Shorthand property for setting 'font-style', 'font-variant', 'font-weight', 'font-size', 'line-height', and 'font-family', at the same place in the style sheet. The syntax of this property is based on a traditional typographical shorthand notation to set multiple properties related to fonts.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "100",
+                    "200",
+                    "300",
+                    "400",
+                    "500",
+                    "600",
+                    "700",
+                    "800",
+                    "900",
+                    "bold",
+                    "bolder",
+                    "caption",
+                    "icon",
+                    "italic",
+                    "large",
+                    "larger",
+                    "lighter",
+                    "medium",
+                    "menu",
+                    "message-box",
+                    "normal",
+                    "oblique",
+                    "small",
+                    "small-caps",
+                    "small-caption",
+                    "smaller",
+                    "status-bar",
+                    "x-large",
+                    "x-small",
+                    "xx-large",
+                    "xx-small"
+                  ]
+                }
+              ]
+            },
+            "font-family": {
+              "description": "Specifies a prioritized list of font family names or generic family names. A user agent iterates through the list of family names until it matches an available font that contains a glyph for the character to be rendered.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+                    "Arial, Helvetica, sans-serif",
+                    "Cambria, Cochin, Georgia, Times, 'Times New Roman', serif",
+                    "'Courier New', Courier, monospace",
+                    "cursive",
+                    "fantasy",
+                    "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
+                    "Georgia, 'Times New Roman', Times, serif",
+                    "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+                    "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
+                    "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif",
+                    "monospace",
+                    "sans-serif",
+                    "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                    "serif",
+                    "'Times New Roman', Times, serif",
+                    "'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif",
+                    "Verdana, Geneva, Tahoma, sans-serif"
+                  ]
+                }
+              ]
+            },
+            "font-size": {
+              "description": "Indicates the desired height of glyphs from the font. For scalable fonts, the font-size is a scale factor applied to the EM unit of the font. (Note that certain glyphs may bleed outside their EM box.) For non-scalable fonts, the font-size is converted into absolute units and matched against the declared font-size of the font, using the same absolute coordinate space for both of the matched values.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "large",
+                    "larger",
+                    "medium",
+                    "small",
+                    "smaller",
+                    "x-large",
+                    "x-small",
+                    "xx-large",
+                    "xx-small"
+                  ]
+                }
+              ]
+            },
+            "font-size-adjust": {
+              "description": "Preserves the readability of text when font fallback occurs by adjusting the font-size so that the x-height is the same irregardless of the font used.\r\nBrowsers: Firefox 40, Chrome 43, Opera 30",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "font-stretch": {
+              "description": "Selects a normal, condensed, or expanded face from a font family.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "condensed",
+                    "expanded",
+                    "extra-condensed",
+                    "extra-expanded",
+                    "narrower",
+                    "normal",
+                    "semi-condensed",
+                    "semi-expanded",
+                    "ultra-condensed",
+                    "ultra-expanded",
+                    "wider"
+                  ]
+                }
+              ]
+            },
+            "font-style": {
+              "description": "Allows italic or oblique faces to be selected. Italic forms are generally cursive in nature while oblique faces are typically sloped versions of the regular face.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "italic",
+                    "normal",
+                    "oblique"
+                  ]
+                }
+              ]
+            },
+            "font-variant": {
+              "description": "Specifies variant representations of the font",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "normal",
+                    "small-caps"
+                  ]
+                }
+              ]
+            },
+            "font-weight": {
+              "description": "Specifies weight of glyphs in the font, their degree of blackness or stroke thickness.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "100",
+                    "200",
+                    "300",
+                    "400",
+                    "500",
+                    "600",
+                    "700",
+                    "800",
+                    "900",
+                    "bold",
+                    "bolder",
+                    "lighter",
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "height": {
+              "description": "Specifies the height of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "fit-content",
+                    "max-content",
+                    "min-content"
+                  ]
+                }
+              ]
+            },
+            "justify-content": {
+              "description": "Aligns flex items along the main axis of the current line of the flex container.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "center",
+                    "start",
+                    "end",
+                    "left",
+                    "right",
+                    "safe",
+                    "unsafe",
+                    "stretch",
+                    "space-evenly",
+                    "flex-end",
+                    "flex-start",
+                    "space-around",
+                    "space-between",
+                    "baseline",
+                    "first baseline",
+                    "last baseline"
+                  ]
+                }
+              ]
+            },
+            "left": {
+              "description": "Specifies how far an absolutely positioned box's left margin edge is offset to the right of the left edge of the box's 'containing block'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "letter-spacing": {
+              "description": "Specifies the minimum, maximum, and optimal spacing between grapheme clusters.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "line-height": {
+              "description": "Determines the block-progression dimension of the text content area of an inline box.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "margin": {
+              "description": "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "margin-bottom": {
+              "description": "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "margin-left": {
+              "description": "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "margin-right": {
+              "description": "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "margin-top": {
+              "description": "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "max-height": {
+              "description": "Allows authors to constrain content height to a certain range.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "none",
+                    "fit-content",
+                    "max-content",
+                    "min-content"
+                  ]
+                }
+              ]
+            },
+            "max-width": {
+              "description": "Allows authors to constrain content width to a certain range.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "none",
+                    "fit-content",
+                    "max-content",
+                    "min-content"
+                  ]
+                }
+              ]
+            },
+            "min-height": {
+              "description": "Allows authors to constrain content height to a certain range.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "fit-content",
+                    "max-content",
+                    "min-content"
+                  ]
+                }
+              ]
+            },
+            "min-width": {
+              "description": "Allows authors to constrain content width to a certain range.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "fit-content",
+                    "max-content",
+                    "min-content"
+                  ]
+                }
+              ]
+            },
+            "opacity": {
+              "description": "Opacity of an element's text, where 1 is opaque and 0 is entirely transparent.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "outline": {
+              "description": "Shorthand property for 'outline-style', 'outline-width', and 'outline-color'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "invert"
+                  ]
+                }
+              ]
+            },
+            "outline-color": {
+              "description": "The color of the outline.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "invert"
+                  ]
+                }
+              ]
+            },
+            "outline-style": {
+              "description": "Style of the outline.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "outline-width": {
+              "description": "Width of the outline.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "overflow": {
+              "description": "Shorthand for setting 'overflow-x' and 'overflow-y'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "hidden",
+                    "-moz-hidden-unscrollable",
+                    "scroll",
+                    "visible"
+                  ]
+                }
+              ]
+            },
+            "overflow-x": {
+              "description": "Specifies the handling of overflow in the horizontal direction.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "hidden",
+                    "scroll",
+                    "visible"
+                  ]
+                }
+              ]
+            },
+            "overflow-y": {
+              "description": "Specifies the handling of overflow in the vertical direction.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "hidden",
+                    "scroll",
+                    "visible"
+                  ]
+                }
+              ]
+            },
+            "padding": {
+              "description": "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "padding-bottom": {
+              "description": "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "padding-left": {
+              "description": "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "padding-right": {
+              "description": "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "padding-top": {
+              "description": "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "position": {
+              "description": "",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "absolute",
+                    "fixed",
+                    "-ms-page",
+                    "relative",
+                    "static",
+                    "sticky",
+                    "-webkit-sticky"
+                  ]
+                }
+              ]
+            },
+            "right": {
+              "description": "Specifies how far an absolutely positioned box's right margin edge is offset to the left of the right edge of the box's 'containing block'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "table-layout": {
+              "description": "Controls the algorithm used to lay out the table cells, rows, and columns.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "fixed"
+                  ]
+                }
+              ]
+            },
+            "text-align": {
+              "description": "Describes how inline contents of a block are horizontally aligned if the contents do not completely fill the line box.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "center",
+                    "end",
+                    "justify",
+                    "left",
+                    "right",
+                    "start"
+                  ]
+                }
+              ]
+            },
+            "text-align-last": {
+              "description": "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.\r\nBrowsers: Edge 12, Firefox 49, Chrome 47, Internet Explorer, Opera",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "center",
+                    "justify",
+                    "left",
+                    "right"
+                  ]
+                }
+              ]
+            },
+            "text-decoration": {
+              "description": "Decorations applied to font used for an element's text.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "dashed",
+                    "dotted",
+                    "double",
+                    "line-through",
+                    "none",
+                    "overline",
+                    "solid",
+                    "underline",
+                    "wavy"
+                  ]
+                }
+              ]
+            },
+            "text-indent": {
+              "description": "Specifies the indentation applied to lines of inline content in a block. The indentation only affects the first line of inline content in the block unless the 'hanging' keyword is specified, in which case it affects all lines except the first.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            },
+            "text-justify": {
+              "description": "Selects the justification algorithm used when 'text-align' is set to 'justify'. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.\r\nBrowsers: Edge 14, Firefox 55, Chrome, Internet Explorer 11, Opera",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "distribute",
+                    "distribute-all-lines",
+                    "inter-cluster",
+                    "inter-ideograph",
+                    "inter-word",
+                    "kashida",
+                    "newspaper"
+                  ]
+                }
+              ]
+            },
+            "text-shadow": {
+              "description": "Enables shadow effects to be applied to the text of the element.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "none"
+                  ]
+                }
+              ]
+            },
+            "text-transform": {
+              "description": "Controls capitalization effects of an element’s text.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "capitalize",
+                    "lowercase",
+                    "none",
+                    "uppercase"
+                  ]
+                }
+              ]
+            },
+            "top": {
+              "description": "Specifies how far an absolutely positioned box's top margin edge is offset below the top edge of the box's 'containing block'.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "unicode-bidi": {
+              "description": "The level of embedding with respect to the bidirectional algorithm.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "bidi-override",
+                    "embed",
+                    "isolate",
+                    "isolate-override",
+                    "normal",
+                    "plaintext"
+                  ]
+                }
+              ]
+            },
+            "vertical-align": {
+              "description": "Affects the vertical positioning of the inline boxes generated by an inline-level element inside a line box.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "baseline",
+                    "bottom",
+                    "middle",
+                    "sub",
+                    "super",
+                    "text-bottom",
+                    "text-top",
+                    "top",
+                    "-webkit-baseline-middle"
+                  ]
+                }
+              ]
+            },
+            "visibility": {
+              "description": "Specifies whether the boxes generated by an element are rendered. Invisible boxes still affect layout (set the ‘display’ property to ‘none’ to suppress box generation altogether).",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "collapse",
+                    "hidden",
+                    "visible"
+                  ]
+                }
+              ]
+            },
+            "white-space": {
+              "description": "Shorthand property for the 'white-space-collapsing' and 'text-wrap' properties.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "normal",
+                    "nowrap",
+                    "pre",
+                    "pre-line",
+                    "pre-wrap"
+                  ]
+                }
+              ]
+            },
+            "width": {
+              "description": "Specifies the width of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto",
+                    "fit-content",
+                    "max-content",
+                    "min-content"
+                  ]
+                }
+              ]
+            },
+            "word-break": {
+              "description": "Specifies line break opportunities for non-CJK scripts.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "break-all",
+                    "keep-all",
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "word-spacing": {
+              "description": "Specifies additional spacing between “words”.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "word-wrap": {
+              "description": "Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "break-word",
+                    "normal"
+                  ]
+                }
+              ]
+            },
+            "z-index": {
+              "description": "For a positioned box, the 'z-index' property specifies the stack level of the box in the current stacking context and whether the box establishes a local stacking context.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                },
+                {
+                  "enum": [
+                    "auto"
+                  ]
+                }
+              ]
+            },
+            "hanging-punctuation": {
+              "description": "The hanging-punctuation CSS property specifies whether a punctuation mark should hang at the start or end of a line of text. Hanging punctuation may be placed outside the line box.\r\nBrowsers: Safary 10",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/styleStandard"
+                }
+              ]
+            }
+          }
+        },
+        "customRowAction": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/customAction"
+            }
+          ]
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Additional attributes to be added to elmType",
+          "properties": {
+            "href": {
+              "description": "Specifies the href attribute",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "rel": {
+              "description": "Specifies the relationship between the current document and the linked document, used primarily for <a> element types.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "enum": [
+                    "alternate",
+                    "author",
+                    "dns-prefetch",
+                    "bookmark",
+                    "external",
+                    "help",
+                    "license",
+                    "next",
+                    "nofollow",
+                    "noreferrer",
+                    "noopener",
+                    "prev",
+                    "search",
+                    "tag",
+                    "icon",
+                    "pingback",
+                    "preconnect",
+                    "prefetch",
+                    "preload",
+                    "stylesheet"
+                  ]
+                }
+              ]
+            },
+            "src": {
+              "description": "Specifies the src attribute",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "class": {
+              "description": "Specifies the class attribute",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "target": {
+              "description": "Specifies the target attribute, used primarily for <a> element types.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "enum": [
+                    "_blank",
+                    "_self",
+                    "_parent",
+                    "_top"
+                  ]
+                }
+              ]
+            },
+            "role": {
+              "description": "Specifies the role attribute, used accessibility.",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "enum": [
+                    "alert",
+                    "alertdialog",
+                    "application",
+                    "article",
+                    "button",
+                    "cell",
+                    "checkbox",
+                    "columnheader",
+                    "combobox",
+                    "complementary",
+                    "contentinfo",
+                    "definition",
+                    "dialog",
+                    "directory",
+                    "document",
+                    "feed",
+                    "figure",
+                    "form",
+                    "grid",
+                    "gridcell",
+                    "group",
+                    "heading",
+                    "img",
+                    "link",
+                    "list",
+                    "listbox",
+                    "listitem",
+                    "log",
+                    "main",
+                    "marquee",
+                    "math",
+                    "menu",
+                    "menubar",
+                    "menuitem",
+                    "menuitemcheckbox",
+                    "menuitemradio",
+                    "navigation",
+                    "none",
+                    "note",
+                    "option",
+                    "presentation",
+                    "progressbar",
+                    "radio",
+                    "radiogroup",
+                    "region",
+                    "row",
+                    "rowgroup",
+                    "rowheader",
+                    "scrollbar",
+                    "search",
+                    "searchbox",
+                    "separator",
+                    "slider",
+                    "spinbutton",
+                    "status",
+                    "switch",
+                    "tab",
+                    "table",
+                    "tablist",
+                    "tabpanel",
+                    "term",
+                    "textbox",
+                    "timer",
+                    "toolbar",
+                    "tooltip",
+                    "tree",
+                    "treegrid",
+                    "treeitem"
+                  ]
+                }
+              ]
+            },
+            "iconName": {
+              "description": "Specifies the Fabric icon to display before this element",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "enum": [
+                    "12PointStar",
+                    "6PointStar",
+                    "AADLogo",
+                    "Accept",
+                    "AccessibiltyChecker",
+                    "AccessLogo",
+                    "AccessLogoFill",
+                    "AccountActivity",
+                    "AccountBrowser",
+                    "AccountManagement",
+                    "Accounts",
+                    "ActionCenter",
+                    "ActivateOrders",
+                    "ActivityFeed",
+                    "Add",
+                    "AddBookmark",
+                    "AddEvent",
+                    "AddFavorite",
+                    "AddFavoriteFill",
+                    "AddFriend",
+                    "AddGroup",
+                    "AddHome",
+                    "AddIn",
+                    "AddLink",
+                    "AddNotes",
+                    "AddOnlineMeeting",
+                    "AddPhone",
+                    "AddReaction",
+                    "AddSpaceAfter",
+                    "AddSpaceBefore",
+                    "AddTo",
+                    "AddToShoppingList",
+                    "AddWork",
+                    "Admin",
+                    "AdminALogo32",
+                    "AdminALogoFill32",
+                    "AdminALogoInverse32",
+                    "AdminCLogoInverse32",
+                    "AdminDLogoInverse32",
+                    "AdminELogoInverse32",
+                    "AdminLLogoInverse32",
+                    "AdminMLogoInverse32",
+                    "AdminOLogoInverse32",
+                    "AdminPLogoInverse32",
+                    "AdminSLogoInverse32",
+                    "AdminYLogoInverse32",
+                    "Airplane",
+                    "AirplaneSolid",
+                    "AirTickets",
+                    "AlarmClock",
+                    "Album",
+                    "AlbumRemove",
+                    "AlertSettings",
+                    "AlertSolid",
+                    "AlignCenter",
+                    "AlignHorizontalCenter",
+                    "AlignHorizontalLeft",
+                    "AlignHorizontalRight",
+                    "AlignJustify",
+                    "AlignLeft",
+                    "AlignRight",
+                    "AlignVerticalBottom",
+                    "AlignVerticalCenter",
+                    "AlignVerticalTop",
+                    "AllApps",
+                    "AllAppsMirrored",
+                    "AllCurrency",
+                    "AltText",
+                    "AnalyticsLogo",
+                    "AnalyticsQuery",
+                    "AnalyticsReport",
+                    "AnalyticsView",
+                    "AnchorLock",
+                    "Annotation",
+                    "AppIconDefault",
+                    "AppIconDefaultAdd",
+                    "AppIconDefaultList",
+                    "Archive",
+                    "ArchiveUndo",
+                    "AreaChart",
+                    "ArrangeBringForward",
+                    "ArrangeBringToFront",
+                    "ArrangeByFrom",
+                    "ArrangeSendBackward",
+                    "ArrangeSendToBack",
+                    "Arrivals",
+                    "ArrowDownRight8",
+                    "ArrowDownRightMirrored8",
+                    "ArrowTallDownLeft",
+                    "ArrowTallDownRight",
+                    "ArrowTallUpLeft",
+                    "ArrowTallUpRight",
+                    "ArrowUpRight",
+                    "ArrowUpRight8",
+                    "ArrowUpRightMirrored8",
+                    "Articles",
+                    "Ascending",
+                    "AspectRatio",
+                    "AssessmentGroup",
+                    "AssessmentGroupTemplate",
+                    "AssetLibrary",
+                    "Assign",
+                    "Asterisk",
+                    "AsteriskSolid",
+                    "ATPLogo",
+                    "Attach",
+                    "AustralianRules",
+                    "AuthenticatorApp",
+                    "AutoDeploySettings",
+                    "AutoEnhanceOff",
+                    "AutoEnhanceOn",
+                    "AutoFillTemplate",
+                    "AutoFitContents",
+                    "AutoFitWindow",
+                    "AutoHeight",
+                    "AutomateFlow",
+                    "AutoRacing",
+                    "AwayStatus",
+                    "AzureAPIManagement",
+                    "AzureKeyVault",
+                    "AzureLogo",
+                    "AzureServiceEndpoint",
+                    "Back",
+                    "BackgroundColor",
+                    "Backlog",
+                    "BacklogBoard",
+                    "BacklogList",
+                    "BackToWindow",
+                    "Badge",
+                    "Balloons",
+                    "Bank",
+                    "BankSolid",
+                    "BarChart4",
+                    "BarChartHorizontal",
+                    "BarChartVertical",
+                    "BarChartVerticalEdit",
+                    "BarChartVerticalFill",
+                    "BarChartVerticalFilter",
+                    "BarChartVerticalFilterSolid",
+                    "Baseball",
+                    "BeerMug",
+                    "BIDashboard",
+                    "BidiLtr",
+                    "BidiRtl",
+                    "BingLogo",
+                    "BirthdayCake",
+                    "BlockContact",
+                    "Blocked",
+                    "Blocked12",
+                    "Blocked2",
+                    "Blocked2Solid",
+                    "BlockedSite",
+                    "BlockedSiteSolid12",
+                    "BlockedSolid",
+                    "Blog",
+                    "BlowingSnow",
+                    "Blur",
+                    "Boards",
+                    "Bold",
+                    "BookAnswers",
+                    "BookingsLogo",
+                    "BookmarkReport",
+                    "Bookmarks",
+                    "BookmarksMirrored",
+                    "BorderDash",
+                    "BorderDot",
+                    "BoxAdditionSolid",
+                    "BoxCheckmarkSolid",
+                    "BoxMultiplySolid",
+                    "BoxPlaySolid",
+                    "BoxSubtractSolid",
+                    "BranchCommit",
+                    "BranchCompare",
+                    "BranchFork",
+                    "BranchFork2",
+                    "BranchLocked",
+                    "BranchMerge",
+                    "BranchPullRequest",
+                    "BranchSearch",
+                    "BranchShelveset",
+                    "Breadcrumb",
+                    "Breakfast",
+                    "Brightness",
+                    "Broom",
+                    "BrowserScreenShot",
+                    "BrowserTab",
+                    "BrowserTabScreenshot",
+                    "Brunch",
+                    "Brush",
+                    "BucketColor",
+                    "BucketColorFill",
+                    "BufferTimeAfter",
+                    "BufferTimeBefore",
+                    "BufferTimeBoth",
+                    "Bug",
+                    "BugBlock",
+                    "BugSolid",
+                    "BugSync",
+                    "Build",
+                    "BuildDefinition",
+                    "BuildIssue",
+                    "BuildQueue",
+                    "BuildQueueNew",
+                    "BulkUpload",
+                    "BulletedList",
+                    "BulletedList2",
+                    "BulletedList2Mirrored",
+                    "BulletedListBullet",
+                    "BulletedListBulletMirrored",
+                    "BulletedListMirrored",
+                    "BulletedListText",
+                    "BulletedListTextMirrored",
+                    "BulletedTreeList",
+                    "Bullseye",
+                    "BullseyeTarget",
+                    "BullseyeTargetEdit",
+                    "Bus",
+                    "BusinessCenterLogo",
+                    "BusinessHoursSign",
+                    "BusSolid",
+                    "ButtonControl",
+                    "Cafe",
+                    "Cake",
+                    "Calculator",
+                    "CalculatorAddition",
+                    "CalculatorDelta",
+                    "CalculatorEqualTo",
+                    "CalculatorMultiply",
+                    "CalculatorNotEqualTo",
+                    "CalculatorPercentage",
+                    "CalculatorSubtract",
+                    "Calendar",
+                    "CalendarAgenda",
+                    "CalendarDay",
+                    "CalendarMirrored",
+                    "CalendarReply",
+                    "CalendarSettings",
+                    "CalendarSettingsMirrored",
+                    "CalendarWeek",
+                    "CalendarWorkWeek",
+                    "CalendarYear",
+                    "Calories",
+                    "CaloriesAdd",
+                    "Camera",
+                    "CampaignTemplate",
+                    "Cancel",
+                    "CannedChat",
+                    "Car",
+                    "CaretBottomLeftCenter8",
+                    "CaretBottomLeftSolid8",
+                    "CaretBottomRightCenter8",
+                    "CaretBottomRightSolid8",
+                    "CaretDown8",
+                    "CaretDownSolid8",
+                    "CaretHollow",
+                    "CaretHollowMirrored",
+                    "CaretLeft8",
+                    "CaretLeftSolid8",
+                    "CaretRight",
+                    "CaretRight8",
+                    "CaretRightSolid8",
+                    "CaretSolid",
+                    "CaretSolid16",
+                    "CaretSolidDown",
+                    "CaretSolidLeft",
+                    "CaretSolidMirrored",
+                    "CaretSolidRight",
+                    "CaretSolidUp",
+                    "CaretTopLeftCenter8",
+                    "CaretTopLeftSolid8",
+                    "CaretTopRightCenter8",
+                    "CaretTopRightSolid8",
+                    "CaretUp8",
+                    "CaretUpSolid8",
+                    "Cat",
+                    "CellPhone",
+                    "Certificate",
+                    "CertifiedDatabase",
+                    "ChangeEntitlements",
+                    "Chart",
+                    "ChartSeries",
+                    "ChartTemplate",
+                    "ChartXAngle",
+                    "ChartYAngle",
+                    "Chat",
+                    "ChatBot",
+                    "ChatInviteFriend",
+                    "ChatSolid",
+                    "Checkbox",
+                    "CheckboxComposite",
+                    "CheckboxCompositeReversed",
+                    "CheckboxFill",
+                    "CheckboxIndeterminate",
+                    "CheckedOutByOther12",
+                    "CheckedOutByYou12",
+                    "CheckList",
+                    "CheckListCheck",
+                    "CheckListCheckMirrored",
+                    "CheckListText",
+                    "CheckListTextMirrored",
+                    "CheckMark",
+                    "ChevronDown",
+                    "ChevronDownEnd6",
+                    "ChevronDownMed",
+                    "ChevronDownSmall",
+                    "ChevronFold10",
+                    "ChevronLeft",
+                    "ChevronLeftEnd6",
+                    "ChevronLeftMed",
+                    "ChevronLeftSmall",
+                    "ChevronRight",
+                    "ChevronRightEnd6",
+                    "ChevronRightMed",
+                    "ChevronRightSmall",
+                    "ChevronUnfold10",
+                    "ChevronUp",
+                    "ChevronUpEnd6",
+                    "ChevronUpMed",
+                    "ChevronUpSmall",
+                    "Childof",
+                    "Chopsticks",
+                    "ChromeBack",
+                    "ChromeBackMirrored",
+                    "ChromeClose",
+                    "ChromeFullScreen",
+                    "ChromeMinimize",
+                    "ChromeRestore",
+                    "CircleAddition",
+                    "CircleAdditionSolid",
+                    "CircleFill",
+                    "CircleHalfFull",
+                    "CirclePause",
+                    "CirclePauseSolid",
+                    "CirclePlus",
+                    "CircleRing",
+                    "CircleShape",
+                    "CircleShapeSolid",
+                    "CircleStop",
+                    "CircleStopSolid",
+                    "CityNext",
+                    "CityNext2",
+                    "ClassNotebookLogo16",
+                    "ClassNotebookLogo32",
+                    "ClassNotebookLogoFill16",
+                    "ClassNotebookLogoFill32",
+                    "ClassNotebookLogoInverse",
+                    "ClassNotebookLogoInverse16",
+                    "ClassNotebookLogoInverse32",
+                    "ClassroomLogo",
+                    "Clear",
+                    "ClearFilter",
+                    "ClearFormatting",
+                    "ClearFormattingA",
+                    "ClearFormattingEraser",
+                    "ClearNight",
+                    "ClearSelection",
+                    "ClearSelectionMirrored",
+                    "ClipboardList",
+                    "ClipboardListMirrored",
+                    "ClipboardSolid",
+                    "Clock",
+                    "CloneToDesktop",
+                    "ClosedCaption",
+                    "ClosePane",
+                    "ClosePaneMirrored",
+                    "Cloud",
+                    "CloudAdd",
+                    "CloudDownload",
+                    "CloudImportExport",
+                    "CloudUpload",
+                    "CloudWeather",
+                    "Cloudy",
+                    "Cocktails",
+                    "Code",
+                    "CodeEdit",
+                    "Coffee",
+                    "CoffeeScript",
+                    "CollapseContent",
+                    "CollapseContentSingle",
+                    "CollapseMenu",
+                    "CollegeFootball",
+                    "CollegeHoops",
+                    "Color",
+                    "ColorSolid",
+                    "ColumnLeftTwoThirds",
+                    "ColumnLeftTwoThirdsEdit",
+                    "ColumnOptions",
+                    "ColumnRightTwoThirds",
+                    "ColumnRightTwoThirdsEdit",
+                    "ColumnVerticalSection",
+                    "ColumnVerticalSectionEdit",
+                    "Combine",
+                    "Combobox",
+                    "CommandPrompt",
+                    "Comment",
+                    "CommentActive",
+                    "CommentAdd",
+                    "CommentNext",
+                    "CommentPrevious",
+                    "CommentSolid",
+                    "CommentUrgent",
+                    "Commitments",
+                    "CommonDataServiceCDS",
+                    "Communications",
+                    "CompanyDirectory",
+                    "CompanyDirectoryMirrored",
+                    "Compare",
+                    "CompareUneven",
+                    "CompassNW",
+                    "Completed",
+                    "CompletedSolid",
+                    "ComplianceAudit",
+                    "ConfigurationSolid",
+                    "ConnectContacts",
+                    "ConnectVirtualMachine",
+                    "ConstructionCone",
+                    "ConstructionConeSolid",
+                    "Contact",
+                    "ContactCard",
+                    "ContactCardSettings",
+                    "ContactCardSettingsMirrored",
+                    "ContactHeart",
+                    "ContactInfo",
+                    "ContactLink",
+                    "ContactList",
+                    "ContactLock",
+                    "ContentFeed",
+                    "ContentSettings",
+                    "ContextMenu",
+                    "Contrast",
+                    "Copy",
+                    "CortanaLogoBeckonInner",
+                    "CortanaLogoBeckonOuter",
+                    "CortanaLogoInner",
+                    "CortanaLogoOuter",
+                    "CortanaLogoReadyInner",
+                    "CortanaLogoReadyOuter",
+                    "Cotton",
+                    "Coupon",
+                    "CPlusPlus",
+                    "CPlusPlusLanguage",
+                    "CreateMailRule",
+                    "Cricket",
+                    "CRMProcesses",
+                    "CRMReport",
+                    "CRMServices",
+                    "Crop",
+                    "Crown",
+                    "CrownSolid",
+                    "CSharp",
+                    "CSharpLanguage",
+                    "CSS",
+                    "CubeShape",
+                    "CubeShapeSolid",
+                    "CustomizeToolbar",
+                    "CustomList",
+                    "CustomListMirrored",
+                    "Cut",
+                    "Cycling",
+                    "D365CoreHR",
+                    "D365CustomerInsights",
+                    "D365ProjectOperations",
+                    "D365TalentInsight",
+                    "D365TalentLearn",
+                    "DashboardAdd",
+                    "Database",
+                    "DatabaseSync",
+                    "DataConnectionLibrary",
+                    "Dataflows",
+                    "DataflowsLink",
+                    "DataManagementSettings",
+                    "DateTime",
+                    "DateTime12",
+                    "DateTime2",
+                    "DateTimeMirrored",
+                    "DeactivateOrders",
+                    "Decimals",
+                    "DecisionSolid",
+                    "DeclineCall",
+                    "DecreaseIndent",
+                    "DecreaseIndentArrow",
+                    "DecreaseIndentArrowMirrored",
+                    "DecreaseIndentLegacy",
+                    "DecreaseIndentMirrored",
+                    "DecreaseIndentText",
+                    "DecreaseIndentTextMirrored",
+                    "DefaultRatio",
+                    "DefectSolid",
+                    "DefenderTVM",
+                    "Delete",
+                    "DeleteColumns",
+                    "DeleteRows",
+                    "DeleteRowsMirrored",
+                    "DeleteTable",
+                    "DeliveryTruck",
+                    "DelveAnalytics",
+                    "DelveAnalyticsLogo",
+                    "DelveLogo",
+                    "DelveLogoFill",
+                    "DelveLogoInverse",
+                    "DependencyAdd",
+                    "DependencyRemove",
+                    "Deploy",
+                    "Descending",
+                    "Design",
+                    "DesktopScreenshot",
+                    "DeveloperTools",
+                    "DeviceBug",
+                    "DeviceOff",
+                    "DeviceRun",
+                    "Devices2",
+                    "Devices3",
+                    "Devices4",
+                    "Diagnostic",
+                    "DiagnosticDataBarTooltip",
+                    "Dialpad",
+                    "Diamond",
+                    "DiamondSolid",
+                    "Dictionary",
+                    "DictionaryRemove",
+                    "DietPlanNotebook",
+                    "DiffInline",
+                    "DiffSideBySide",
+                    "DisableUpdates",
+                    "DisconnectVirtualMachine",
+                    "Dislike",
+                    "DislikeSolid",
+                    "DistributeDown",
+                    "DockLeft",
+                    "DockLeftMirrored",
+                    "DockRight",
+                    "DocLibrary",
+                    "DocsLogoInverse",
+                    "Document",
+                    "DocumentApproval",
+                    "Documentation",
+                    "DocumentManagement",
+                    "DocumentReply",
+                    "DocumentSearch",
+                    "DocumentSet",
+                    "DOM",
+                    "DonutChart",
+                    "Door",
+                    "DoubleBookmark",
+                    "DoubleChevronDown",
+                    "DoubleChevronDown12",
+                    "DoubleChevronDown8",
+                    "DoubleChevronLeft",
+                    "DoubleChevronLeft12",
+                    "DoubleChevronLeft8",
+                    "DoubleChevronLeftMed",
+                    "DoubleChevronLeftMedMirrored",
+                    "DoubleChevronRight",
+                    "DoubleChevronRight12",
+                    "DoubleChevronRight8",
+                    "DoubleChevronUp",
+                    "DoubleChevronUp12",
+                    "DoubleChevronUp8",
+                    "DoubleColumn",
+                    "DoubleColumnEdit",
+                    "DoubleDownArrow",
+                    "Down",
+                    "Download",
+                    "DownloadDocument",
+                    "DragObject",
+                    "DrillDown",
+                    "DrillDownSolid",
+                    "DrillExpand",
+                    "DrillShow",
+                    "DrillThrough",
+                    "DriverOff",
+                    "DRM",
+                    "Drop",
+                    "Dropdown",
+                    "DropShape",
+                    "DropShapeSolid",
+                    "DuplicateRow",
+                    "Duststorm",
+                    "Dynamics365Logo",
+                    "DynamicSMBLogo",
+                    "EaseOfAccess",
+                    "EatDrink",
+                    "EdgeOldLogo",
+                    "eDiscovery",
+                    "Edit",
+                    "EditContact",
+                    "EditCreate",
+                    "EditMail",
+                    "EditMirrored",
+                    "EditNote",
+                    "EditPhoto",
+                    "EditSolid12",
+                    "EditSolidMirrored12",
+                    "EditStyle",
+                    "Education",
+                    "Ellipse",
+                    "Embed",
+                    "EMI",
+                    "Emoji",
+                    "Emoji2",
+                    "EmojiDisappointed",
+                    "EmojiNeutral",
+                    "EmojiTabSymbols",
+                    "EmptyRecycleBin",
+                    "Encryption",
+                    "EndPointSolid",
+                    "EngineeringGroup",
+                    "EntitlementPolicy",
+                    "EntitlementRedemption",
+                    "EntryDecline",
+                    "EntryView",
+                    "Equalizer",
+                    "EraseTool",
+                    "Error",
+                    "ErrorBadge",
+                    "Event",
+                    "Event12",
+                    "EventAccepted",
+                    "EventDate",
+                    "EventDateMissed12",
+                    "EventDeclined",
+                    "EventInfo",
+                    "EventTentative",
+                    "EventTentativeMirrored",
+                    "EventToDoLogo",
+                    "ExcelDocument",
+                    "ExcelLogo",
+                    "ExcelLogo16",
+                    "ExcelLogoFill",
+                    "ExcelLogoFill16",
+                    "ExcelLogoInverse",
+                    "ExcelLogoInverse16",
+                    "ExchangeLogo",
+                    "ExchangeLogoFill",
+                    "ExchangeLogoInverse",
+                    "ExerciseTracker",
+                    "ExpandMenu",
+                    "ExploreContent",
+                    "ExploreContentSingle",
+                    "ExploreData",
+                    "Export",
+                    "ExportMirrored",
+                    "ExternalBuild",
+                    "ExternalTFVC",
+                    "ExternalXAML",
+                    "Eyedropper",
+                    "EyeShadow",
+                    "F12DevTools",
+                    "FabricAssetLibrary",
+                    "FabricDataConnectionLibrary",
+                    "FabricDocLibrary",
+                    "FabricFolder",
+                    "FabricFolderConfirm",
+                    "FabricFolderFill",
+                    "FabricFolderSearch",
+                    "FabricFolderUpload",
+                    "FabricFormLibrary",
+                    "FabricFormLibraryMirrored",
+                    "FabricMovetoFolder",
+                    "FabricNetworkFolder",
+                    "FabricNewFolder",
+                    "FabricOpenFolderHorizontal",
+                    "FabricPictureLibrary",
+                    "FabricPublicFolder",
+                    "FabricReportLibrary",
+                    "FabricReportLibraryMirrored",
+                    "FabricSyncFolder",
+                    "FabricTextHighlight",
+                    "FabricTextHighlightComposite",
+                    "FabricUnsyncFolder",
+                    "FabricUserFolder",
+                    "Family",
+                    "FangBody",
+                    "FastForward",
+                    "FastMode",
+                    "Favicon",
+                    "FavoriteList",
+                    "FavoriteStar",
+                    "FavoriteStarFill",
+                    "Fax",
+                    "Feedback",
+                    "FeedbackRequestMirroredSolid",
+                    "FeedbackRequestSolid",
+                    "FeedbackResponseSolid",
+                    "Ferry",
+                    "FerrySolid",
+                    "FieldChanged",
+                    "FieldEmpty",
+                    "FieldFilled",
+                    "FieldNotChanged",
+                    "FieldReadOnly",
+                    "FieldRequired",
+                    "FileASPX",
+                    "FileBug",
+                    "FileCode",
+                    "FileComment",
+                    "FileCSS",
+                    "FileHTML",
+                    "FileImage",
+                    "FileJAVA",
+                    "FileLess",
+                    "FileOff",
+                    "FilePDB",
+                    "FileRequest",
+                    "FileSass",
+                    "FileSQL",
+                    "FileSymlink",
+                    "FileTemplate",
+                    "FileTypeSolution",
+                    "FileYML",
+                    "Filter",
+                    "FilterAscending",
+                    "FilterDescending",
+                    "Filters",
+                    "FilterSettings",
+                    "FilterSolid",
+                    "FiltersSolid",
+                    "Financial",
+                    "FinancialMirroredSolid",
+                    "FinancialSolid",
+                    "Fingerprint",
+                    "FitPage",
+                    "FitWidth",
+                    "FiveTileGrid",
+                    "FixedAssetManagement",
+                    "FixedColumnWidth",
+                    "Flag",
+                    "FlameSolid",
+                    "FlashAuto",
+                    "Flashlight",
+                    "FlashOff",
+                    "FlickDown",
+                    "FlickLeft",
+                    "FlickRight",
+                    "FlickUp",
+                    "Flow",
+                    "FlowChart",
+                    "Flower",
+                    "FocalPoint",
+                    "Focus",
+                    "FocusView",
+                    "Fog",
+                    "Folder",
+                    "FolderFill",
+                    "FolderHorizontal",
+                    "FolderList",
+                    "FolderListMirrored",
+                    "FolderOpen",
+                    "FolderQuery",
+                    "FolderSearch",
+                    "FollowUser",
+                    "Font",
+                    "FontColor",
+                    "FontColorA",
+                    "FontColorSwatch",
+                    "FontDecrease",
+                    "FontIncrease",
+                    "FontSize",
+                    "FontSize2",
+                    "Footer",
+                    "FormatPainter",
+                    "FormLibrary",
+                    "FormLibraryMirrored",
+                    "Forum",
+                    "Forward",
+                    "ForwardEvent",
+                    "Freezing",
+                    "Frigid",
+                    "FrontCamera",
+                    "FSharp",
+                    "FSharpLanguage",
+                    "FullCircleMask",
+                    "FullHistory",
+                    "FullScreen",
+                    "FullView",
+                    "FullWidth",
+                    "FullWidthEdit",
+                    "FunctionalManagerDashboard",
+                    "FunnelChart",
+                    "GallatinLogo",
+                    "Game",
+                    "Generate",
+                    "GenericScan",
+                    "GenericScanFilled",
+                    "GIF",
+                    "Giftbox",
+                    "GiftboxOpen",
+                    "GiftBoxSolid",
+                    "GiftCard",
+                    "GitGraph",
+                    "Glasses",
+                    "Glimmer",
+                    "GlobalNavButton",
+                    "GlobalNavButtonActive",
+                    "Globe",
+                    "Globe2",
+                    "GlobeFavorite",
+                    "Go",
+                    "Golf",
+                    "GoMirrored",
+                    "GoToDashboard",
+                    "GotoToday",
+                    "GreetingCard",
+                    "GridViewLarge",
+                    "GridViewMedium",
+                    "GridViewSmall",
+                    "GripperBarHorizontal",
+                    "GripperBarVertical",
+                    "GripperDotsVertical",
+                    "GripperTool",
+                    "Group",
+                    "GroupedAscending",
+                    "GroupedDescending",
+                    "GroupedList",
+                    "GroupList",
+                    "GroupObject",
+                    "GUID",
+                    "Guitar",
+                    "HailDay",
+                    "HailNight",
+                    "HalfAlpha",
+                    "HalfCircle",
+                    "HandsFree",
+                    "Handwriting",
+                    "HardDrive",
+                    "HardDriveGroup",
+                    "HardDriveLock",
+                    "HardDriveUnlock",
+                    "Header",
+                    "Header1",
+                    "Header2",
+                    "Header3",
+                    "Header4",
+                    "Headset",
+                    "HeadsetSolid",
+                    "Health",
+                    "HealthRefresh",
+                    "HealthSolid",
+                    "Heart",
+                    "HeartBroken",
+                    "HeartFill",
+                    "Help",
+                    "HelpMirrored",
+                    "HexaditeInvestigation",
+                    "HexaditeInvestigationCancel",
+                    "HexaditeInvestigationSemiAuto",
+                    "Hexagon",
+                    "Hide",
+                    "Hide2",
+                    "Hide3",
+                    "Highlight",
+                    "HighlightMappedShapes",
+                    "HintText",
+                    "HistoricalWeather",
+                    "History",
+                    "Home",
+                    "HomeDropdown",
+                    "HomeGroup",
+                    "HomeSolid",
+                    "HomeVerify",
+                    "HorizontalDistributeCenter",
+                    "HorizontalTabKey",
+                    "Hospital",
+                    "Hotel",
+                    "HourGlass",
+                    "IconSetsFlag",
+                    "IDBadge",
+                    "IgnoreConversation",
+                    "ImageCrosshair",
+                    "ImageDiff",
+                    "ImageInAR",
+                    "ImagePixel",
+                    "ImageSearch",
+                    "Import",
+                    "ImportAllMirrored",
+                    "Important",
+                    "ImportMirrored",
+                    "Inbox",
+                    "InboxCheck",
+                    "IncidentTriangle",
+                    "IncomingCall",
+                    "IncreaseIndent",
+                    "IncreaseIndentArrow",
+                    "IncreaseIndentArrowMirrored",
+                    "IncreaseIndentHanging",
+                    "IncreaseIndentHangingMirrored",
+                    "IncreaseIndentLegacy",
+                    "IncreaseIndentMirrored",
+                    "IncreaseIndentText",
+                    "IncreaseIndentTextMirrored",
+                    "IndentFirstLine",
+                    "Info",
+                    "Info2",
+                    "InformationBarriers",
+                    "InfoSolid",
+                    "InkingTool",
+                    "InputAddress",
+                    "Insert",
+                    "InsertColumnsLeft",
+                    "InsertColumnsRight",
+                    "InsertRowsAbove",
+                    "InsertRowsBelow",
+                    "InsertSignatureLine",
+                    "InsertTextBox",
+                    "Insights",
+                    "Installation",
+                    "InstallToDrive",
+                    "InternalInvestigation",
+                    "InternetSharing",
+                    "IRMForward",
+                    "IRMForwardMirrored",
+                    "IRMReply",
+                    "IRMReplyMirrored",
+                    "IssueSolid",
+                    "IssueTracking",
+                    "IssueTrackingMirrored",
+                    "Italic",
+                    "JavaScriptLanguage",
+                    "JoinOnlineMeeting",
+                    "JS",
+                    "KaizalaLogo",
+                    "KeyboardClassic",
+                    "KeyPhraseExtraction",
+                    "KnowledgeArticle",
+                    "Label",
+                    "LadybugSolid",
+                    "Lamp",
+                    "LandscapeOrientation",
+                    "LaptopSecure",
+                    "LaptopSelected",
+                    "LargeGrid",
+                    "LearningTools",
+                    "Leave",
+                    "LeaveUser",
+                    "Library",
+                    "Lifesaver",
+                    "LifesaverLock",
+                    "Light",
+                    "Lightbulb",
+                    "LightningBolt",
+                    "LightWeight",
+                    "Like",
+                    "LikeSolid",
+                    "Line",
+                    "LineChart",
+                    "LineSpacing",
+                    "LineStyle",
+                    "LineThickness",
+                    "Link",
+                    "Link12",
+                    "LinkedDatabase",
+                    "LinkedInLogo",
+                    "List",
+                    "ListMirrored",
+                    "LiveSite",
+                    "LocaleLanguage",
+                    "Location",
+                    "LocationCircle",
+                    "LocationDot",
+                    "LocationFill",
+                    "LocationOutline",
+                    "Lock",
+                    "Lock12",
+                    "LockSolid",
+                    "LogRemove",
+                    "LookupEntities",
+                    "LowerBrightness",
+                    "LyncLogo",
+                    "M365InvoicingLogo",
+                    "MachineLearning",
+                    "Mail",
+                    "MailAlert",
+                    "MailAttached",
+                    "MailCheck",
+                    "MailFill",
+                    "MailForward",
+                    "MailForwardMirrored",
+                    "MailLowImportance",
+                    "MailOptions",
+                    "MailPause",
+                    "MailReminder",
+                    "MailRepeat",
+                    "MailReply",
+                    "MailReplyAll",
+                    "MailReplyAllMirrored",
+                    "MailReplyMirrored",
+                    "MailSchedule",
+                    "MailSolid",
+                    "MailTentative",
+                    "MailTentativeMirrored",
+                    "MailUndelivered",
+                    "ManagerSelfService",
+                    "Manufacturing",
+                    "MapDirections",
+                    "MapLayers",
+                    "MapPin",
+                    "MapPin12",
+                    "MapPinSolid",
+                    "MarkAsProtected",
+                    "MarkDownLanguage",
+                    "Market",
+                    "MarketDown",
+                    "MasterDatabase",
+                    "MaximumValue",
+                    "Medal",
+                    "MedalSolid",
+                    "Media",
+                    "MediaAdd",
+                    "Medical",
+                    "Megaphone",
+                    "MegaphoneSolid",
+                    "Memo",
+                    "Merge",
+                    "MergeDuplicate",
+                    "Message",
+                    "MessageFill",
+                    "MessageFriendRequest",
+                    "MicOff",
+                    "MicOff2",
+                    "Microphone",
+                    "MicrosoftFlowLogo",
+                    "MicrosoftStaffhubLogo",
+                    "MicrosoftTranslatorLogo",
+                    "MicrosoftTranslatorLogoBlue",
+                    "MicrosoftTranslatorLogoGreen",
+                    "MiniContract",
+                    "MiniContractMirrored",
+                    "MiniExpand",
+                    "MiniExpandMirrored",
+                    "MiniLink",
+                    "MinimumValue",
+                    "MobileReport",
+                    "MobileSelected",
+                    "ModelingView",
+                    "Money",
+                    "More",
+                    "MoreSports",
+                    "MoreVertical",
+                    "MountainClimbing",
+                    "Move",
+                    "Movers",
+                    "MoveToFolder",
+                    "MSNLogo",
+                    "MSNVideos",
+                    "MSNVideosSolid",
+                    "MultiSelect",
+                    "MultiSelectMirrored",
+                    "MusicInCollection",
+                    "MusicInCollectionFill",
+                    "MusicNote",
+                    "MuteChat",
+                    "MyMoviesTV",
+                    "MyNetwork",
+                    "Nav2DMapView",
+                    "NavigateBack",
+                    "NavigateBackMirrored",
+                    "NavigateExternalInline",
+                    "NavigateForward",
+                    "NavigateForwardMirrored",
+                    "NavigationFlipper",
+                    "NetworkTower",
+                    "NewAnalyticsQuery",
+                    "NewFolder",
+                    "NewMail",
+                    "News",
+                    "NewsSearch",
+                    "NewTeamProject",
+                    "Next",
+                    "NormalWeight",
+                    "NoteForward",
+                    "NotePinned",
+                    "NoteReply",
+                    "NotExecuted",
+                    "NotImpactedSolid",
+                    "NugetLogo",
+                    "NUIFace",
+                    "NumberedList",
+                    "NumberedListMirrored",
+                    "NumberedListNumber",
+                    "NumberedListNumberMirrored",
+                    "NumberedListText",
+                    "NumberedListTextMirrored",
+                    "NumberField",
+                    "NumberSequence",
+                    "NumberSymbol",
+                    "Octagon",
+                    "OEM",
+                    "OfficeAddinsLogo",
+                    "OfficeAssistantLogo",
+                    "OfficeChat",
+                    "OfficeChatSolid",
+                    "OfficeFormsLogo",
+                    "OfficeFormsLogo16",
+                    "OfficeFormsLogo24",
+                    "OfficeFormsLogoFill",
+                    "OfficeFormsLogoFill16",
+                    "OfficeFormsLogoFill24",
+                    "OfficeFormsLogoInverse",
+                    "OfficeFormsLogoInverse16",
+                    "OfficeFormsLogoInverse24",
+                    "OfficeLogo",
+                    "OfficeStoreLogo",
+                    "OfficeVideoLogo",
+                    "OfficeVideoLogoFill",
+                    "OfficeVideoLogoInverse",
+                    "OfflineOneDriveParachute",
+                    "OfflineOneDriveParachuteDisabled",
+                    "OfflineStorage",
+                    "OfflineStorageSolid",
+                    "Onboarding",
+                    "OneDriveAdd",
+                    "OneDriveFolder16",
+                    "OneDriveLogo",
+                    "OneNoteEduLogoInverse",
+                    "OneNoteLogo",
+                    "OneNoteLogo16",
+                    "OneNoteLogoFill",
+                    "OneNoteLogoFill16",
+                    "OneNoteLogoInverse",
+                    "OneNoteLogoInverse16",
+                    "OpenEnrollment",
+                    "OpenFile",
+                    "OpenFolderHorizontal",
+                    "OpenInNewTab",
+                    "OpenInNewWindow",
+                    "OpenPane",
+                    "OpenPaneMirrored",
+                    "OpenSource",
+                    "OpenWith",
+                    "OpenWithMirrored",
+                    "Org",
+                    "Orientation",
+                    "Orientation2",
+                    "OutlookLogo",
+                    "OutlookLogo16",
+                    "OutlookLogoFill",
+                    "OutlookLogoFill16",
+                    "OutlookLogoInverse",
+                    "OutlookLogoInverse16",
+                    "OutOfOffice",
+                    "Package",
+                    "Packages",
+                    "Padding",
+                    "PaddingBottom",
+                    "PaddingLeft",
+                    "PaddingRight",
+                    "PaddingTop",
+                    "Page",
+                    "PageAdd",
+                    "PageArrowRight",
+                    "PageCheckedin",
+                    "PageCheckedOut",
+                    "PageData",
+                    "PageEdit",
+                    "PageHeader",
+                    "PageHeaderEdit",
+                    "PageLeft",
+                    "PageLink",
+                    "PageList",
+                    "PageListFilter",
+                    "PageListMirroredSolid",
+                    "PageListSolid",
+                    "PageLock",
+                    "PageRemove",
+                    "PageRight",
+                    "PageShared",
+                    "PageSolid",
+                    "PanoIndicator",
+                    "Parachute",
+                    "ParachuteSolid",
+                    "Parameter",
+                    "ParkingLocation",
+                    "ParkingLocationMirrored",
+                    "ParkingMirroredSolid",
+                    "ParkingSolid",
+                    "PartlyCloudyDay",
+                    "PartlyCloudyNight",
+                    "PartyLeader",
+                    "PassiveAuthentication",
+                    "PasswordField",
+                    "Paste",
+                    "PasteAsCode",
+                    "PasteAsText",
+                    "Pause",
+                    "PaymentCard",
+                    "PC1",
+                    "PDF",
+                    "PencilReply",
+                    "Pentagon",
+                    "PenWorkspace",
+                    "People",
+                    "PeopleAdd",
+                    "PeopleAlert",
+                    "PeopleBlock",
+                    "PeoplePause",
+                    "PeopleRepeat",
+                    "Permissions",
+                    "PermissionsSolid",
+                    "Personalize",
+                    "Phishing",
+                    "Phone",
+                    "Photo",
+                    "Photo2",
+                    "Photo2Add",
+                    "Photo2Fill",
+                    "Photo2Remove",
+                    "PhotoCollection",
+                    "PhotoError",
+                    "PhotoVideoMedia",
+                    "Picture",
+                    "PictureCenter",
+                    "PictureFill",
+                    "PictureLibrary",
+                    "PicturePosition",
+                    "PictureStretch",
+                    "PictureTile",
+                    "PieDouble",
+                    "PieSingle",
+                    "PieSingleSolid",
+                    "Pill",
+                    "Pin",
+                    "Pinned",
+                    "PinnedFill",
+                    "PinnedSolid",
+                    "PinSolid12",
+                    "PinSolidOff12",
+                    "PivotChart",
+                    "PlainText",
+                    "PlannerLogo",
+                    "PlanView",
+                    "Play",
+                    "PlaybackRate1x",
+                    "PlayerSettings",
+                    "PlayResume",
+                    "PlayReverse",
+                    "PlayReverseResume",
+                    "PlaySolid",
+                    "Plug",
+                    "PlugConnected",
+                    "PlugDisconnected",
+                    "PlugSolid",
+                    "POI",
+                    "POISolid",
+                    "PollResults",
+                    "PostUpdate",
+                    "PowerApps",
+                    "PowerApps2Logo",
+                    "PowerAppsLogo",
+                    "PowerBILogo",
+                    "PowerBILogo16",
+                    "PowerBILogoBackplate16",
+                    "PowerButton",
+                    "PowerPointDocument",
+                    "PowerPointLogo",
+                    "PowerPointLogo16",
+                    "PowerPointLogoFill",
+                    "PowerPointLogoFill16",
+                    "PowerPointLogoInverse",
+                    "PowerPointLogoInverse16",
+                    "PowerShell",
+                    "PowerShell2",
+                    "Precipitation",
+                    "PresenceChickletVideo",
+                    "Presentation",
+                    "Presentation12",
+                    "Preview",
+                    "PreviewLink",
+                    "Previous",
+                    "PrimaryCalendar",
+                    "Print",
+                    "PrintfaxPrinterFile",
+                    "Processing",
+                    "ProcessingCancel",
+                    "ProcessingPause",
+                    "ProcessingRun",
+                    "ProcessMetaTask",
+                    "Product",
+                    "ProductCatalog",
+                    "ProductionFloorManagement",
+                    "ProductList",
+                    "ProductRelease",
+                    "ProductVariant",
+                    "ProfileSearch",
+                    "ProFootball",
+                    "ProgressLoopInner",
+                    "ProgressLoopOuter",
+                    "ProgressRingDots",
+                    "ProHockey",
+                    "ProjectCollection",
+                    "ProjectDocument",
+                    "ProjectLogo16",
+                    "ProjectLogo32",
+                    "ProjectLogoFill16",
+                    "ProjectLogoFill32",
+                    "ProjectLogoInverse",
+                    "PromotedDatabase",
+                    "ProtectedDocument",
+                    "ProtectionCenterLogo32",
+                    "ProtectRestrict",
+                    "ProvisioningPackage",
+                    "PublicCalendar",
+                    "PublicContactCard",
+                    "PublicContactCardMirrored",
+                    "PublicEmail",
+                    "PublicFolder",
+                    "PublishContent",
+                    "PublishCourse",
+                    "PublisherLogo",
+                    "PublisherLogo16",
+                    "PublisherLogoFill",
+                    "PublisherLogoFill16",
+                    "PublisherLogoInverse16",
+                    "Puzzle",
+                    "PY",
+                    "PythonLanguage",
+                    "QandA",
+                    "QandAMirror",
+                    "QRCode",
+                    "QuadColumn",
+                    "Quantity",
+                    "QuarterCircle",
+                    "QueryList",
+                    "Questionnaire",
+                    "QuestionnaireMirrored",
+                    "QuickNote",
+                    "QuickNoteSolid",
+                    "R",
+                    "RadioBtnOff",
+                    "RadioBtnOn",
+                    "RadioBullet",
+                    "Rain",
+                    "RainShowersDay",
+                    "RainShowersNight",
+                    "RainSnow",
+                    "RawSource",
+                    "Read",
+                    "ReadingMode",
+                    "ReadingModeSolid",
+                    "ReadOutLoud",
+                    "RealEstate",
+                    "ReceiptCheck",
+                    "ReceiptForward",
+                    "ReceiptReply",
+                    "ReceiptTentative",
+                    "ReceiptTentativeMirrored",
+                    "ReceiptUndelivered",
+                    "Recent",
+                    "Record2",
+                    "RecruitmentManagement",
+                    "RectangleShape",
+                    "RectangleShapeSolid",
+                    "RectangularClipping",
+                    "RecurringEvent",
+                    "RecurringTask",
+                    "RecycleBin",
+                    "Redeploy",
+                    "RedEye",
+                    "RedEye12",
+                    "Redo",
+                    "Refresh",
+                    "RegistryEditor",
+                    "Relationship",
+                    "ReleaseDefinition",
+                    "ReleaseGate",
+                    "ReleaseGateCheck",
+                    "ReleaseGateError",
+                    "ReminderGroup",
+                    "ReminderPerson",
+                    "ReminderTime",
+                    "Remote",
+                    "Remove",
+                    "RemoveContent",
+                    "RemoveEvent",
+                    "RemoveFilter",
+                    "RemoveFromShoppingList",
+                    "RemoveFromTrash",
+                    "RemoveLink",
+                    "RemoveLinkChain",
+                    "RemoveLinkX",
+                    "RemoveOccurrence",
+                    "Rename",
+                    "RenewalCurrent",
+                    "RenewalFuture",
+                    "ReopenPages",
+                    "Repair",
+                    "RepeatAll",
+                    "RepeatHeaderRows",
+                    "RepeatOne",
+                    "Reply",
+                    "ReplyAll",
+                    "ReplyAllAlt",
+                    "ReplyAllMirrored",
+                    "ReplyAlt",
+                    "ReplyMirrored",
+                    "Repo",
+                    "ReportAdd",
+                    "ReportDocument",
+                    "ReportHacked",
+                    "ReportLibrary",
+                    "ReportLibraryMirrored",
+                    "ReportLock",
+                    "ReportWarning",
+                    "RepoSolid",
+                    "Rerun",
+                    "ReservationOrders",
+                    "Reset",
+                    "ResetDevice",
+                    "ResponsesMenu",
+                    "ReturnKey",
+                    "ReturnToSession",
+                    "ReviewRequestMirroredSolid",
+                    "ReviewRequestSolid",
+                    "ReviewResponseSolid",
+                    "ReviewSolid",
+                    "RevToggleKey",
+                    "Rewind",
+                    "Ribbon",
+                    "RibbonSolid",
+                    "RightDoubleQuote",
+                    "RightTriangle",
+                    "Ringer",
+                    "RingerOff",
+                    "RingerRemove",
+                    "RingerSolid",
+                    "Robot",
+                    "Rocket",
+                    "Room",
+                    "Rotate",
+                    "Rotate90Clockwise",
+                    "Rotate90CounterClockwise",
+                    "RowsChild",
+                    "RowsGroup",
+                    "Rugby",
+                    "Running",
+                    "Sad",
+                    "SadSolid",
+                    "Save",
+                    "SaveAll",
+                    "SaveAndClose",
+                    "SaveAs",
+                    "SaveTemplate",
+                    "SaveToMobile",
+                    "Savings",
+                    "ScaleUp",
+                    "ScaleVolume",
+                    "ScatterChart",
+                    "ScheduleEventAction",
+                    "SchoolDataSyncLogo",
+                    "ScopeTemplate",
+                    "ScreenCast",
+                    "Script",
+                    "ScrollUpDown",
+                    "SDCard",
+                    "Search",
+                    "SearchAndApps",
+                    "SearchBookmark",
+                    "SearchCalendar",
+                    "SearchData",
+                    "SearchIssue",
+                    "SearchIssueMirrored",
+                    "SearchNearby",
+                    "SecondaryNav",
+                    "Section",
+                    "Sections",
+                    "SecurityGroup",
+                    "SeeDo",
+                    "SelectAll",
+                    "Sell",
+                    "SemiboldWeight",
+                    "Send",
+                    "SendMirrored",
+                    "SentimentAnalysis",
+                    "Separator",
+                    "Server",
+                    "ServerEnviroment",
+                    "ServerProcesses",
+                    "ServiceOff",
+                    "SetAction",
+                    "Settings",
+                    "ShakeDevice",
+                    "Shapes",
+                    "ShapeSolid",
+                    "Share",
+                    "SharedDatabase",
+                    "ShareiOS",
+                    "SharepointAppIcon16",
+                    "SharepointLogo",
+                    "SharepointLogoFill",
+                    "SharepointLogoInverse",
+                    "Shield",
+                    "ShieldAlert",
+                    "ShieldSolid",
+                    "Shirt",
+                    "Shop",
+                    "ShoppingCart",
+                    "ShoppingCartSolid",
+                    "ShopServer",
+                    "ShowGrid",
+                    "ShowResults",
+                    "ShowResultsMirrored",
+                    "ShowTimeAs",
+                    "SidePanel",
+                    "SidePanelMirrored",
+                    "Signin",
+                    "SignOut",
+                    "SingleBookmark",
+                    "SingleBookmarkSolid",
+                    "SingleColumn",
+                    "SingleColumnEdit",
+                    "SIPMove",
+                    "SiteScan",
+                    "SizeLegacy",
+                    "SkipBack10",
+                    "SkipForward30",
+                    "SkiResorts",
+                    "SkypeArrow",
+                    "SkypeCheck",
+                    "SkypeCircleArrow",
+                    "SkypeCircleCheck",
+                    "SkypeCircleClock",
+                    "SkypeCircleMinus",
+                    "SkypeCircleSlash",
+                    "SkypeClock",
+                    "SkypeForBusinessLogo",
+                    "SkypeForBusinessLogo16",
+                    "SkypeForBusinessLogoFill",
+                    "SkypeForBusinessLogoFill16",
+                    "SkypeLogo",
+                    "SkypeLogo16",
+                    "SkypeMessage",
+                    "SkypeMinus",
+                    "SkypeSlash",
+                    "Slider",
+                    "SliderHandleSize",
+                    "SliderThumb",
+                    "Slideshow",
+                    "SmartGlassRemote",
+                    "SnapToGrid",
+                    "Snooze",
+                    "Snow",
+                    "Snowflake",
+                    "SnowShowerDay",
+                    "SnowShowerNight",
+                    "Soccer",
+                    "SocialListeningLogo",
+                    "Sort",
+                    "SortDown",
+                    "SortLines",
+                    "SortUp",
+                    "Source",
+                    "Spacer",
+                    "Speakers",
+                    "SpecialEvent",
+                    "SpeedHigh",
+                    "Spelling",
+                    "Split",
+                    "SplitObject",
+                    "Sprint",
+                    "Squalls",
+                    "SquareShape",
+                    "SquareShapeSolid",
+                    "Stack",
+                    "StackColumnChart",
+                    "StackedBarChart",
+                    "StackedColumnChart2",
+                    "StackedColumnChart2Fill",
+                    "StackedLineChart",
+                    "StackIndicator",
+                    "StaffNotebookLogo16",
+                    "StaffNotebookLogo32",
+                    "StaffNotebookLogoFill16",
+                    "StaffNotebookLogoFill32",
+                    "StaffNotebookLogoInverted16",
+                    "StaffNotebookLogoInverted32",
+                    "Starburst",
+                    "StarburstSolid",
+                    "StatusCircleBlock",
+                    "StatusCircleBlock2",
+                    "StatusCircleCheckmark",
+                    "StatusCircleErrorX",
+                    "StatusCircleExclamation",
+                    "StatusCircleInfo",
+                    "StatusCircleInner",
+                    "StatusCircleOuter",
+                    "StatusCircleQuestionMark",
+                    "StatusCircleRing",
+                    "StatusCircleSync",
+                    "StatusErrorFull",
+                    "StatusTriangle",
+                    "StatusTriangleExclamation",
+                    "StatusTriangleInner",
+                    "StatusTriangleOuter",
+                    "Step",
+                    "StepInsert",
+                    "StepShared",
+                    "StepSharedAdd",
+                    "StepSharedInsert",
+                    "StickyNotesOutlineAppIcon",
+                    "StickyNotesSolidAppIcon",
+                    "StockDown",
+                    "StockUp",
+                    "Stop",
+                    "StopSolid",
+                    "Stopwatch",
+                    "StorageOptical",
+                    "StoreLogo16",
+                    "StoreLogoMed20",
+                    "Storyboard",
+                    "Streaming",
+                    "StreamingOff",
+                    "StreamLogo",
+                    "Street",
+                    "StreetsideSplitMinimize",
+                    "Strikethrough",
+                    "Subscribe",
+                    "Subscript",
+                    "SubstitutionsIn",
+                    "Suitcase",
+                    "SunAdd",
+                    "Sunny",
+                    "SunQuestionMark",
+                    "Superscript",
+                    "SurveyQuestions",
+                    "SwayLogo16",
+                    "SwayLogo32",
+                    "SwayLogoFill16",
+                    "SwayLogoFill32",
+                    "SwayLogoInverse",
+                    "Switch",
+                    "SwitcherStartEnd",
+                    "SwitchUser",
+                    "Sync",
+                    "SyncFolder",
+                    "SyncOccurence",
+                    "SyncStatus",
+                    "SyncStatusSolid",
+                    "SyncToPC",
+                    "System",
+                    "Tab",
+                    "TabCenter",
+                    "Table",
+                    "TableBrandedColumn",
+                    "TableBrandedRow",
+                    "TableComputed",
+                    "TableFirstColumn",
+                    "TableGroup",
+                    "TableHeaderRow",
+                    "TableLastColumn",
+                    "TableLink",
+                    "Tablet",
+                    "TabletMode",
+                    "TableTotalRow",
+                    "TabletSelected",
+                    "TabOneColumn",
+                    "TabThreeColumn",
+                    "TabTwoColumn",
+                    "Tag",
+                    "TagGroup",
+                    "TagSolid",
+                    "TagUnknown",
+                    "TagUnknown12",
+                    "TagUnknown12Mirror",
+                    "TagUnknownMirror",
+                    "Taskboard",
+                    "TaskGroup",
+                    "TaskGroupMirrored",
+                    "TaskList",
+                    "TaskLogo",
+                    "TaskManager",
+                    "TaskManagerMirrored",
+                    "TaskSolid",
+                    "Taxi",
+                    "TeamFavorite",
+                    "TeamsLogo",
+                    "TeamsLogo16",
+                    "TeamsLogoFill",
+                    "TeamsLogoFill16",
+                    "TeamsLogoInverse",
+                    "Teamwork",
+                    "Teeth",
+                    "Telemarketer",
+                    "TemporaryUser",
+                    "Tennis",
+                    "TestAutoSolid",
+                    "TestBeaker",
+                    "TestBeakerSolid",
+                    "TestCase",
+                    "TestExploreSolid",
+                    "TestImpactSolid",
+                    "TestParameter",
+                    "TestPlan",
+                    "TestStep",
+                    "TestSuite",
+                    "TestUserSolid",
+                    "TextAlignBottom",
+                    "TextAlignMiddle",
+                    "TextAlignTop",
+                    "TextBox",
+                    "TextCallout",
+                    "TextDocument",
+                    "TextDocumentShared",
+                    "TextField",
+                    "TextOverflow",
+                    "TextParagraphOption",
+                    "TextRecognition",
+                    "TextRotate270Degrees",
+                    "TextRotate90Degrees",
+                    "TextRotateHorizontal",
+                    "TextRotation",
+                    "TFVCLogo",
+                    "ThisPC",
+                    "ThreeQuarterCircle",
+                    "ThumbnailView",
+                    "ThumbnailViewMirrored",
+                    "Thunderstorms",
+                    "Ticket",
+                    "Tiles",
+                    "Tiles2",
+                    "TimeEntry",
+                    "Timeline",
+                    "TimelineDelivery",
+                    "TimelineMatrixView",
+                    "TimelineProgress",
+                    "TimePicker",
+                    "Timer",
+                    "TimeSheet",
+                    "ToDoLogoBottom",
+                    "ToDoLogoInverse",
+                    "ToDoLogoOutline",
+                    "ToDoLogoTop",
+                    "ToggleBorder",
+                    "ToggleFilled",
+                    "ToggleLeft",
+                    "ToggleRight",
+                    "ToggleThumb",
+                    "Toll",
+                    "Toolbox",
+                    "Total",
+                    "Touch",
+                    "TouchPointer",
+                    "Trackers",
+                    "TrackersMirrored",
+                    "Train",
+                    "TrainSolid",
+                    "TransferCall",
+                    "Transition",
+                    "TransitionEffect",
+                    "TransitionPop",
+                    "TransitionPush",
+                    "Translate",
+                    "Trending12",
+                    "TriangleDown12",
+                    "TriangleLeft12",
+                    "TriangleRight12",
+                    "TriangleShape",
+                    "TriangleShapeSolid",
+                    "TriangleSolid",
+                    "TriangleSolidDown12",
+                    "TriangleSolidLeft12",
+                    "TriangleSolidRight12",
+                    "TriangleSolidUp12",
+                    "TriangleUp12",
+                    "TriggerApproval",
+                    "TriggerAuto",
+                    "TriggerUser",
+                    "Trim",
+                    "TrimEnd",
+                    "TrimStart",
+                    "TripleColumn",
+                    "TripleColumnEdit",
+                    "TripleColumnWide",
+                    "Trophy",
+                    "Trophy2",
+                    "Trophy2Solid",
+                    "TurnRight",
+                    "TVMonitor",
+                    "TVMonitorSelected",
+                    "TypeScriptLanguage",
+                    "Umbrella",
+                    "Underline",
+                    "Undo",
+                    "Uneditable",
+                    "Uneditable2",
+                    "Uneditable2Mirrored",
+                    "UneditableMirrored",
+                    "UneditableSolid12",
+                    "UneditableSolidMirrored12",
+                    "Unfavorite",
+                    "UngroupObject",
+                    "Unknown",
+                    "UnknownCall",
+                    "UnknownMirrored",
+                    "UnknownMirroredSolid",
+                    "UnknownSolid",
+                    "Unlock",
+                    "UnlockSolid",
+                    "Unpin",
+                    "UnpublishContent",
+                    "UnSetColor",
+                    "UnstackSelected",
+                    "Unsubscribe",
+                    "UnsyncFolder",
+                    "UnsyncOccurence",
+                    "Untag",
+                    "Up",
+                    "UpdateRestore",
+                    "UpgradeAnalysis",
+                    "Upload",
+                    "URLBlock",
+                    "USB",
+                    "UserEvent",
+                    "UserFollowed",
+                    "UserGauge",
+                    "UserOptional",
+                    "UserPause",
+                    "UserRemove",
+                    "UserSync",
+                    "UserWarning",
+                    "Vacation",
+                    "Vaccination",
+                    "Variable",
+                    "Variable2",
+                    "VariableGroup",
+                    "VB",
+                    "VennDiagram",
+                    "VerifiedBrand",
+                    "VerifiedBrandSolid",
+                    "VersionControlPush",
+                    "VerticalDistributeCenter",
+                    "Video",
+                    "Video360Generic",
+                    "VideoLightOff",
+                    "VideoOff",
+                    "VideoSearch",
+                    "VideoSolid",
+                    "View",
+                    "ViewAll",
+                    "ViewAll2",
+                    "ViewDashboard",
+                    "ViewInAR",
+                    "ViewList",
+                    "ViewListGroup",
+                    "ViewListTree",
+                    "ViewOriginal",
+                    "VisioDiagram",
+                    "VisioDiagramSync",
+                    "VisioDocument",
+                    "VisioLogo",
+                    "VisioLogo16",
+                    "VisioLogoFill",
+                    "VisioLogoFill16",
+                    "VisioLogoInverse",
+                    "VisioLogoInverse16",
+                    "VisualBasicLanguage",
+                    "VisuallyImpaired",
+                    "VisualsFolder",
+                    "VisualsStore",
+                    "VisualStudioIDELogo32",
+                    "VisualStudioLogo",
+                    "VoicemailForward",
+                    "VoicemailIRM",
+                    "VoicemailReply",
+                    "Volume0",
+                    "Volume1",
+                    "Volume2",
+                    "Volume3",
+                    "VolumeDisabled",
+                    "VSTSAltLogo1",
+                    "VSTSAltLogo2",
+                    "VSTSLogo",
+                    "Waffle",
+                    "WaffleOffice365",
+                    "WaitlistConfirm",
+                    "WaitlistConfirmMirrored",
+                    "Warning",
+                    "Warning12",
+                    "WarningSolid",
+                    "WavingHand",
+                    "WebAppBuilderFragment",
+                    "WebAppBuilderFragmentCreate",
+                    "WebAppBuilderModule",
+                    "WebAppBuilderSlot",
+                    "Webcam2",
+                    "Webcam2Off",
+                    "WebComponents",
+                    "WebEnvironment",
+                    "WebPublish",
+                    "Website",
+                    "WebTemplate",
+                    "Weights",
+                    "Wheelchair",
+                    "WhiteBoardApp16",
+                    "WhiteBoardApp32",
+                    "WifiEthernet",
+                    "WifiWarning4",
+                    "WindDirection",
+                    "WindowEdit",
+                    "WindowsLogo",
+                    "Wines",
+                    "WipePhone",
+                    "WordDocument",
+                    "WordLogo",
+                    "WordLogo16",
+                    "WordLogoFill",
+                    "WordLogoFill16",
+                    "WordLogoInverse",
+                    "WordLogoInverse16",
+                    "Work",
+                    "WorkFlow",
+                    "WorkforceManagement",
+                    "WorkItem",
+                    "WorkItemAlert",
+                    "WorkItemBar",
+                    "WorkItemBarSolid",
+                    "WorkItemBug",
+                    "World",
+                    "WorldClock",
+                    "YammerLogo",
+                    "ZipFolder",
+                    "Zoom",
+                    "ZoomIn",
+                    "ZoomOut",
+                    "ZoomToFit"
+                  ]
+                }
+              ]
+            },
+            "d": {
+              "description": "Specifies the d attribute. Used primarily for svg path elements",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "alt": {
+              "description": "Specifies the alt attribute",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "data-interception": {
+              "description": "Specifies the data-interception attribute",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                }
+              ]
+            }
+          },
+          "patternProperties": {
+            "^aria\\-[a-z]+$": {
+              "description": "Specifies aria- attributes for the element",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/expression"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "forEach": {
+          "type": "string",
+          "description": "For loop properties. The element will be rendered repeatedly based on an array.",
+          "pattern": "^[^\\]\\$@\\. ]+ in (\\@currentField|\\[\\$.+\\])$"
+        },
+        "defaultHoverField": {
+          "type": "string",
+          "description": "Column name to show the default hover card of",
+          "pattern": "(\\@currentField(.\\w+)*|\\[\\$.+\\])$"
+        },
+        "customCardProps": {
+          "type": "object",
+          "description": "Object that defines custom card props on hover/click",
+          "properties": {
+            "openOnEvent": {
+              "description": "Event name to decide on which the customCard should open",
+              "type": "string",
+              "pattern": "(click|hover)$"
+            },
+            "directionalHint": {
+              "description": "Specify the direction relative to the target in which CustomCard will be positioned",
+              "enum": [
+                "topCenter",
+                "bottomCenter",
+                "leftCenter",
+                "rightCenter"
+              ]
+            },
+            "isBeakVisible": {
+              "description": "Specify if the beak is to be shown or not",
+              "type": "boolean"
+            },
+            "beakStyle": {
+              "type": "object",
+              "description": "Specifies the style object for custom card's beak",
+              "patternProperties": {
+                "^[a-z]+(?:-[a-z]+)?$": {
+                  "description": "Specifies style attributes for for custom card's beak",
+                  "type": "string"
+                }
+              }
+            },
+            "formatter": {
+              "description": "JSON object that defines formatting for customCards",
+              "$ref": "#/definitions/elm"
+            }
+          },
+          "required": [
+            "formatter",
+            "openOnEvent"
+          ]
+        }
+      },
+      "required": [
+        "elmType"
+      ]
+    },
+    "fieldValue": {
+      "allOf": [
+        {
+          "enum": [
+            "@currentField",
+            "@currentField.title",
+            "@currentField.id",
+            "@currentField.email",
+            "@currentField.sip",
+            "@currentField.picture",
+            "@currentField.lookupValue",
+            "@currentField.lookupId",
+            "@me",
+            "@now"
+          ]
+        }
+      ]
+    },
+    "styleColor": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/styleStandard"
+        },
+        {
+          "enum": [
+            "aliceblue",
+            "antiquewhite",
+            "aqua",
+            "aquamarine",
+            "azure",
+            "beige",
+            "bisque",
+            "black",
+            "blanchedalmond",
+            "blue",
+            "blueviolet",
+            "brown",
+            "burlywood",
+            "cadetblue",
+            "chartreuse",
+            "chocolate",
+            "coral",
+            "cornflowerblue",
+            "cornsilk",
+            "crimson",
+            "cyan",
+            "darkblue",
+            "darkcyan",
+            "darkgoldenrod",
+            "darkgray",
+            "darkgrey",
+            "darkgreen",
+            "darkkhaki",
+            "darkmagenta",
+            "darkolivegreen",
+            "darkorange",
+            "darkorchid",
+            "darkred",
+            "darksalmon",
+            "darkseagreen",
+            "darkslateblue",
+            "darkslategray",
+            "darkslategrey",
+            "darkturquoise",
+            "darkviolet",
+            "deeppink",
+            "deepskyblue",
+            "dimgray",
+            "dimgrey",
+            "dodgerblue",
+            "firebrick",
+            "floralwhite",
+            "forestgreen",
+            "fuchsia",
+            "gainsboro",
+            "ghostwhite",
+            "gold",
+            "goldenrod",
+            "gray",
+            "grey",
+            "green",
+            "greenyellow",
+            "honeydew",
+            "hotpink",
+            "indianred",
+            "indigo",
+            "ivory",
+            "khaki",
+            "lavender",
+            "lavenderblush",
+            "lawngreen",
+            "lemonchiffon",
+            "lightblue",
+            "lightcoral",
+            "lightcyan",
+            "lightgoldenrodyellow",
+            "lightgray",
+            "lightgrey",
+            "lightgreen",
+            "lightpink",
+            "lightsalmon",
+            "lightseagreen",
+            "lightskyblue",
+            "lightslategray",
+            "lightslategrey",
+            "lightsteelblue",
+            "lightyellow",
+            "lime",
+            "limegreen",
+            "linen",
+            "magenta",
+            "maroon",
+            "mediumaquamarine",
+            "mediumblue",
+            "mediumorchid",
+            "mediumpurple",
+            "mediumseagreen",
+            "mediumslateblue",
+            "mediumspringgreen",
+            "mediumturquoise",
+            "mediumvioletred",
+            "midnightblue",
+            "mintcream",
+            "mistyrose",
+            "moccasin",
+            "navajowhite",
+            "navy",
+            "oldlace",
+            "olive",
+            "olivedrab",
+            "orange",
+            "orangered",
+            "orchid",
+            "palegoldenrod",
+            "palegreen",
+            "paleturquoise",
+            "palevioletred",
+            "papayawhip",
+            "peachpuff",
+            "peru",
+            "pink",
+            "plum",
+            "powderblue",
+            "purple",
+            "red",
+            "rebeccapurple",
+            "rosybrown",
+            "royalblue",
+            "saddlebrown",
+            "salmon",
+            "sandybrown",
+            "seagreen",
+            "seashell",
+            "sienna",
+            "silver",
+            "skyblue",
+            "slateblue",
+            "slategray",
+            "slategrey",
+            "snow",
+            "springgreen",
+            "steelblue",
+            "tan",
+            "teal",
+            "thistle",
+            "tomato",
+            "turquoise",
+            "violet",
+            "wheat",
+            "white",
+            "whitesmoke",
+            "yellow",
+            "yellowgreen"
+          ]
+        }
+      ]
+    },
+    "styleBasic": {
+      "allOf": [
+        {
+          "enum": [
+            "initial",
+            "inherit",
+            "unset"
+          ]
+        }
+      ]
+    },
+    "styleStandard": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/expressionOrString"
+        },
+        {
+          "$ref": "#/definitions/styleBasic"
+        }
+      ]
+    },
+    "expressionOrString": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/expression"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "$ref": "#/definitions/elm"
+}

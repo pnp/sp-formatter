@@ -6,7 +6,7 @@ export enum ViewType {
 export class DomService {
 
   private static TextAreaSelector = '[class$=ColumnCustomizationPane-textArea] textarea';
-  private static CustomizationContentSelector = '[class$=sp-ColumnCustomizationPane-content]';
+  private static CustomizationContentSelector = '[class$=ColumnCustomizationPane-content]';
   private static RootColumnHtmlSelector = '.sp-ColumnDesigner';
   private static RootViewHtmlSelector = '.od-ColumnCustomizationPane';
   private static FilesRightSidePaneSelector = '.Files-rightPane';

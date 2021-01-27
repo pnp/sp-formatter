@@ -6,6 +6,7 @@ import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { promiseTimeout } from '../common/PromiseTimeout';
 import { IExtensionSettings } from '../common/data/IExtensionSettings';
+import { IPageContextInfo } from '../typings';
 
 /**
  * Communicates with background page with port, injects page scripts and communicate with page using postMessage
@@ -110,6 +111,20 @@ export class ContentManager {
     return promiseTimeout(this.schemaRequstTimeout, promise, 'getViewFormattingSchema');
   }
 
+  private async getSpPageContext(): Promise<IPageContextInfo> {
+    const promise = new Promise((resolve) => {
+
+      const onRecievedCallback = (data: IPageContextInfo) => {
+        resolve(data);
+        this.pagePipe.off(Content.onSendSpPageContextInfo, onRecievedCallback);
+      };
+
+      this.pagePipe.on<IPageContextInfo>(Content.onSendSpPageContextInfo, onRecievedCallback);
+      this.pagePipe.emit(Content.onGetSpPageContextInfo, {});
+    });
+    return promiseTimeout(this.schemaRequstTimeout, promise, 'getViewFormattingSchema');
+  }
+
   private async initInjectScripts(enable: boolean): Promise<void> {
     if (!this.scriptsInjected && enable) {
       this.scriptsInjected = true;
@@ -127,8 +142,15 @@ export class ContentManager {
 
   private async injectScripts(): Promise<void> {
     const id = chrome.runtime.id;
+
     this.injectScript(`window.__sp_formatter_id__ = '${id}'`);
-    await this.injectScriptFile('dist/monaco-build.js');
+    await this.injectScriptFile('dist/sp-context-provider.js');
+
+    const pageContext = await this.getSpPageContext();
+    if (!pageContext.isSPO) {
+      await this.injectScriptFile('dist/monaco-build.js');
+    }
+
     await this.injectScriptFile('dist/inject.js');
   }
 

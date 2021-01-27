@@ -25,7 +25,7 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
       const settings = await contentService.getExtensionSettings();
       setEnabled(settings.enhancedFormatterEnabled);
 
-      pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
+      pagePipe.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
         enabled: settings.enhancedFormatterEnabled
       });
 
@@ -48,7 +48,7 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
     settings.enhancedFormatterEnabled = checked;
     await contentService.saveExtensionSettings(settings);
 
-    pagePipe.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
+    pagePipe.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
       enabled: settings.enhancedFormatterEnabled
     });
   }
@@ -90,8 +90,8 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
 
       {enabled && !inFullScreenMode && <IconButton style={{
         position: 'absolute',
-        bottom: '-6px',
-        right: '10px',
+        top: '-7px',
+        right: '0',
         zIndex: 3000,
         backgroundColor: 'rgb(233 233 239)'
       }} iconProps={{ iconName: 'MiniExpand' }} title="Full screen mode" onClick={onMoveToFullScreenClick} />}

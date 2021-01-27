@@ -6,6 +6,7 @@ module.exports = {
     'background': path.join(__dirname, '../src/background/Background.ts'),
     'content': path.join(__dirname, '../src/content/Content.ts'),
     'inject': path.join(__dirname, '../src/content/page/Inject.ts'),
+    'sp-context-provider': path.join(__dirname, '../src/content/page/SpPageContextProvider.ts'),
     'popup': path.join(__dirname, '../src/popup/Popup.tsx')
   },
   output: {

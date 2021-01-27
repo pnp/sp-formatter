@@ -1,16 +1,19 @@
-import { IDisposable, languages } from 'monaco-editor';
+import { languages } from 'monaco-editor';
 import { IField } from '../../../common/data/IField';
-import { getListFields } from './SPService';
+import { getListFields } from './../services/SPService';
 
-type languages = typeof import('monaco-editor').languages;
+type MonacoEditor = typeof import('monaco-editor');
+
+/* eslint-disable-next-line */
+const monaco: MonacoEditor = require('../../../../app/dist/monaco');
 const registered = false;
 
-export async function registerProvider(): Promise<IDisposable> {
+export async function registerProvider(): Promise<void> {
   if (registered) return;
 
   const fields = await getListFields();
 
-  return window.monaco.languages.registerCompletionItemProvider('spformatter', {
+  monaco.languages.registerCompletionItemProvider('json', {
     triggerCharacters: '@$'.split(''),
     provideCompletionItems: (model, position) => {
       const suggestRange = model.getWordUntilPosition(position);
@@ -33,7 +36,7 @@ export async function registerProvider(): Promise<IDisposable> {
 }
 
 function createDependencyProposals(range, fields: IField[]) {
-  const templateKind = window.monaco.languages.CompletionItemKind.Value;
+  const templateKind = monaco.languages.CompletionItemKind.Value;
   const completionItems: languages.CompletionItem[] = [
     {
       label: '@currentField',
@@ -223,7 +226,7 @@ function createDependencyProposals(range, fields: IField[]) {
       insertText: '@thumbnail.${1:[width]}x${2:[height]}',
       filterText: '@thumbnail',
       range: range,
-      insertTextRules: window.monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
     },
     {
       label: '@thumbnail.[width]',
@@ -233,14 +236,14 @@ function createDependencyProposals(range, fields: IField[]) {
       insertText: '@thumbnail.${1:[width]}',
       filterText: '@thumbnail',
       range: range,
-      insertTextRules: window.monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
     }
   ];
 
   for (const field of fields) {
     completionItems.push({
       label: field.InternalName,
-      kind: window.monaco.languages.CompletionItemKind.Field,
+      kind: monaco.languages.CompletionItemKind.Field,
       detail: `${field.Title} [${field.TypeAsString}]`,
       insertText: `[$${field.InternalName}]`,
       filterText: `$${field.InternalName} ${field.Title}`,

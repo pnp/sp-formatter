@@ -56,7 +56,7 @@ class ComponentInjector {
   }
 
   private triggerRemoveFormatter(): void {
-    WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledColumngFormatter, {
+    WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
       enabled: false
     });
   }

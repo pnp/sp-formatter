@@ -14,7 +14,7 @@ export class Content {
   public static onSaveExtensionSettings = `${Content.prefix}save_ext_settings`;
   public static onSavedExtensionSettings = `${Content.prefix}saved_ext_settings`;
 
-  public static onToggleEnabledColumngFormatter = `${Content.prefix}toggle_enable_column_formatter`;
+  public static onToggleEnabledColumnFormatter = `${Content.prefix}toggle_enable_column_formatter`;
 
   public static onGetColumnFormattingSchema = `${Content.prefix}get_column_schema`;
   public static onSendColumnFormattingSchema = `${Content.prefix}send_column_schema`;
@@ -27,6 +27,8 @@ export class Content {
   public static onSelectField = `${Content.prefix}select_field`;
 
   public static onCloseSelectField = `${Content.prefix}close_select_field`;
+  public static onGetSpPageContextInfo = `${Content.prefix}get_sp_page_context_info`;
+  public static onSendSpPageContextInfo = `${Content.prefix}send_sp_page_context_info`;
 
   public static Vscode = {
     onConnected: 'vscode_connected',

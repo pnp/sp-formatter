@@ -6,3 +6,4 @@ export const ColumnSchemaUrl = 'https://developer.microsoft.com/json-schemas/sp/
 export const ViewSchemaUrl = 'https://developer.microsoft.com/json-schemas/sp/v2/view-formatting.schema.json';
 export const TileSchemaUrl = 'https://developer.microsoft.com/json-schemas/sp/v2/tile-formatting.schema.json';
 export const RowSchemaUrl = 'https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json';
+export const FormatterUri = 'chrome-column-formatting';

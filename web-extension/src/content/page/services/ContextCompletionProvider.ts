@@ -1,16 +1,12 @@
-import { IDisposable, languages } from 'monaco-editor';
+import { IDisposable } from 'monaco-editor';
 import { IField } from '../../../common/data/IField';
+import { CompletionItem } from '../../../typings';
 import { getListFields } from './SPService';
 
-type languages = typeof import('monaco-editor').languages;
-const registered = false;
-
 export async function registerProvider(): Promise<IDisposable> {
-  if (registered) return;
-
   const fields = await getListFields();
 
-  return window.monaco.languages.registerCompletionItemProvider('spformatter', {
+  const provider = window.monaco.languages.registerCompletionItemProvider('json', {
     triggerCharacters: '@$'.split(''),
     provideCompletionItems: (model, position) => {
       const suggestRange = model.getWordUntilPosition(position);
@@ -30,11 +26,13 @@ export async function registerProvider(): Promise<IDisposable> {
       };
     }
   });
+
+  return provider;
 }
 
 function createDependencyProposals(range, fields: IField[]) {
   const templateKind = window.monaco.languages.CompletionItemKind.Value;
-  const completionItems: languages.CompletionItem[] = [
+  const completionItems: CompletionItem[] = [
     {
       label: '@currentField',
       kind: templateKind,

@@ -17,8 +17,6 @@ type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
 /* eslint-disable-next-line */
 let monaco: MonacoEditor;
 
-let completionProviderRegistered = false;
-
 export function enableFormatter() {
   const pagePipe = WebEventEmitter.instance;
   const enhancer = new ColumnFormatterEnhancer();
@@ -120,10 +118,7 @@ class ColumnFormatterEnhancer {
   public async injectCustomFormatter(): Promise<void> {
     if (this.editor) return;
 
-    if (!completionProviderRegistered) {
-      this.completionProvider = await registerProvider();
-      completionProviderRegistered = true;
-    }
+    this.completionProvider = await registerProvider();
     await this.ensureSchemas();
 
     this.initialHeight = DomService.getSharePointCodeContainer().offsetHeight;

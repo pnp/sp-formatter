@@ -1,11 +1,9 @@
 import { languages } from 'monaco-editor';
+import * as monaco from 'monaco-editor';
+
 import { IField } from '../../../common/data/IField';
 import { getListFields } from './../services/SPService';
 
-type MonacoEditor = typeof import('monaco-editor');
-
-/* eslint-disable-next-line */
-const monaco: MonacoEditor = require('../../../../app/dist/monaco');
 const registered = false;
 
 export async function registerProvider(): Promise<void> {

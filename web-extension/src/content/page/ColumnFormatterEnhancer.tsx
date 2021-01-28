@@ -14,7 +14,6 @@ import { IDisposable } from 'monaco-editor';
 
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
 
-/* eslint-disable-next-line */
 let monaco: MonacoEditor;
 
 export function enableFormatter() {

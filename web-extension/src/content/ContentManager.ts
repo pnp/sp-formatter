@@ -148,10 +148,10 @@ export class ContentManager {
 
     const pageContext = await this.getSpPageContext();
     if (!pageContext.isSPO) {
-      await this.injectScriptFile('dist/monaco-build.js');
+      await this.injectScriptFile('dist/inject-legacy.js');
+    } else {
+      await this.injectScriptFile('dist/inject.js');
     }
-
-    await this.injectScriptFile('dist/inject.js');
   }
 
   private injectScriptFile(src: string): Promise<void> {

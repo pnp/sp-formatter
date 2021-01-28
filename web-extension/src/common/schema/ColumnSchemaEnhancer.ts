@@ -95,12 +95,22 @@ export class ColumnSchemaEnhancer {
           '@currentField.title',
           '@currentField.id',
           '@currentField.email',
+          '@currentField.department',
           '@currentField.sip',
           '@currentField.picture',
+          '@currentField.jobTitle',
           '@currentField.lookupValue',
           '@currentField.lookupId',
+          '@currentField.desc',
           '@me',
-          '@now'
+          '@now',
+          '@window.innerHeight',
+          '@window.innerWidth',
+          '@currentWeb',
+          '@rowIndex',
+          '@thumbnail.small',
+          '@thumbnail.medium',
+          '@thumbnail.large',
         ]
       }
       ]

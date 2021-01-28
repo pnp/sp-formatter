@@ -49,7 +49,8 @@ export class DomService {
   }
 
   public static toggleDefaultFormatter(show: boolean): void {
-    const monacoElement = this.getElement<HTMLDivElement>(this.CustomizationMonacoContentSelector, 'Unable to find customization content');
+    const monacoElement = document.querySelector<HTMLDivElement>(this.CustomizationMonacoContentSelector);
+    if (!monacoElement) return;
     monacoElement.style.display = show ? 'flex' : 'none';
   }
 

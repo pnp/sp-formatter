@@ -1,5 +1,10 @@
 # Changelog  
 
+## 0.0.5 - 28 Jan 2021
+
+- fixed SharePoint Online issue with builtin monaco editor
+- minor other fixes
+
 ## 0.0.4 - 14 Jan 2021
 
 - added auto-suggest on Enter feature

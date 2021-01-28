@@ -1,4 +1,8 @@
-# Change Log
+# Changelog
+
+## 0.0.5 - 28 Jan 21
+
+- Fixed custom completion when word range is empty
 
 ## 0.0.4 - 14 Jan 21
 

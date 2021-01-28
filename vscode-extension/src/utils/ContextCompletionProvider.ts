@@ -11,7 +11,7 @@ export class ContextCompletionProvider {
         const wordRange = document.getWordRangeAtPosition(position);
         const text = document.getText(wordRange);
 
-        if (!text) {
+        if (!text || !wordRange) {
           return new CompletionList([]);
         }
 

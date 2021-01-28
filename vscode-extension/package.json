@@ -2,7 +2,7 @@
   "name": "sp-formatter",
   "displayName": "SP Formatter",
   "description": "SP Formatter connects to the corresponding Chrome or Edge extension and makes Column Formatting JSON development a lot more convenient",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "keywords": [
     "SharePoint",

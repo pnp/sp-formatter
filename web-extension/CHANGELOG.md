@@ -1,5 +1,9 @@
 # Changelog  
 
+## 0.0.6 - 31 Jan 2021
+
+- fixed issue with empty _spPageContextInfo on some modern pages
+
 ## 0.0.5 - 28 Jan 2021
 
 - fixed SharePoint Online issue with builtin monaco editor

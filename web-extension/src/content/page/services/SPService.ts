@@ -4,6 +4,9 @@ const fieldsCache = {};
 
 export async function getListFields(): Promise<IField[]> {
   const listTitle: string = (window as any)._spPageContextInfo.listTitle;
+
+  if(!listTitle) return null;
+
   let webAbsUrl: string = (window as any)._spPageContextInfo.webAbsoluteUrl;
 
   if (fieldsCache[listTitle]) {

@@ -8,6 +8,7 @@ export interface IPageContextInfo {
 declare global {
   interface Window {
     monaco: MonacoEditor;
+    moduleLoaderPromise: Promise<any>;
     MonacoEnvironment: any;
     __sp_formatter_id__: string;
     _spPageContextInfo: IPageContextInfo

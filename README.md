@@ -38,7 +38,7 @@ You can edit your Column Formatting JSON inside VSCode and have it synchronized 
 
 ### Prerequisites
 
-- [SP Formatter](link to be added) VSCode extension needs to be installed.
+- [SP Formatter](https://marketplace.visualstudio.com/items?itemName=s-kainet.sp-formatter) VSCode extension needs to be installed.
 - http port `11232` to be opened for connections
 
 ### How to configure

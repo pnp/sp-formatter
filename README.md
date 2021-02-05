@@ -49,5 +49,6 @@ You can edit your Column Formatting JSON inside VSCode and have it synchronized 
 4. Wait for `VSCode is connected` message with a file name from VSCode instance.
 5. Edit file in VSCode and see live results in a browser.
 
-PRIVACY POLICY  
+### PRIVACY POLICY  
+
 SP Formatter does not collect nor store any personal data.

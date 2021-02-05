@@ -48,3 +48,6 @@ You can edit your Column Formatting JSON inside VSCode and have it synchronized 
 3. Launch your browser with SP Formatter web extension. Enable SP Formatter and open any json formatting on a SharePoint page.
 4. Wait for `VSCode is connected` message with a file name from VSCode instance.
 5. Edit file in VSCode and see live results in a browser.
+
+PRIVACY POLICY  
+SP Formatter does not collect nor store any personal data.

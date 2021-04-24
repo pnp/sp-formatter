@@ -7,6 +7,11 @@ export class ExtensionStateManager {
   private static isEnbledKey = 'tab_enabled';
   private static extensionSettingsKey = 'extension_settings';
 
+  private static defaultSettings:IExtensionSettings = {
+    enhancedFormatterEnabled: false,
+    useDarkMode: false,
+  };
+
   public static async isEnabledForTab(tabId: number): Promise<boolean> {
     const result = await ChromeStorage.getItem<IExtensionTabEnabledData>(this.isEnbledKey);
     if (!result) {
@@ -30,7 +35,9 @@ export class ExtensionStateManager {
   public static async getExtensionSettings(): Promise<IExtensionSettings> {
     const result = await ChromeStorage.getItem<IExtensionSettings>(this.extensionSettingsKey);
     if (!result) {
-      return null;
+      //No settings found, so save and return defaults
+      await this.setExtensionSettings(this.defaultSettings);
+      return this.defaultSettings;
     }
     if (result.useDarkMode == null) {
       result.useDarkMode = false;

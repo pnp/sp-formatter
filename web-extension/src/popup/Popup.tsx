@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
+import { Toggle } from '@fluentui/react/lib/Toggle';
 
 import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';

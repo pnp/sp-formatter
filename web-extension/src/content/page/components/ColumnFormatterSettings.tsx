@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Toggle, IconButton, FontIcon } from 'office-ui-fabric-react/';
+import { Toggle, IconButton, FontIcon } from '@fluentui/react/';
 import { ContentService } from '../services/ContentService';
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Content } from '../../../common/events/Events';

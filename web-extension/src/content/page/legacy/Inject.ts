@@ -5,8 +5,8 @@ import { ColumnFormatterSettings } from './../components/ColumnFormatterSettings
 import { enableFormatter } from './ColumnFormatterEnhancer';
 import { DomService, ViewType } from './../services/DomService';
 import { getListFields } from './../services/SPService';
-import { GlobalSettings } from '@uifabric/utilities/lib/GlobalSettings';
-import { getTheme } from '@uifabric/styling/lib/styles/theme';
+import { GlobalSettings } from '@fluentui/utilities/lib/GlobalSettings';
+import { getTheme } from '@fluentui/style-utilities/lib/styles/theme';
 
 // if SP 2019
 if (!window._spPageContextInfo.isSPO) {

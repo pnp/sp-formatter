@@ -122,7 +122,7 @@ export class ContentManager {
       this.pagePipe.on<IPageContextInfo>(Content.onSendSpPageContextInfo, onRecievedCallback);
       this.pagePipe.emit(Content.onGetSpPageContextInfo, {});
     });
-    return promiseTimeout(this.schemaRequstTimeout, promise, 'getViewFormattingSchema');
+    return promiseTimeout(this.schemaRequstTimeout, promise, 'getSpPageContextInfo');
   }
 
   private async initInjectScripts(enable: boolean): Promise<void> {

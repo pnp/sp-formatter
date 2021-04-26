@@ -7,7 +7,7 @@ export class ExtensionStateManager {
   private static isEnbledKey = 'tab_enabled';
   private static extensionSettingsKey = 'extension_settings';
 
-  private static defaultSettings:IExtensionSettings = {
+  private static defaultSettings: IExtensionSettings = {
     enhancedFormatterEnabled: false,
     useDarkMode: false,
   };

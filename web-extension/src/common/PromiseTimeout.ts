@@ -1,4 +1,4 @@
-import {Logger} from './Logger'
+import { Logger } from './Logger'
 
 export function promiseTimeout(miliSeconds, promise, message): Promise<any> {
 

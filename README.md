@@ -49,6 +49,14 @@ You can edit your Column Formatting JSON inside VSCode and have it synchronized 
 4. Wait for `VSCode is connected` message with a file name from VSCode instance.
 5. Edit file in VSCode and see live results in a browser.
 
+### Known issues
+
+1. If you have SP Formatter web extension enabled and navigate between different SharePoint pages, SP Formatter might not work properly (or not work at all).  
+
+    SP Formatter "loses" context when you navigate between SharePoint pages in a same browser tab because of the async navigation nature in SPO. It's hard to track such navigation from the extension code.   
+
+    > **How to fix:** Just open a page, where you're going to format view\columns and perform a page refresh (F5) or hard refresh (CTRL + F5). Now SP Formatter should work as normal
+
 ### PRIVACY POLICY  
 
 SP Formatter does not collect nor store any personal data.

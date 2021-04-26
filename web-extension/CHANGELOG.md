@@ -1,5 +1,9 @@
 # Changelog  
 
+## 0.0.7 - 26 Apr 2021
+
+- bug fixes, documentation updates - thanks [@thechriskent](https://github.com/thechriskent)
+
 ## 0.0.6 - 31 Jan 2021
 
 - fixed issue with empty _spPageContextInfo on some modern pages

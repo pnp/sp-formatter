@@ -35,7 +35,9 @@ export class WebEventEmitter extends EventEmitter {
     return this._instance;
   }
 
-  public emit<T>(eventName: string, data: T): void {
+  public override emit<T>(eventName: string, data?: T): void {
+    data = data || {} as T;
+
     window.postMessage({
       [this.typeKey]: eventName,
       ...data

@@ -22,7 +22,9 @@ export class ChromeEventEmitter extends EventEmitter {
     });
   }
 
-  public emit<T>(eventName: string, data: T): void {
+  public override emit<T>(eventName: string, data?: T): void {
+    data = data || {} as T;
+
     this.port.postMessage({
       [this.typeKey]: eventName,
       ...data

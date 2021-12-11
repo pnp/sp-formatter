@@ -7,6 +7,8 @@ import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { promiseTimeout } from '../common/PromiseTimeout';
 import { IExtensionSettings } from '../common/data/IExtensionSettings';
 import { Logger } from '../common/Logger';
+import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
+import { IViewFormattingSchema } from '../common/data/IViewFormattingSchema';
 
 /**
  * Communicates with background page with port, injects page scripts and communicate with page using postMessage
@@ -17,26 +19,28 @@ export class ContentManager {
   private backgroundPipe: ChromeEventEmitter;
   private pagePipe: WebEventEmitter;
   private columnFormatterSchema: any;
-  private viewFormatterSchema: any;
-  private schemaRequstTimeout = 1 * 1000;
+  private viewFormatterSchema: IViewFormattingSchema;
 
   constructor() {
     Logger.log('Connecting to the background service....');
 
-    const port = chrome.runtime.connect(null, { name: TabConnectEventName });
+    const port = chrome.runtime.connect({ name: TabConnectEventName });
 
     Logger.log('Connected to the background service....');
 
     this.backgroundPipe = new ChromeEventEmitter(port);
     this.pagePipe = WebEventEmitter.instance;
 
-    this.backgroundPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
-      this.columnFormatterSchema = await this.getColumnFormattingSchema();
-      this.viewFormatterSchema = await this.getViewFormattingSchema();
+    chrome.runtime.onConnect.addListener(port => {
+      const contentPipe = new ChromeEventEmitter(port);
 
-      await this.initInjectScripts(data.enabled);
-      this.pagePipe.emit(Popup.onChangeEnabled, data);
-    });
+      contentPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
+        await this.fetchSchemas();
+
+        await this.initInjectScripts(data.enabled);
+        this.pagePipe.emit(Popup.onChangeEnabled, data);
+      });
+    })
 
     this.pagePipe.on(Content.onGetExtensionSettings, async () => {
       const settings = await ExtensionStateManager.getExtensionSettings();
@@ -45,7 +49,7 @@ export class ContentManager {
 
     this.pagePipe.on<IExtensionSettings>(Content.onSaveExtensionSettings, async (settings) => {
       await ExtensionStateManager.setExtensionSettings(settings);
-      this.pagePipe.emit(Content.onSavedExtensionSettings, {});
+      this.pagePipe.emit(Content.onSavedExtensionSettings);
     });
 
     this.pagePipe.on(Content.onGetColumnFormattingSchema, () => {
@@ -62,14 +66,39 @@ export class ContentManager {
     const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
     if (!isEnabledForCurrentTab) return;
 
-    this.columnFormatterSchema = await this.getColumnFormattingSchema();
-    this.viewFormatterSchema = await this.getViewFormattingSchema();
+    await this.fetchSchemas();
 
     await this.initInjectScripts(isEnabledForCurrentTab);
 
     this.pagePipe.emit(Popup.onChangeEnabled, {
       enabled: isEnabledForCurrentTab
     });
+  }
+
+  private async fetchSchemas(): Promise<void> {
+    await this.fetchColumnSchema();
+    await this.fetchViewSchema();
+  }
+
+  private async fetchViewSchema(): Promise<void> {
+    if (!this.viewFormatterSchema) {
+      this.viewFormatterSchema = {} as any;
+      const viewResult = await fetch(chrome.runtime.getURL('schema/view-formatting.schema.json'));
+      this.viewFormatterSchema.view = await viewResult.json();
+      const rowResult = await fetch(chrome.runtime.getURL('schema/row-formatting.schema.json'));
+      this.viewFormatterSchema.row = await rowResult.json();
+      const tileResult = await fetch(chrome.runtime.getURL('schema/tile-formatting.schema.json'));
+      this.viewFormatterSchema.tile = await tileResult.json();
+    }
+  }
+
+  private async fetchColumnSchema(): Promise<void> {
+    if (!this.columnFormatterSchema) {
+      const res = await fetch(chrome.runtime.getURL('schema/column-formatting.schema.json'));
+      this.columnFormatterSchema = await res.json();
+      const schemaEnhancer = new ColumnSchemaEnhancer(this.columnFormatterSchema);
+      this.columnFormatterSchema = schemaEnhancer.extend();
+    }
   }
 
   private async getCurrentTabId(): Promise<number> {
@@ -81,39 +110,10 @@ export class ContentManager {
       };
 
       this.backgroundPipe.on(Content.onSendTabId, onRecievedCallback);
-      this.backgroundPipe.emit(Content.onGetTabId, {});
+      this.backgroundPipe.emit(Content.onGetTabId);
     });
 
     return promiseTimeout(CommunicationTimeout, promise, 'getCurrentTabId');
-  }
-
-  private async getColumnFormattingSchema(): Promise<any> {
-    const promise = new Promise((resolve) => {
-
-      const onRecievedCallback = (data) => {
-        resolve(data);
-        this.backgroundPipe.off(Content.onSendColumnFormattingSchema, onRecievedCallback);
-      };
-
-      this.backgroundPipe.on(Content.onSendColumnFormattingSchema, onRecievedCallback);
-      this.backgroundPipe.emit(Content.onGetColumnFormattingSchema, {});
-    });
-
-    return promiseTimeout(this.schemaRequstTimeout, promise, 'getColumnFormattingSchema');
-  }
-
-  private async getViewFormattingSchema(): Promise<any> {
-    const promise = new Promise((resolve) => {
-
-      const onRecievedCallback = (data) => {
-        resolve(data);
-        this.backgroundPipe.off(Content.onSendViewFormattingSchema, onRecievedCallback);
-      };
-
-      this.backgroundPipe.on(Content.onSendViewFormattingSchema, onRecievedCallback);
-      this.backgroundPipe.emit(Content.onGetViewFormattingSchema, {});
-    });
-    return promiseTimeout(this.schemaRequstTimeout, promise, 'getViewFormattingSchema');
   }
 
   private async initInjectScripts(enable: boolean): Promise<void> {

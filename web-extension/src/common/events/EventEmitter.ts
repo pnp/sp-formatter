@@ -19,5 +19,5 @@ export abstract class EventEmitter {
     }
   }
 
-  abstract emit<T>(eventName: string, data: T): void;
+  abstract emit<T>(eventName: string, data?: T): void;
 }

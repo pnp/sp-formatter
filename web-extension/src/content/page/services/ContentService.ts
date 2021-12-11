@@ -20,7 +20,7 @@ export class ContentService {
       };
 
       this.pagePipe.on<IExtensionSettings>(Content.onSendExtensionSettings, getData);
-      this.pagePipe.emit(Content.onGetExtensionSettings, {});
+      this.pagePipe.emit(Content.onGetExtensionSettings);
     });
 
     return promiseTimeout(CommunicationTimeout, promise, 'getExtensionSettings');
@@ -49,7 +49,7 @@ export class ContentService {
       };
 
       this.pagePipe.on<IExtensionSettings>(Content.onSendColumnFormattingSchema, getData);
-      this.pagePipe.emit(Content.onGetColumnFormattingSchema, {});
+      this.pagePipe.emit(Content.onGetColumnFormattingSchema);
     });
 
     return promiseTimeout(CommunicationTimeout, promise, 'getColumnFormatterSchema');
@@ -63,7 +63,7 @@ export class ContentService {
       };
 
       this.pagePipe.on(Content.onSendViewFormattingSchema, getData);
-      this.pagePipe.emit(Content.onGetViewFormattingSchema, {});
+      this.pagePipe.emit(Content.onGetViewFormattingSchema);
     });
 
     return promiseTimeout(CommunicationTimeout, promise, 'getViewFormatterSchema');

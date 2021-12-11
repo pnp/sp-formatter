@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",
-    "build": "npm run lint && npm run prod && gulp zip",
-    "lint": "eslint -c .eslintrc.json --ext .ts,.tsx src",
+    "build": "npm run prod && gulp zip",
     "prod": "webpack --config webpack/webpack.prod.js"
   },
   "author": "",

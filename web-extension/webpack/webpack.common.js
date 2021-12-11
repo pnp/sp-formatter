@@ -60,10 +60,10 @@ module.exports = {
       files: './src/**/*.{ts,tsx}'
     }
   }),
-    new webpack.IgnorePlugin(/^((fs)|(path)|(os)|(crypto)|(source-map-support))$/, /vs\/language\/typescript\/lib/),
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
-    }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.NamedChunksPlugin()]
+  new webpack.IgnorePlugin(/^((fs)|(path)|(os)|(crypto)|(source-map-support))$/, /vs\/language\/typescript\/lib/),
+  new webpack.optimize.LimitChunkCountPlugin({
+    maxChunks: 1
+  }),
+  new webpack.NamedModulesPlugin(),
+  new webpack.NamedChunksPlugin()]
 };

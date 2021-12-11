@@ -1,13 +1,12 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup, Content } from '../common/events/Events';
 import { IChangeData } from '../common/data/IChangeData';
-import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl, ViewSchemaUrl, RowSchemaUrl, TileSchemaUrl } from '../common/Consts';
+import { PopupConnectEventName, TabConnectEventName } from '../common/Consts';
 import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
 import { Logger } from '../common/Logger';
 import { IViewFormattingSchema } from '../common/data/IViewFormattingSchema';
 
 const tabConnections: { [id: number]: ChromeEventEmitter } = {};
-let popupPipe: ChromeEventEmitter;
 let columnSchema: any;
 let viewSchema: IViewFormattingSchema;
 
@@ -44,7 +43,7 @@ function initContentPipe(port: chrome.runtime.Port): void {
 }
 
 function initPopupPipe(port: chrome.runtime.Port): void {
-  popupPipe = new ChromeEventEmitter(port);
+  const popupPipe = new ChromeEventEmitter(port);
 
   popupPipe.on<IChangeData>(Popup.onChangeEnabled, (data) => {
     tabConnections[data.tabId].emit<IChangeData>(Popup.onChangeEnabled, data);
@@ -53,7 +52,7 @@ function initPopupPipe(port: chrome.runtime.Port): void {
 
 async function fetchColumnSchema(): Promise<any> {
   if (!columnSchema) {
-    const res = await fetch(ColumnSchemaUrl);
+    const res = await fetch(chrome.runtime.getURL('schema/column-formatting.schema.json'));
     columnSchema = await res.json();
     const schemaEnhancer = new ColumnSchemaEnhancer(columnSchema);
     columnSchema = schemaEnhancer.extend();
@@ -65,11 +64,11 @@ async function fetchColumnSchema(): Promise<any> {
 async function fetchViewSchema(): Promise<IViewFormattingSchema> {
   if (!viewSchema) {
     viewSchema = {} as any;
-    const viewResult = await fetch(ViewSchemaUrl);
+    const viewResult = await fetch(chrome.runtime.getURL('schema/view-formatting.schema.json'));
     viewSchema.view = await viewResult.json();
-    const rowResult = await fetch(RowSchemaUrl);
+    const rowResult = await fetch(chrome.runtime.getURL('schema/row-formatting.schema.json'));
     viewSchema.row = await rowResult.json();
-    const tileResult = await fetch(TileSchemaUrl);
+    const tileResult = await fetch(chrome.runtime.getURL('schema/tile-formatting.schema.json'));
     viewSchema.tile = await tileResult.json();
   }
 

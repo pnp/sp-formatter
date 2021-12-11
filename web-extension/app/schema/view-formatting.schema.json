@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ViewFormatter JSON",
+  "description": "View Formatter JSON for SharePoint lists.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json"
+    },
+    {
+      "properties": {
+        "tileProps": {
+          "description": "JSON object that defines tiles in 'Tiles' layout.",
+          "$ref": "https://developer.microsoft.com/json-schemas/sp/v2/tile-formatting.schema.json"
+        }
+      }
+    }
+  ]
+}

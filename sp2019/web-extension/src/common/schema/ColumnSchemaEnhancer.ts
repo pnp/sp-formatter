@@ -20,7 +20,7 @@ export class ColumnSchemaEnhancer {
   }
 
   private addIconName(): void {
-    this.baseSchema.properties.attributes.properties.iconName = {
+    this.baseSchema.definitions.elm.properties.attributes.properties.iconName = {
       'description': 'Specifies the Fabric icon to display before this element',
       'anyOf': [{
         '$ref': '#/definitions/expression'
@@ -33,7 +33,7 @@ export class ColumnSchemaEnhancer {
   }
 
   private addRel(): void {
-    this.baseSchema.properties.attributes.properties.rel = {
+    this.baseSchema.definitions.elm.properties.attributes.properties.rel = {
       'description': 'Specifies the relationship between the current document and the linked document, used primarily for <a> element types.',
       'anyOf': [{
         '$ref': '#/definitions/expression'
@@ -50,7 +50,7 @@ export class ColumnSchemaEnhancer {
   }
 
   private addRole(): void {
-    this.baseSchema.properties.attributes.properties.role = {
+    this.baseSchema.definitions.elm.properties.attributes.properties.role = {
       'description': 'Specifies the role attribute, used accessibility.',
       'anyOf': [{
         '$ref': '#/definitions/expression'
@@ -72,7 +72,7 @@ export class ColumnSchemaEnhancer {
   }
 
   private addTarget(): void {
-    this.baseSchema.properties.attributes.properties.target = {
+    this.baseSchema.definitions.elm.properties.attributes.properties.target = {
       'description': 'Specifies the target attribute, used primarily for <a> element types.',
       'anyOf': [{
         '$ref': '#/definitions/expression'
@@ -118,7 +118,7 @@ export class ColumnSchemaEnhancer {
   }
 
   private extendTxtContentValues(): void {
-    this.baseSchema.properties.txtContent.anyOf.push({
+    this.baseSchema.definitions.elm.properties.txtContent.anyOf.push({
       '$ref': '#/definitions/fieldValue'
     });
   }
@@ -180,7 +180,7 @@ export class ColumnSchemaEnhancer {
       this.createStyleSchemaElement(prop, 'styleStandard', results);
     });
 
-    this.baseSchema.properties.style.properties = results;
+    this.baseSchema.definitions.elm.properties.style.properties = results;
   }
 
   private createStyleSchemaElement(prop: IPropertyData, styleType: string, result: any): void {

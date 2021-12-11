@@ -6,7 +6,6 @@ import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { WebEventEmitter } from '../common/events/WebEventEmitter';
 import { promiseTimeout } from '../common/PromiseTimeout';
 import { IExtensionSettings } from '../common/data/IExtensionSettings';
-import { IPageContextInfo } from '../typings';
 import { Logger } from '../common/Logger';
 
 /**
@@ -117,20 +116,6 @@ export class ContentManager {
     return promiseTimeout(this.schemaRequstTimeout, promise, 'getViewFormattingSchema');
   }
 
-  private async getSpPageContext(): Promise<IPageContextInfo> {
-    const promise = new Promise((resolve) => {
-
-      const onRecievedCallback = (data: IPageContextInfo) => {
-        resolve(data);
-        this.pagePipe.off(Content.onSendSpPageContextInfo, onRecievedCallback);
-      };
-
-      this.pagePipe.on<IPageContextInfo>(Content.onSendSpPageContextInfo, onRecievedCallback);
-      this.pagePipe.emit(Content.onGetSpPageContextInfo, {});
-    });
-    return promiseTimeout(this.schemaRequstTimeout, promise, 'getSpPageContextInfo');
-  }
-
   private async initInjectScripts(enable: boolean): Promise<void> {
     if (!this.scriptsInjected && enable) {
       this.scriptsInjected = true;
@@ -150,14 +135,8 @@ export class ContentManager {
     const id = chrome.runtime.id;
 
     this.injectScript(`window.__sp_formatter_id__ = '${id}'`);
-    await this.injectScriptFile('dist/sp-context-provider.js');
 
-    const pageContext = await this.getSpPageContext();
-    if (!pageContext.isSPO) {
-      await this.injectScriptFile('dist/inject-legacy.js');
-    } else {
-      await this.injectScriptFile('dist/inject.js');
-    }
+    await this.injectScriptFile('dist/inject.js');
   }
 
   private injectScriptFile(src: string): Promise<void> {

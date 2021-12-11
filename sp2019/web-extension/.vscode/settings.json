@@ -1,0 +1,40 @@
+{
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.eol": "\n",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/manifest.json"
+            ],
+            "url": "http://json.schemastore.org/chrome-manifest"
+        }
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "editor.detectIndentation": true,
+    "files.autoSave": "off",
+    "cSpell.enabledLanguageIds": [
+        "asciidoc",
+        "c",
+        "cpp",
+        "csharp",
+        "go",
+        "handlebars",
+        "jade",
+        "javascriptreact",
+        "latex",
+        "less",
+        "markdown",
+        "php",
+        "plaintext",
+        "pub",
+        "python",
+        "restructuredtext",
+        "rust",
+        "scss",
+        "text",
+        "yml"
+    ],
+    "liveServer.settings.port": 5501
+}

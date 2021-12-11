@@ -1,7 +1,7 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup, Content } from '../common/events/Events';
 import { IChangeData } from '../common/data/IChangeData';
-import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl, ViewSchemaUrl, RowSchemaUrl, TileSchemaUrl } from '../common/Consts';
+import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl } from '../common/Consts';
 import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
 import { Logger } from '../common/Logger';
 import { IViewFormattingSchema } from '../common/data/IViewFormattingSchema';
@@ -9,7 +9,13 @@ import { IViewFormattingSchema } from '../common/data/IViewFormattingSchema';
 const tabConnections: { [id: number]: ChromeEventEmitter } = {};
 let popupPipe: ChromeEventEmitter;
 let columnSchema: any;
-let viewSchema: IViewFormattingSchema;
+
+// view formatting is not supported for SP 2019
+const viewSchema: IViewFormattingSchema = {} as any;
+
+chrome.browserAction.setBadgeText({
+  text: '19'
+})
 
 chrome.runtime.onConnect.addListener((port) => {
   Logger.log(`Received connection request: ${port.name ?? '<no name>'}`);
@@ -37,9 +43,7 @@ function initContentPipe(port: chrome.runtime.Port): void {
   });
 
   contentPipe.on<IViewFormattingSchema>(Content.onGetViewFormattingSchema, async () => {
-    Logger.log('background.onGetViewFormattingSchema');
-    const schema = await fetchViewSchema();
-    contentPipe.emit<IViewFormattingSchema>(Content.onSendViewFormattingSchema, schema);
+    contentPipe.emit<IViewFormattingSchema>(Content.onSendViewFormattingSchema, viewSchema);
   });
 }
 
@@ -60,18 +64,4 @@ async function fetchColumnSchema(): Promise<any> {
   }
 
   return columnSchema;
-}
-
-async function fetchViewSchema(): Promise<IViewFormattingSchema> {
-  if (!viewSchema) {
-    viewSchema = {} as any;
-    const viewResult = await fetch(ViewSchemaUrl);
-    viewSchema.view = await viewResult.json();
-    const rowResult = await fetch(RowSchemaUrl);
-    viewSchema.row = await rowResult.json();
-    const tileResult = await fetch(TileSchemaUrl);
-    viewSchema.tile = await tileResult.json();
-  }
-
-  return viewSchema;
 }

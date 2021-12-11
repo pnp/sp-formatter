@@ -1,7 +1,7 @@
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup, Content } from '../common/events/Events';
 import { IChangeData } from '../common/data/IChangeData';
-import { PopupConnectEventName, TabConnectEventName, ColumnSchemaUrl } from '../common/Consts';
+import { PopupConnectEventName, TabConnectEventName } from '../common/Consts';
 import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
 import { Logger } from '../common/Logger';
 import { IViewFormattingSchema } from '../common/data/IViewFormattingSchema';
@@ -57,10 +57,15 @@ function initPopupPipe(port: chrome.runtime.Port): void {
 
 async function fetchColumnSchema(): Promise<any> {
   if (!columnSchema) {
-    const res = await fetch(ColumnSchemaUrl);
+    Logger.log('Fetching column schema');
+
+    const schemaUrl = chrome.runtime.getURL('schema/column-formatting.schema.json');
+    const res = await fetch(schemaUrl);
     columnSchema = await res.json();
     const schemaEnhancer = new ColumnSchemaEnhancer(columnSchema);
     columnSchema = schemaEnhancer.extend();
+
+    Logger.log('Received column schema:', columnSchema);
   }
 
   return columnSchema;

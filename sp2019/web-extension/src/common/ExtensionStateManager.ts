@@ -4,8 +4,8 @@ import { IExtensionSettings } from './data/IExtensionSettings';
 
 export class ExtensionStateManager {
 
-  private static isEnbledKey = 'tab2019_enabled';
-  private static extensionSettingsKey = 'extension2019_settings';
+  private static isEnbledKey = 'tab_2019_enabled';
+  private static extensionSettingsKey = 'extension_2019_settings';
 
   private static defaultSettings: IExtensionSettings = {
     enhancedFormatterEnabled: false,

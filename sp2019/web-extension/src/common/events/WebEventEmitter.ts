@@ -1,3 +1,4 @@
+import { Logger } from '../Logger';
 import { EventEmitter } from './EventEmitter';
 
 export class WebEventEmitter extends EventEmitter {
@@ -19,6 +20,8 @@ export class WebEventEmitter extends EventEmitter {
 
       if (!events || events.length === 0) return;
 
+      Logger.log('Received event', event.data);
+
       delete event.data[this.typeKey];
 
       events.forEach((callback) => {
@@ -36,16 +39,11 @@ export class WebEventEmitter extends EventEmitter {
   }
 
   public emit<T>(eventName: string, data: T): void {
-    if (eventName === 'cf_content_send_column_schema') {
-      window.postMessage({
-        [this.typeKey]: eventName,
-        test: true
-      }, '*');
-    } else {
-      window.postMessage({
-        [this.typeKey]: eventName,
-        ...data
-      }, '*');
-    }
+    Logger.log(`Emitting event ${eventName}`, data);
+
+    window.postMessage({
+      [this.typeKey]: eventName,
+      ...data
+    }, '*');
   }
 }

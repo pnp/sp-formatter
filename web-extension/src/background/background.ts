@@ -15,6 +15,7 @@ function initContentPipe(port: chrome.runtime.Port): void {
   const contentPipe = new ChromeEventEmitter(port);
 
   contentPipe.on(Content.onGetTabId, () => {
+    Logger.log('Sending tab id: ' + port.sender.tab.id);
     contentPipe.emit(Content.onSendTabId, { tabId: port.sender.tab.id });
   });
 }

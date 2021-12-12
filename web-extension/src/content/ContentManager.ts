@@ -124,16 +124,7 @@ export class ContentManager {
     }
   }
 
-  private injectScript(code): void {
-    const scriptElement = document.createElement('script');
-    scriptElement.textContent = code;
-    (document.head || document.documentElement).appendChild(scriptElement);
-    scriptElement.remove();
-  }
-
   private async injectScripts(): Promise<void> {
-    this.injectScript(`window.__sp_formatter_id__ = '${chrome.runtime.id}'`);
-
     await this.injectScriptFile('dist/inject.js');
   }
 

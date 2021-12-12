@@ -1,10 +1,10 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "SP Formatter",
   "short_name": "SP Formatter",
   "homepage_url": "https://github.com/pnp/sp-formatter",
   "description": "Customize your SharePoint Column or View Formatting JSON using full-featured editor instead of default one.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "content_scripts": [
     {
       "run_at": "document_end",
@@ -17,10 +17,7 @@
     }
   ],
   "background": {
-    "scripts": [
-      "hot-reload.js",
-      "dist/background.js"
-    ]
+    "service_worker": "dist/background.js"
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -29,14 +26,15 @@
     "96": "icons/icon96.png",
     "128": "icons/icon128.png"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup/popup.html"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "scripting"
   ],
-  "web_accessible_resources": [
-    "dist/*",
-    "schema/*"
-  ]
+  "web_accessible_resources": [{
+    "resources": ["dist/*", "schema/*"],
+    "matches": ["<all_urls>"]
+  }]
 }

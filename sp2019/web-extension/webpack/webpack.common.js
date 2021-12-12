@@ -44,9 +44,11 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js']
   },
   optimization: {
+    moduleIds: 'named',
+    chunkIds: 'named',
     splitChunks: {
       cacheGroups: {
-        vendor: {
+        defaultVendors: {
           chunks: 'all',
           test: /dist[\\/]monaco/,
           name: 'monaco-build',
@@ -55,15 +57,12 @@ module.exports = {
       }
     }
   },
-  plugins: [new ForkTsCheckerWebpackPlugin({
-    eslint: {
-      files: './src/**/*.{ts,tsx}'
-    }
-  }),
-    new webpack.IgnorePlugin(/^((fs)|(path)|(os)|(crypto)|(source-map-support))$/, /vs\/language\/typescript\/lib/),
+  plugins: [new ForkTsCheckerWebpackPlugin(),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^((fs)|(path)|(os)|(crypto)|(source-map-support))$/,
+      contextRegExp: /vs\/language\/typescript\/lib/
+    }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
-    }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.NamedChunksPlugin()]
+    })]
 };

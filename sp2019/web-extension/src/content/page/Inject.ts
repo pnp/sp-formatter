@@ -9,35 +9,33 @@ import { GlobalSettings } from '@uifabric/utilities/lib/GlobalSettings';
 import { getTheme } from '@uifabric/styling/lib/styles/theme';
 
 // if SP 2019
-if (!window._spPageContextInfo.isSPO) {
-  // Fix to make it work with OUIFR 7.x
+// Fix to make it work with OUIFR 7.x
 
-  const customizations = GlobalSettings.getValue('customizations');
-  const theme = getTheme();
-  (customizations as any).settings.theme.effects = { ...theme.effects };
-  (customizations as any).settings.theme.spacing = { ...theme.spacing };
-  (customizations as any).settings.theme.fonts = { ...theme.fonts };
-}
+const customizations = GlobalSettings.getValue('customizations');
+const theme = getTheme();
+(customizations as any).settings.theme.effects = { ...theme.effects };
+(customizations as any).settings.theme.spacing = { ...theme.spacing };
+(customizations as any).settings.theme.fonts = { ...theme.fonts };
 
 const extensionId = window.__sp_formatter_id__;
 
 window.MonacoEnvironment = {
-	getWorker: function (moduleId, label) {
-		if (label === 'json') {
-			return new PseudoWorker(`chrome-extension://${extensionId}/dist/json.worker.js`);
-		}
-		if (label === 'css') {
-			return new PseudoWorker(`chrome-extension://${extensionId}/dist/css.worker.js`);
-		}
-		if (label === 'html') {
-			return new PseudoWorker(`chrome-extension://${extensionId}/dist/html.worker.js`);
-		}
-		if (label === 'typescript' || label === 'javascript') {
-			return new PseudoWorker(`chrome-extension://${extensionId}/dist/ts.worker.js`);
-		}
+  getWorker: function (moduleId, label) {
+    if (label === 'json') {
+      return new PseudoWorker(`chrome-extension://${extensionId}/dist/json.worker.js`);
+    }
+    if (label === 'css') {
+      return new PseudoWorker(`chrome-extension://${extensionId}/dist/css.worker.js`);
+    }
+    if (label === 'html') {
+      return new PseudoWorker(`chrome-extension://${extensionId}/dist/html.worker.js`);
+    }
+    if (label === 'typescript' || label === 'javascript') {
+      return new PseudoWorker(`chrome-extension://${extensionId}/dist/ts.worker.js`);
+    }
 
-		return new PseudoWorker(`chrome-extension://${extensionId}/dist/editor.worker.js`);
-	}
+    return new PseudoWorker(`chrome-extension://${extensionId}/dist/editor.worker.js`);
+  }
 }
 
 // prefetch fields - for performance - they will be cached

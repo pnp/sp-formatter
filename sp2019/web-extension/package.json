@@ -4,7 +4,9 @@
   "description": "Extends SharePoint Column \\ View Formatting with convinient editing experience",
   "main": "index.js",
   "scripts": {
-    "watch": "webpack --config webpack/webpack.dev.js --watch",
+    "watch:webpack": "webpack --config webpack/webpack.dev.js --watch",
+    "watch:reload": "mv3-hot-reload",
+    "watch": "concurrently npm:watch:*",
     "build": "npm run prod && gulp zip",
     "prod": "webpack --config webpack/webpack.prod.js"
   },

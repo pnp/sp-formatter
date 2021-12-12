@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "SP 2019 Formatter",
   "short_name": "SP 19 Format",
   "homepage_url": "https://github.com/pnp/sp-formatter",
@@ -17,10 +17,7 @@
     }
   ],
   "background": {
-    "scripts": [
-      "hot-reload.js",
-      "dist/background.js"
-    ]
+    "service_worker": "dist/background.js"
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -29,14 +26,21 @@
     "96": "icons/icon96.png",
     "128": "icons/icon128.png"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup/popup.html"
   },
   "permissions": [
     "storage"
   ],
   "web_accessible_resources": [
-    "dist/*",
-    "schema/*"
+    {
+      "resources": [
+        "dist/*",
+        "schema/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ]
 }

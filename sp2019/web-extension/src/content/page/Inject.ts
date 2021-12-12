@@ -7,6 +7,11 @@ import { DomService, ViewType } from './services/DomService';
 import { getListFields } from './services/SPService';
 import { GlobalSettings } from '@uifabric/utilities/lib/GlobalSettings';
 import { getTheme } from '@uifabric/styling/lib/styles/theme';
+import { Logger } from '../../common/Logger';
+
+const extensionId = (document.currentScript as HTMLScriptElement).src.split('://').pop().split('/').shift();
+
+Logger.log(`Extension id: ${extensionId}`);
 
 // if SP 2019
 // Fix to make it work with OUIFR 7.x
@@ -16,8 +21,6 @@ const theme = getTheme();
 (customizations as any).settings.theme.effects = { ...theme.effects };
 (customizations as any).settings.theme.spacing = { ...theme.spacing };
 (customizations as any).settings.theme.fonts = { ...theme.fonts };
-
-const extensionId = window.__sp_formatter_id__;
 
 window.MonacoEnvironment = {
   getWorker: function (moduleId, label) {

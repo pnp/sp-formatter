@@ -6,14 +6,13 @@ import { ExtensionStateManager } from '../common/ExtensionStateManager';
 import { ChromeEventEmitter } from '../common/events/ChromeEventEmitter';
 import { Popup } from '../common/events/Events';
 import { IChangeData } from '../common/data/IChangeData';
-import { PopupConnectEventName } from '../common/Consts';
 import { ChromeUtils } from '../common/chrome/ChromeUtils';
 
 import './popup.css';
 import { FC } from 'react';
+import { PopupConnectEventName } from '../common/Consts';
 
-const port = chrome.runtime.connect(null, { name: PopupConnectEventName });
-const backgroundPipe = new ChromeEventEmitter(port);
+let contentPipe: ChromeEventEmitter;
 
 export const App: FC = () => {
   const [enabled, setEnabled] = React.useState(false);
@@ -23,7 +22,7 @@ export const App: FC = () => {
     const tab = await ChromeUtils.getActiveTab();
     await ExtensionStateManager.setIsEnabledForTab(tab.id, checked);
 
-    backgroundPipe.emit<IChangeData>(Popup.onChangeEnabled, {
+    contentPipe.emit<IChangeData>(Popup.onChangeEnabled, {
       enabled: checked,
       tabId: tab.id
     });
@@ -41,6 +40,11 @@ export const App: FC = () => {
   React.useEffect(() => {
     const setData = async () => {
       const tab = await ChromeUtils.getActiveTab();
+
+      contentPipe = new ChromeEventEmitter(chrome.tabs.connect(tab.id, {
+        name: PopupConnectEventName
+      }));
+
       const enabled = await ExtensionStateManager.isEnabledForTab(tab.id);
       setEnabled(enabled);
 

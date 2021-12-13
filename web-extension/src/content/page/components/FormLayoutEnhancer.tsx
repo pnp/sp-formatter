@@ -72,7 +72,7 @@ class FormLayoutEnhancer {
     this.isInFullScreen = enable;
     if (!this.editor) return;
 
-    const customizationPaneArea = DomService.getCustomizationPaneArea();
+    const customizationPaneArea = DomService.getFormLayoutCustomizationPaneArea();
     const monacoElement = DomService.getMonacoEditor();
     const designerArea = DomService.getEditableTextArea();
 
@@ -152,7 +152,7 @@ class FormLayoutEnhancer {
       }
     });
 
-    const customizationPaneArea = DomService.getCustomizationPaneArea();
+    const customizationPaneArea = DomService.getFormLayoutCustomizationPaneArea();
 
     this.resizeObserver = new ResizeObserver(() => {
       if (!this.editor) return;
@@ -223,7 +223,7 @@ class FormLayoutEnhancer {
     designerArea[reactHandler]['onBlur']();
     // end hack
 
-    const previewButton = DomService.resolvePreviewButton();
+    const previewButton = DomService.resolveFormLayoutPreviewButton();
     previewButton.click();
   }
 
@@ -241,7 +241,7 @@ class FormLayoutEnhancer {
 
     if (!objectValue[this.schemaProperty]) {
       const type = DomService.getInjectionType();
-      if (type === ViewType.Column) {
+      if (type === ViewType.Form) {
         objectValue = {
           [this.schemaProperty]: ColumnSchemaUrl,
           ...objectValue

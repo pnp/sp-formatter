@@ -83,12 +83,20 @@ export class DomService {
     return this.getElement(this.DescriptionContentSelector, 'Unable to find customization content');
   }
 
+  public static getFormLayoutCustomizationPaneArea(): HTMLDivElement {
+    return this.getElement('[class*=custom-clientform-pane-helpText]', 'Unable to find form layout customization content');
+  }
+
   public static getSharePointCodeContainer(): HTMLElement {
     return this.getElement(this.SharePointMonacoSelector, 'Unable to find column \\ view container');
   }
 
   public static resolvePreviewButton(): HTMLButtonElement {
     return (document.querySelector(`${this.RootColumnHtmlSelector}-footerButton button`) as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
+  }
+
+  public static resolveFormLayoutPreviewButton(): HTMLButtonElement {
+    return (document.querySelector('[class*=custom-clientform-pane-footer] [class*=custom-clientform-pane-button] button') as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
   }
 
   public static getEditableTextArea(): HTMLTextAreaElement {

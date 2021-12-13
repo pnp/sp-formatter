@@ -1,4 +1,6 @@
 import * as monaco from 'monaco-editor';
+import PseudoWorker from 'pseudo-worker';
+
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
@@ -12,11 +14,36 @@ import { IFileContent } from '../../../common/data/IFileContent';
 
 let completionProviderRegistered = false;
 
+const extensionId = (document.currentScript as HTMLScriptElement).src.split('://').pop().split('/').shift();
+
 export function enableFormFormatter() {
   const pagePipe = WebEventEmitter.instance;
   const enhancer = new FormLayoutEnhancer();
 
   pagePipe.on<IEnabled>(Content.onToggleEnabledFormFormatter, async (data) => {
+    if (data.enabled && !window.MonacoEnvironment) {
+      window.MonacoEnvironment = {
+        getWorker: function (moduleId, label) {
+          if (label === 'json') {
+            return new PseudoWorker(`chrome-extension://${extensionId}/dist/json.worker.js`);
+          }
+          if (label === 'css') {
+            return new PseudoWorker(`chrome-extension://${extensionId}/dist/css.worker.js`);
+          }
+          if (label === 'html') {
+            return new PseudoWorker(`chrome-extension://${extensionId}/dist/html.worker.js`);
+          }
+          if (label === 'typescript' || label === 'javascript') {
+            return new PseudoWorker(`chrome-extension://${extensionId}/dist/ts.worker.js`);
+          }
+
+          return new PseudoWorker(`chrome-extension://${extensionId}/dist/editor.worker.js`);
+        }
+      }
+    } else if (!data.enabled) {
+      delete window.MonacoEnvironment;
+    }
+
     data.enabled ? enhancer.injectCustomFormatter() : enhancer.destroyFormatter();
   });
 
@@ -25,7 +52,7 @@ export function enableFormFormatter() {
   });
 }
 
-class FormLayoutEnhancer {
+export class FormLayoutEnhancer {
   private contentService: ContentService;
   private columnSchema: any;
   private viewSchema: IViewFormattingSchema;
@@ -173,7 +200,7 @@ class FormLayoutEnhancer {
   private async createSchemas(fileUri: string): Promise<any[]> {
     const viewType = DomService.getInjectionType();
 
-    if (viewType === ViewType.Column) {
+    if (viewType === ViewType.Form) {
 
       return [{
         uri: this.spFormatterSchemaUri,
@@ -181,15 +208,7 @@ class FormLayoutEnhancer {
         schema: this.columnSchema
       }];
     }
-
-    return [{
-      uri: this.spFormatterSchemaUri,
-      fileMatch: [fileUri],
-      schema: this.viewSchema.view
-    }, {
-      uri: ColumnSchemaUrl,
-      schema: this.columnSchema
-    }];
+    throw new Error('Unsupported view type');
   }
 
   private async ensureSchemas(): Promise<void> {

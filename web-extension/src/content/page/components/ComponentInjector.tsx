@@ -5,6 +5,7 @@ import { observe, Observer } from 'selector-observer';
 import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Popup, Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
+import { Logger } from '../../../common/Logger';
 
 export function enableComponentInjector<T>(component: React.FC<T>, domSelector: string, propsSelector?: () => T) {
   const pagePipe = WebEventEmitter.instance;
@@ -41,6 +42,7 @@ class ComponentInjector {
         render(<this.component {...props} />, this.container);
       },
       remove: (): void => {
+        Logger.log('Removing formatter');
         this.triggerRemoveFormatter();
       }
     });
@@ -59,6 +61,10 @@ class ComponentInjector {
 
   private triggerRemoveFormatter(): void {
     WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
+      enabled: false
+    });
+
+    WebEventEmitter.instance.emit<IEnabled>(Content.onToggleEnabledFormFormatter, {
       enabled: false
     });
   }

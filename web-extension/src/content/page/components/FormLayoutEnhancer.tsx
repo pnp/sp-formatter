@@ -1,34 +1,23 @@
-import { WebEventEmitter } from '../../common/events/WebEventEmitter';
-import { Content } from '../../common/events/Events';
-import { IEnabled } from '../../common/data/IEnabled';
-import { ContentService } from './services/ContentService';
-import { ColumnSchemaUrl, FormatterUri, RowSchemaUrl, TileSchemaUrl, ViewSchemaUrl } from '../../common/Consts';
-import { DomService, ViewType } from './services/DomService';
-import { IViewFormattingSchema } from '../../common/data/IViewFormattingSchema';
-import { registerProvider } from './services/ContextCompletionProvider';
-import { VscodeService } from './services/VscodeService';
-import { IFileContent } from '../../common/data/IFileContent';
-import { MonacoEditor } from '../../typings';
-import { getSharePointFormatterStringValue, setSharePointFormatterStringValue } from './services/SharePointMonaco';
-import { IDisposable } from 'monaco-editor';
+import * as monaco from 'monaco-editor';
+import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
+import { Content } from '../../../common/events/Events';
+import { IEnabled } from '../../../common/data/IEnabled';
+import { ContentService } from '../services/ContentService';
+import { ColumnSchemaUrl } from '../../../common/Consts';
+import { DomService, ViewType } from '../services/DomService';
+import { IViewFormattingSchema } from '../../../common/data/IViewFormattingSchema';
+import { registerProvider } from '../services/ContextCompletionProvider';
+import { VscodeService } from '../services/VscodeService';
+import { IFileContent } from '../../../common/data/IFileContent';
 
-type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
+let completionProviderRegistered = false;
 
-let monaco: MonacoEditor;
-
-export function enableFormatter() {
+export function enableFormFormatter() {
   const pagePipe = WebEventEmitter.instance;
-  const enhancer = new ColumnFormatterEnhancer();
+  const enhancer = new FormLayoutEnhancer();
 
-  pagePipe.on<IEnabled>(Content.onToggleEnabledColumnFormatter, async (data) => {
-    if (data.enabled) {
-      await DomService.waitForMonaco();
-      monaco = window.monaco;
-      enhancer.injectCustomFormatter();
-
-    } else {
-      enhancer.destroyFormatter();
-    }
+  pagePipe.on<IEnabled>(Content.onToggleEnabledFormFormatter, async (data) => {
+    data.enabled ? enhancer.injectCustomFormatter() : enhancer.destroyFormatter();
   });
 
   pagePipe.on<IEnabled>(Content.onToggleFullScreenMode, async (data) => {
@@ -36,7 +25,7 @@ export function enableFormatter() {
   });
 }
 
-class ColumnFormatterEnhancer {
+class FormLayoutEnhancer {
   private contentService: ContentService;
   private columnSchema: any;
   private viewSchema: IViewFormattingSchema;
@@ -45,12 +34,8 @@ class ColumnFormatterEnhancer {
   private isInFullScreen: boolean;
   private pagePipe: WebEventEmitter;
   private inConnectedMode = false;
-  private initialHeight: number;
-  private heightGap = 5;
-  private sharepointJsonOptions: any;
-  private completionProvider: IDisposable;
 
-  private editor: CodeEditor;
+  private editor: monaco.editor.IStandaloneCodeEditor;
   private resizeObserver: ResizeObserver;
 
   constructor() {
@@ -77,13 +62,10 @@ class ColumnFormatterEnhancer {
       this.editor = null;
     });
 
-    this.completionProvider?.dispose();
     this.editor.getModel().dispose();
     this.editor.dispose();
     this.resizeObserver.disconnect();
     VscodeService.instance.disconnect();
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions(this.sharepointJsonOptions);
-    DomService.toggleDefaultFormatter(true);
   }
 
   public toggleFullScreen(enable: boolean): void {
@@ -91,7 +73,8 @@ class ColumnFormatterEnhancer {
     if (!this.editor) return;
 
     const customizationPaneArea = DomService.getCustomizationPaneArea();
-    const monacoElement = DomService.getSpFormatterMonacoEditorContainer();
+    const monacoElement = DomService.getMonacoEditor();
+    const designerArea = DomService.getEditableTextArea();
 
     if (enable) {
 
@@ -106,8 +89,8 @@ class ColumnFormatterEnhancer {
       });
     } else {
       this.editor.layout({
-        height: this.initialHeight - this.heightGap,
-        width: customizationPaneArea.offsetWidth - 2
+        height: designerArea.offsetHeight - 2,
+        width: customizationPaneArea.offsetWidth
       });
       monacoElement.style.position = 'initial';
       monacoElement.style.marginLeft = '0';
@@ -117,30 +100,29 @@ class ColumnFormatterEnhancer {
   public async injectCustomFormatter(): Promise<void> {
     if (this.editor) return;
 
-    this.completionProvider = await registerProvider();
+    if (!completionProviderRegistered) {
+      await registerProvider();
+      completionProviderRegistered = true;
+    }
     await this.ensureSchemas();
 
-    this.initialHeight = DomService.getSharePointCodeContainer().offsetHeight;
-    const spFormatterCodeContainer = DomService.getOrCreateCodeContainer();
-    DomService.toggleDefaultFormatter(false);
+    const designerArea = DomService.getEditableTextArea();
+    designerArea.style.position = 'absolute';
 
-    const jsonModel = this.getMonacoJsonValue(getSharePointFormatterStringValue());
+    const jsonModel = this.getMonacoJsonValue(designerArea.value);
 
-    const modelUri = monaco.Uri.parse('https://' + FormatterUri);
-
+    const modelUri = monaco.Uri.parse('https://chrome-column-formatting');
+    const model = monaco.editor.createModel(jsonModel, 'json', modelUri);
     const schemas = await this.createSchemas(modelUri.toString());
 
-    this.sharepointJsonOptions = monaco.languages.json.jsonDefaults.diagnosticsOptions;
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
-      enableSchemaRequest: false,
       schemas
     });
-
-    const model = monaco.editor.createModel(jsonModel, 'json', modelUri);
     const settings = await this.contentService.getExtensionSettings();
-    this.editor = monaco.editor.create(spFormatterCodeContainer, {
+    this.editor = monaco.editor.create(designerArea.parentElement, {
       model: model,
+      language: 'json',
       theme: settings.useDarkMode ? 'vs-dark' : 'vs',
       folding: true,
       formatOnPaste: true,
@@ -152,13 +134,6 @@ class ColumnFormatterEnhancer {
         renderCharacters: false
       },
       wordWrap: 'on'
-    });
-
-    const customizationPaneArea = DomService.getCustomizationPaneArea();
-
-    this.editor.layout({
-      height: this.isInFullScreen ? window.innerHeight : this.initialHeight - this.heightGap,
-      width: customizationPaneArea.offsetWidth - 2
     });
 
     this.editor.onKeyUp((e) => {
@@ -177,12 +152,14 @@ class ColumnFormatterEnhancer {
       }
     });
 
+    const customizationPaneArea = DomService.getCustomizationPaneArea();
+
     this.resizeObserver = new ResizeObserver(() => {
       if (!this.editor) return;
 
       this.editor.layout({
-        height: this.isInFullScreen ? window.innerHeight : this.initialHeight - this.heightGap,
-        width: customizationPaneArea.offsetWidth - 2
+        height: this.isInFullScreen ? window.innerHeight : designerArea.offsetHeight - 2,
+        width: customizationPaneArea.offsetWidth
       });
     });
 
@@ -212,13 +189,6 @@ class ColumnFormatterEnhancer {
     }, {
       uri: ColumnSchemaUrl,
       schema: this.columnSchema
-    }, {
-      uri: TileSchemaUrl,
-      schema: this.viewSchema.tile
-    },
-    {
-      uri: RowSchemaUrl,
-      schema: this.viewSchema.row
     }];
   }
 
@@ -242,7 +212,16 @@ class ColumnFormatterEnhancer {
   }
 
   private dispatchDefaultReactFormatterValue(value: string) {
-    setSharePointFormatterStringValue(value);
+    const designerArea = DomService.getEditableTextArea();
+    designerArea.value = value;
+    const event = new Event('input', { bubbles: true });
+    designerArea.dispatchEvent(event);
+
+    // hack
+    const reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
+    designerArea[reactHandler]['onFocus']();
+    designerArea[reactHandler]['onBlur']();
+    // end hack
 
     const previewButton = DomService.resolvePreviewButton();
     previewButton.click();
@@ -268,10 +247,7 @@ class ColumnFormatterEnhancer {
           ...objectValue
         };
       } else {
-        objectValue = {
-          [this.schemaProperty]: ViewSchemaUrl,
-          ...objectValue
-        };
+        throw new Error('Unsupported schema type');
       }
 
       return JSON.stringify(objectValue, null, 2);

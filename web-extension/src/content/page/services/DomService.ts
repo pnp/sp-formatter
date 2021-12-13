@@ -1,6 +1,9 @@
+import { Logger } from '../../../common/Logger';
+
 export enum ViewType {
   Column,
-  View
+  View,
+  Form
 }
 
 export class DomService {
@@ -12,22 +15,27 @@ export class DomService {
   private static SpFormatterCodeContainerSelector = '#sp-formater';
   private static SharePointMonacoSelector = '.monaco-editor[data-uri*="inmemory"]';
   private static SpFormatterMonacoSelector = '.monaco-editor[data-uri*="chrome-column-formatting"]';
+  private static TextAreaSelector = '[class*=custom-clientform-pane] textarea';
+  private static MonacoSelector = '.monaco-editor';
 
   public static getInjectionType(): ViewType {
-    const descriptionText = document.querySelector('.od-ColumnCustomizationPane-description a');
-    if (!descriptionText) throw new Error('Unable to find formatting description text');
+    const buttons = document.querySelectorAll('.sp-ColumnDesigner-content div[role=tablist] button');
 
-    const href = descriptionText.getAttribute('href').toLowerCase();
-
-    if (href.indexOf('column') !== -1) {
-      return ViewType.Column;
+    // column / view formatting
+    if (buttons.length > 0) {
+      for (let i = 0; i < buttons.length; i++) {
+        const element = buttons[i];
+        if (element.classList.contains('is-selected')) {
+          return i == 0 ? ViewType.View : ViewType.Column;
+        }
+      }
+    } else {
+      return ViewType.Form;
     }
 
-    if (href.indexOf('view') !== -1) {
-      return ViewType.View;
-    }
+    Logger.error('Unable to resolve injection type, returning the default Column type');
 
-    throw new Error('Unable to resolve injection type');
+    return ViewType.Column;
   }
 
   public static async waitForMonaco(retry = 1): Promise<void> {
@@ -81,6 +89,14 @@ export class DomService {
 
   public static resolvePreviewButton(): HTMLButtonElement {
     return (document.querySelector(`${this.RootColumnHtmlSelector}-footerButton button`) as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
+  }
+
+  public static getEditableTextArea(): HTMLTextAreaElement {
+    return this.getElement(this.TextAreaSelector, 'Unable to find form layout textarea container');
+  }
+
+  public static getMonacoEditor(): HTMLElement {
+    return this.getElement(this.MonacoSelector, 'Unable to find monaco editor container');
   }
 
   private static getElement<T extends Element>(selector: string, errorText: string): T {

@@ -6,7 +6,7 @@ import { WebEventEmitter } from '../../../common/events/WebEventEmitter';
 import { Popup, Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
 
-export function enableComponentInjector(component: React.FC<any>, domSelector: string, propsSelector: () => any) {
+export function enableComponentInjector<T>(component: React.FC<T>, domSelector: string, propsSelector?: () => T) {
   const pagePipe = WebEventEmitter.instance;
   const injector = new ComponentInjector(component, domSelector, propsSelector);
 
@@ -20,8 +20,10 @@ class ComponentInjector {
   private container: HTMLElement;
   private observer: Observer;
 
-  constructor(private component: React.FC<any>, private domSelector: string, private propsSelector: () => any) {
-    //
+  constructor(private component: React.FC<any>, private domSelector: string, private propsSelector?: () => any) {
+    if (this.propsSelector == null) {
+      this.propsSelector = () => ({});
+    }
   }
 
   public inject(enable: boolean): void {

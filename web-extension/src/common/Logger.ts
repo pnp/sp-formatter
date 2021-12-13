@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export class Logger {
   public static log(info: string, data?: any): void {
     if (process.env.NODE_ENV === 'development') {
@@ -6,6 +7,14 @@ export class Logger {
       if (data) {
         console.log(data);
       }
+    }
+  }
+
+  public static error(info: string, data?: any): void {
+    const now = new Date();
+    console.error(`[${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}] [${this.getScriptName()}]: ${info}`);
+    if (data) {
+      console.log(data);
     }
   }
 

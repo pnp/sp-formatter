@@ -6,15 +6,16 @@ import { Content } from '../../../common/events/Events';
 import { IEnabled } from '../../../common/data/IEnabled';
 import { FC, MouseEvent, useState } from 'react';
 import { VscodeService } from '../services/VscodeService';
+import { DomService, ViewType } from '../services/DomService';
 
 interface IProps {
-  type: string;
+  smth?: any;
 }
 
 const contentService = new ContentService();
 const pagePipe = WebEventEmitter.instance;
 
-export const ColumnFormatterSettings: FC<IProps> = (props) => {
+export const ColumnFormatterSettings: FC<IProps> = () => {
   const [enabled, setEnabled] = useState(false);
   const [vscodeConnected, setVSCodeConnected] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -25,9 +26,7 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
       const settings = await contentService.getExtensionSettings();
       setEnabled(settings.enhancedFormatterEnabled);
 
-      pagePipe.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
-        enabled: settings.enhancedFormatterEnabled
-      });
+      emitToggleFormatterEvent(settings.enhancedFormatterEnabled);
 
       pagePipe.on<IEnabled>(Content.Vscode.onConnected, async (data) => {
         if (data.enabled) {
@@ -48,9 +47,7 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
     settings.enhancedFormatterEnabled = checked;
     await contentService.saveExtensionSettings(settings);
 
-    pagePipe.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
-      enabled: settings.enhancedFormatterEnabled
-    });
+    emitToggleFormatterEvent(settings.enhancedFormatterEnabled);
   }
 
   const onMoveToFullScreenClick = () => {
@@ -67,20 +64,41 @@ export const ColumnFormatterSettings: FC<IProps> = (props) => {
     });
   }
 
+  function emitToggleFormatterEvent(enabled: boolean) {
+    const type = DomService.getInjectionType();
+
+    if (type === ViewType.Form) {
+      pagePipe.emit<IEnabled>(Content.onToggleEnabledFormFormatter, {
+        enabled
+      });
+    } else {
+      pagePipe.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
+        enabled
+      });
+    }
+  }
+
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', marginTop: '7px' }}>
       <Toggle
         checked={enabled}
-        onText={`Enhanced ${props.type} formatter is enabled`}
-        offText={`Enhanced ${props.type} formatter is disabled`}
+        onText={'Enhanced formatter is enabled'}
+        offText={'Enhanced formatter is disabled'}
         onChange={onEnableChanged} />
+      <span style={{
+        fontStyle: 'italic',
+        fontSize: '13px',
+        display: 'block',
+        margin: '-10px 0 10px 0'
+      }}>You may need to disable and enable this toggle again if you're switching between columns or form layout options.</span>
 
       {vscodeConnected && (<div style={{
         display: 'flex',
         alignItems: 'center',
         fontSize: '13px',
         color: '#015601',
-        fontWeight: 500
+        fontWeight: 500,
+        marginBottom: '3px'
       }}>
         <FontIcon style={{
           alignSelf: 'flex-end',

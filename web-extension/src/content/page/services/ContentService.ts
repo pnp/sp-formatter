@@ -3,7 +3,7 @@ import { Content } from '../../../common/events/Events';
 import { IExtensionSettings } from '../../../common/data/IExtensionSettings';
 import { promiseTimeout } from '../../../common/PromiseTimeout';
 import { CommunicationTimeout } from '../../../common/Consts';
-import { IViewFormattingSchema } from '../../../common/data/IViewFormattingSchema';
+import { IFormatterSchemas } from '../../../common/data/IFormatterSchemas';
 
 /**
  * Communicates with content script using postMessage
@@ -12,60 +12,28 @@ export class ContentService {
   private pagePipe = WebEventEmitter.instance;
 
   public async getExtensionSettings(): Promise<IExtensionSettings> {
-
-    const promise = new Promise((resolve) => {
-      const getData = data => {
-        this.pagePipe.off(Content.onSendExtensionSettings, getData);
-        resolve(data);
-      };
-
-      this.pagePipe.on<IExtensionSettings>(Content.onSendExtensionSettings, getData);
-      this.pagePipe.emit(Content.onGetExtensionSettings);
-    });
-
-    return promiseTimeout(CommunicationTimeout, promise, 'getExtensionSettings');
+    return await this.getDataFromContentScript<IExtensionSettings>(Content.onGetExtensionSettings, Content.onSendExtensionSettings, this.getExtensionSettings.name);
   }
 
   public async saveExtensionSettings(settings: IExtensionSettings): Promise<void> {
-
-    const promise = new Promise((resolve) => {
-      const getData = data => {
-        this.pagePipe.off(Content.onSavedExtensionSettings, getData);
-        resolve(data);
-      };
-
-      this.pagePipe.on<IExtensionSettings>(Content.onSavedExtensionSettings, getData);
-      this.pagePipe.emit(Content.onSaveExtensionSettings, settings);
-    });
-
-    return promiseTimeout(CommunicationTimeout, promise, 'saveExtensionSettings');
+    await this.getDataFromContentScript<void>(Content.onSavedExtensionSettings, Content.onSavedExtensionSettings, this.saveExtensionSettings.name, settings);
   }
 
-  public async getColumnFormatterSchema(): Promise<any> {
-    const promise = new Promise((resolve) => {
-      const getData = data => {
-        this.pagePipe.off(Content.onSendColumnFormattingSchema, getData);
-        resolve(data);
-      };
-
-      this.pagePipe.on<IExtensionSettings>(Content.onSendColumnFormattingSchema, getData);
-      this.pagePipe.emit(Content.onGetColumnFormattingSchema);
-    });
-
-    return promiseTimeout(CommunicationTimeout, promise, 'getColumnFormatterSchema');
+  public async getFormatterSchemas(): Promise<IFormatterSchemas> {
+    return await this.getDataFromContentScript<IFormatterSchemas>(Content.onGetFormattingSchemas, Content.onSendFormattingSchemas, this.getFormatterSchemas.name);
   }
 
-  public async getViewFormatterSchema(): Promise<IViewFormattingSchema> {
+  private async getDataFromContentScript<T>(onGetMethod: string, onSendMethod: string, methodName: string, data?: any): Promise<T> {
     const promise = new Promise((resolve) => {
       const getData = data => {
-        this.pagePipe.off(Content.onSendViewFormattingSchema, getData);
+        this.pagePipe.off(onSendMethod, getData);
         resolve(data);
       };
 
-      this.pagePipe.on(Content.onSendViewFormattingSchema, getData);
-      this.pagePipe.emit(Content.onGetViewFormattingSchema);
+      this.pagePipe.on(onSendMethod, getData);
+      this.pagePipe.emit(onGetMethod, data);
     });
 
-    return promiseTimeout(CommunicationTimeout, promise, 'getViewFormatterSchema');
+    return promiseTimeout(CommunicationTimeout, promise, methodName);
   }
 }

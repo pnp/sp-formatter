@@ -96,10 +96,28 @@ export class DomService {
   }
 
   public static resolveFormLayoutPreviewButton(): HTMLButtonElement {
-    return (document.querySelector('[class*=custom-clientform-pane-footer] [class*=custom-clientform-pane-button] button') as HTMLButtonElement) || (document.querySelector(`${this.RootViewHtmlSelector}-footer button`) as HTMLButtonElement);
+    return (document.querySelector('[class*=custom-clientform-pane-footer] [class*=custom-clientform-pane-button] button') as HTMLButtonElement);
   }
 
-  public static getEditableTextArea(): HTMLTextAreaElement {
+  public static isBodyFormatLayout() {
+    const element = document.querySelector('[class*=custom-clientform-dropdown] span.ms-Dropdown-title');
+
+    if (!element) {
+      return false;
+    }
+
+    const bodyPlaceholders = ['body', // en
+      'treść', // pl
+      'текст сообщения', // ru
+      'corps', // fr
+      'hoofdtekst', // du
+      'texto', // es
+    ];
+
+    return bodyPlaceholders.indexOf(element.textContent.toLowerCase()) !== -1;
+  }
+
+  public static getFormLayoutEditableTextArea(): HTMLTextAreaElement {
     return this.getElement(this.TextAreaSelector, 'Unable to find form layout textarea container');
   }
 

@@ -23,6 +23,9 @@ export class Content {
   public static onGetViewFormattingSchema = `${Content.prefix}get_view_schema`;
   public static onSendViewFormattingSchema = `${Content.prefix}send_view_schema`;
 
+  public static onGetFormattingSchemas = `${Content.prefix}get_formatter_schemas`;
+  public static onSendFormattingSchemas = `${Content.prefix}send_formatter_schemas`;
+
   public static onToggleFullScreenMode = `${Content.prefix}toggle_full_screen_mode`;
 
   public static onSelectField = `${Content.prefix}select_field`;

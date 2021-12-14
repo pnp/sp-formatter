@@ -7,7 +7,6 @@ import { IEnabled } from '../../../common/data/IEnabled';
 import { ContentService } from '../services/ContentService';
 import { ColumnSchemaUrl } from '../../../common/Consts';
 import { DomService, ViewType } from '../services/DomService';
-import { IViewFormattingSchema } from '../../../common/data/IViewFormattingSchema';
 import { registerProvider } from '../services/ContextCompletionProvider';
 import { VscodeService } from '../services/VscodeService';
 import { IFileContent } from '../../../common/data/IFileContent';
@@ -55,7 +54,7 @@ export function enableFormFormatter() {
 export class FormLayoutEnhancer {
   private contentService: ContentService;
   private columnSchema: any;
-  private viewSchema: IViewFormattingSchema;
+  private bodySchema: any;
   private schemaProperty = '$schema';
   private spFormatterSchemaUri = 'http://chrome-column-formatting/schema.json';
   private isInFullScreen: boolean;
@@ -91,6 +90,10 @@ export class FormLayoutEnhancer {
 
     this.editor.getModel().dispose();
     this.editor.dispose();
+
+    const designerArea = DomService.getFormLayoutEditableTextArea();
+    designerArea.style.position = 'inherit';
+
     this.resizeObserver.disconnect();
     VscodeService.instance.disconnect();
   }
@@ -101,7 +104,7 @@ export class FormLayoutEnhancer {
 
     const customizationPaneArea = DomService.getFormLayoutCustomizationPaneArea();
     const monacoElement = DomService.getMonacoEditor();
-    const designerArea = DomService.getEditableTextArea();
+    const designerArea = DomService.getFormLayoutEditableTextArea();
 
     if (enable) {
 
@@ -133,7 +136,7 @@ export class FormLayoutEnhancer {
     }
     await this.ensureSchemas();
 
-    const designerArea = DomService.getEditableTextArea();
+    const designerArea = DomService.getFormLayoutEditableTextArea();
     designerArea.style.position = 'absolute';
 
     const jsonModel = this.getMonacoJsonValue(designerArea.value);
@@ -201,22 +204,30 @@ export class FormLayoutEnhancer {
     const viewType = DomService.getInjectionType();
 
     if (viewType === ViewType.Form) {
-
-      return [{
-        uri: this.spFormatterSchemaUri,
-        fileMatch: [fileUri],
-        schema: this.columnSchema
-      }];
+      const isBodyLayout = DomService.isBodyFormatLayout();
+      if (isBodyLayout) {
+        return [{
+          uri: this.spFormatterSchemaUri,
+          fileMatch: [fileUri],
+          schema: this.bodySchema
+        }];
+      } else {
+        return [{
+          uri: this.spFormatterSchemaUri,
+          fileMatch: [fileUri],
+          schema: this.columnSchema
+        }];
+      }
     }
+
     throw new Error('Unsupported view type');
   }
 
   private async ensureSchemas(): Promise<void> {
-    if (!this.columnSchema) {
-      this.columnSchema = await this.contentService.getColumnFormatterSchema();
-    }
-    if (!this.viewSchema) {
-      this.viewSchema = await this.contentService.getViewFormatterSchema();
+    if (!this.columnSchema || !this.bodySchema) {
+      const schemas = await this.contentService.getFormatterSchemas();
+      this.columnSchema = schemas.column;
+      this.bodySchema = schemas.body;
     }
   }
 
@@ -231,7 +242,7 @@ export class FormLayoutEnhancer {
   }
 
   private dispatchDefaultReactFormatterValue(value: string) {
-    const designerArea = DomService.getEditableTextArea();
+    const designerArea = DomService.getFormLayoutEditableTextArea();
     designerArea.value = value;
     const event = new Event('input', { bubbles: true });
     designerArea.dispatchEvent(event);

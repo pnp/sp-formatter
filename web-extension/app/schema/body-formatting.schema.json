@@ -1,1 +1,28 @@
-{}
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Form layout JSON",
+  "description": "CustomFormatter renderer for SharePoint list forms",
+  "type": "object",
+  "properties": {
+    "sections": {
+      "type": "array",
+      "description": "Section list, which defines form layout",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayname": {
+            "type": "string",
+            "description": "Section display name"
+          },
+          "fields": {
+            "type": "array",
+            "description": "Fields list (display names), which will be added to the current section",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

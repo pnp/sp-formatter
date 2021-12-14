@@ -16,7 +16,7 @@ export function promiseTimeout(miliSeconds, promise, message): Promise<any> {
         resolve(res);
       })
       .catch((err) => {
-        Logger.log(message + ' errored');
+        Logger.error(message + ' errored');
         clearTimeout(timer);
         reject(err);
       });

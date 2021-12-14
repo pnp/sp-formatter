@@ -9,6 +9,8 @@ import { IExtensionSettings } from '../common/data/IExtensionSettings';
 import { Logger } from '../common/Logger';
 import { ColumnSchemaEnhancer } from '../common/schema/ColumnSchemaEnhancer';
 import { IViewFormattingSchema } from '../common/data/IViewFormattingSchema';
+import { IEnabled } from '../common/data/IEnabled';
+import { IFormatterSchemas } from '../common/data/IFormatterSchemas';
 
 /**
  * Communicates with background page with port, injects page scripts and communicate with page using postMessage
@@ -20,6 +22,7 @@ export class ContentManager {
   private pagePipe: WebEventEmitter;
   private columnFormatterSchema: any;
   private viewFormatterSchema: IViewFormattingSchema;
+  private bodyFormatterSchema: any;
 
   constructor() {
     Logger.log('Connecting to the background service....');
@@ -35,10 +38,7 @@ export class ContentManager {
       const contentPipe = new ChromeEventEmitter(port);
 
       contentPipe.on<IChangeData>(Popup.onChangeEnabled, async (data) => {
-        await this.fetchSchemas();
-
-        await this.initInjectScripts(data.enabled);
-        this.pagePipe.emit(Popup.onChangeEnabled, data);
+        await this.initFormatterOnPage(data);
       });
     })
 
@@ -59,6 +59,14 @@ export class ContentManager {
     this.pagePipe.on(Content.onGetViewFormattingSchema, () => {
       this.pagePipe.emit(Content.onSendViewFormattingSchema, this.viewFormatterSchema);
     });
+
+    this.pagePipe.on(Content.onGetFormattingSchemas, () => {
+      this.pagePipe.emit<IFormatterSchemas>(Content.onSendFormattingSchemas, {
+        body: this.bodyFormatterSchema,
+        column: this.columnFormatterSchema,
+        view: this.viewFormatterSchema
+      });
+    });
   }
 
   public async init(): Promise<void> {
@@ -66,18 +74,30 @@ export class ContentManager {
     const isEnabledForCurrentTab = await ExtensionStateManager.isEnabledForTab(tabId);
     if (!isEnabledForCurrentTab) return;
 
-    await this.fetchSchemas();
-
-    await this.initInjectScripts(isEnabledForCurrentTab);
-
-    this.pagePipe.emit(Popup.onChangeEnabled, {
+    await this.initFormatterOnPage({
       enabled: isEnabledForCurrentTab
     });
+  }
+
+  private async initFormatterOnPage(data: IEnabled) {
+    await this.fetchSchemas();
+
+    await this.initInjectScripts(data.enabled);
+
+    this.pagePipe.emit<IEnabled>(Popup.onChangeEnabled, data);
   }
 
   private async fetchSchemas(): Promise<void> {
     await this.fetchColumnSchema();
     await this.fetchViewSchema();
+    await this.fetchBodySchema();
+  }
+
+  private async fetchBodySchema(): Promise<void> {
+    if (!this.bodyFormatterSchema) {
+      const res = await fetch(chrome.runtime.getURL('schema/body-formatting.schema.json'));
+      this.bodyFormatterSchema = await res.json();
+    }
   }
 
   private async fetchViewSchema(): Promise<void> {

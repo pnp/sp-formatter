@@ -224,11 +224,10 @@ class ColumnFormatterEnhancer {
   }
 
   private async ensureSchemas(): Promise<void> {
-    if (!this.columnSchema) {
-      this.columnSchema = await this.contentService.getColumnFormatterSchema();
-    }
-    if (!this.viewSchema) {
-      this.viewSchema = await this.contentService.getViewFormatterSchema();
+    if (!this.columnSchema || !this.viewSchema) {
+      const schemas = await this.contentService.getFormatterSchemas();
+      this.columnSchema = schemas.column;
+      this.viewSchema = schemas.view;
     }
   }
 

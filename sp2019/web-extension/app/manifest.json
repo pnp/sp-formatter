@@ -3,8 +3,8 @@
   "name": "SP 2019 Formatter",
   "short_name": "SP 19 Format",
   "homepage_url": "https://github.com/pnp/sp-formatter",
-  "description": "Customize your SharePoint 2019 Column or View Formatting JSON using full-featured editor instead of default one.",
-  "version": "0.0.7",
+  "description": "Customize your SharePoint 2019 Column Formatting JSON using full-featured editor instead of the default one.",
+  "version": "0.0.1",
   "content_scripts": [
     {
       "run_at": "document_end",

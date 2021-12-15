@@ -16,7 +16,7 @@ export class ContentService {
   }
 
   public async saveExtensionSettings(settings: IExtensionSettings): Promise<void> {
-    await this.getDataFromContentScript<void>(Content.onSavedExtensionSettings, Content.onSavedExtensionSettings, this.saveExtensionSettings.name, settings);
+    await this.getDataFromContentScript<void>(Content.onSaveExtensionSettings, Content.onSavedExtensionSettings, this.saveExtensionSettings.name, settings);
   }
 
   public async getFormatterSchemas(): Promise<IFormatterSchemas> {

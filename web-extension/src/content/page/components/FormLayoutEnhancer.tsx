@@ -91,8 +91,10 @@ export class FormLayoutEnhancer {
     this.editor.getModel().dispose();
     this.editor.dispose();
 
-    const designerArea = DomService.getFormLayoutEditableTextArea();
-    designerArea.style.position = 'inherit';
+    const designerArea = DomService.getFormLayoutEditableTextArea(false);
+    if (designerArea) {
+      designerArea.style.position = 'inherit';
+    }
 
     this.resizeObserver.disconnect();
     VscodeService.instance.disconnect();
@@ -137,7 +139,6 @@ export class FormLayoutEnhancer {
     await this.ensureSchemas();
 
     const designerArea = DomService.getFormLayoutEditableTextArea();
-    designerArea.style.position = 'absolute';
 
     const jsonModel = this.getMonacoJsonValue(designerArea.value);
 
@@ -182,7 +183,48 @@ export class FormLayoutEnhancer {
       }
     });
 
+    this.setupResizeHandlers();
+
+    // don't wait cause it's event-based
+    VscodeService.instance.connect();
+  }
+
+  private setupResizeHandlers() {
+    const designerArea = DomService.getFormLayoutEditableTextArea();
+    designerArea.style.position = 'absolute';
+    designerArea.style.height = '100%';
+
     const customizationPaneArea = DomService.getFormLayoutCustomizationPaneArea();
+    const resizableElement = DomService.getResizableFormLayoutElement();
+    const formContent = resizableElement.parentElement.parentElement.firstElementChild as HTMLElement;
+
+    resizableElement.style.right = '0';
+
+    const resizer = document.createElement('div');
+    resizer.classList.add('format-resizer');
+    resizer.style.inset = '0px auto 0px -5px';
+    resizer.style.position = 'absolute';
+    resizer.style.width = '10px';
+    resizer.style.cursor = 'w-resize';
+
+    const onResize = (e: MouseEvent) => {
+      const initialWidth = resizableElement.offsetWidth;
+      const newWidth = (resizableElement.offsetLeft - e.clientX + initialWidth) + 'px';
+      formContent.style.width = `calc(100% - ${newWidth})`;
+      resizableElement.style.width = newWidth;
+    }
+
+    const onStopResize = () => {
+      window.removeEventListener('mousemove', onResize, false);
+      window.removeEventListener('mouseup', onStopResize, false);
+    }
+
+    resizer.addEventListener('mousedown', () => {
+      window.addEventListener('mousemove', onResize, false);
+      window.addEventListener('mouseup', onStopResize, false);
+    }, false);
+
+    resizableElement.appendChild(resizer);
 
     this.resizeObserver = new ResizeObserver(() => {
       if (!this.editor) return;
@@ -193,11 +235,8 @@ export class FormLayoutEnhancer {
       });
     });
 
-    this.resizeObserver.observe(DomService.getRightFilesPane());
+    this.resizeObserver.observe(resizableElement);
     customizationPaneArea.style.overflow = 'hidden';
-
-    // don't wait cause it's event-based
-    VscodeService.instance.connect();
   }
 
   private async createSchemas(fileUri: string): Promise<any[]> {

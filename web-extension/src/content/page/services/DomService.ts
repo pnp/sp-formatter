@@ -75,20 +75,24 @@ export class DomService {
     return codeContainer;
   }
 
+  public static getResizableFormLayoutElement(): HTMLElement {
+    return this.getElement('.CustomClientFormPane', this.getResizableFormLayoutElement.name);
+  }
+
   public static getSpFormatterMonacoEditorContainer(): HTMLElement {
-    return this.getElement(this.SpFormatterMonacoSelector, 'Unable to find monaco editor container');
+    return this.getElement(this.SpFormatterMonacoSelector, this.getSpFormatterMonacoEditorContainer.name);
   }
 
   public static getCustomizationPaneArea(): HTMLDivElement {
-    return this.getElement(this.DescriptionContentSelector, 'Unable to find customization content');
+    return this.getElement(this.DescriptionContentSelector, this.getCustomizationPaneArea.name);
   }
 
   public static getFormLayoutCustomizationPaneArea(): HTMLDivElement {
-    return this.getElement('[class*=custom-clientform-pane-helpText]', 'Unable to find form layout customization content');
+    return this.getElement('[class*=custom-clientform-pane-helpText]', this.getFormLayoutCustomizationPaneArea.name);
   }
 
   public static getSharePointCodeContainer(): HTMLElement {
-    return this.getElement(this.SharePointMonacoSelector, 'Unable to find column \\ view container');
+    return this.getElement(this.SharePointMonacoSelector, this.getSharePointCodeContainer.name);
   }
 
   public static resolvePreviewButton(): HTMLButtonElement {
@@ -117,18 +121,24 @@ export class DomService {
     return bodyPlaceholders.indexOf(element.textContent.toLowerCase()) !== -1;
   }
 
-  public static getFormLayoutEditableTextArea(): HTMLTextAreaElement {
-    return this.getElement(this.TextAreaSelector, 'Unable to find form layout textarea container');
+  public static getFormLayoutEditableTextArea(throwError = true): HTMLTextAreaElement {
+    return this.getElement(this.TextAreaSelector, this.getFormLayoutEditableTextArea.name, throwError);
+  }
+
+  public static getFormLayoutTextareaContainer(): HTMLDivElement {
+    return this.getElement('[class*=custom-clientform-pane-textfield]', this.getFormLayoutTextareaContainer.name);
   }
 
   public static getMonacoEditor(): HTMLElement {
-    return this.getElement(this.MonacoSelector, 'Unable to find monaco editor container');
+    return this.getElement(this.MonacoSelector, this.getMonacoEditor.name);
   }
 
-  private static getElement<T extends Element>(selector: string, errorText: string): T {
+  private static getElement<T extends Element>(selector: string, errorText: string, throwError = true): T {
     const element = document.querySelector<T>(selector);
-    if (!element) {
+    if (!element && throwError) {
       throw new Error(errorText + ' Selector: ' + selector);
+    } if (!element) {
+      return null;
     }
 
     return element;

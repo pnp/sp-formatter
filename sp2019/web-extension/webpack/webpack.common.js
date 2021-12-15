@@ -36,7 +36,7 @@ module.exports = {
       },
       {
         test: /\.ttf$/,
-        use: 'base64-inline-loader?name=[name].[ext]'
+        type: 'asset/inline'
       }
     ]
   },

@@ -1,6 +1,6 @@
 # SP Formatter
 
-Customize your SharePoint Column or View Formatting JSON using full-featured editor instead of default one. Supports [Google Chrome](https://chrome.google.com/webstore/detail/sp-formatter/fmeihfaddhdkoogipahfcjlicglflkhg?hl=en) and [Microsoft Edge (Chromium)](https://microsoftedge.microsoft.com/addons/detail/sp-formatter/eenbldkdgbfcfachaccldfgiajgjmjhi?hl=en-US).
+Customize your SharePoint Column,View or Form Layout Formatting JSON using full-featured editor instead of the default one. Supports [Google Chrome](https://chrome.google.com/webstore/detail/sp-formatter/fmeihfaddhdkoogipahfcjlicglflkhg?hl=en) and [Microsoft Edge (Chromium)](https://microsoftedge.microsoft.com/addons/detail/sp-formatter/eenbldkdgbfcfachaccldfgiajgjmjhi?hl=en-US).
 
 [![youtube video](web-extension/app/icons/column-formatter-yt.jpg)](https://youtu.be/xnyiDdLKWOA)
 [Watch video](https://youtu.be/xnyiDdLKWOA)
@@ -15,7 +15,7 @@ Customize your SharePoint Column or View Formatting JSON using full-featured edi
 - Line numbers, brace matching, collapsible regions
 - Hotkeys: search, replace, format document, go to line and more (read more on hotkeys further below)
 - Easily switch between default and enhanced editor
-- VSCode integration
+- VSCode integration (change JSON in VSCode and see live updates in SharePoint)
 - Split screen mode
 
 ## Supported platforms
@@ -53,9 +53,11 @@ You can edit your Column Formatting JSON inside VSCode and have it synchronized 
 
 1. If you have SP Formatter web extension enabled and navigate between different SharePoint pages, SP Formatter might not work properly (or not work at all).  
 
-    SP Formatter "loses" context when you navigate between SharePoint pages in a same browser tab because of the async navigation nature in SPO. It's hard to track such navigation from the extension code.   
+    SP Formatter "loses" context when you navigate between SharePoint pages in a same browser tab because of the async navigation nature in SPO. It's hard to track such navigation from the extension code.
 
     > **How to fix:** Just open a page, where you're going to format view\columns and perform a page refresh (F5) or hard refresh (CTRL + F5). Now SP Formatter should work as normal
+
+2. If you're switching between Column\View formatting, or choosing different columns for Column formatting, or choosing different form layout options (Body, Header, Footer), you should always re-enable SP Formatter using toggle button, so that it picks the right context.
 
 ### PRIVACY POLICY  
 

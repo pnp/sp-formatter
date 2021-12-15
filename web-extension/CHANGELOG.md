@@ -1,5 +1,15 @@
 # Changelog  
 
+## 0.1.0 [Unreleased]
+
+- Migrated to the Chromium extensions Manifest V3
+- bug fixes
+- Form layout formatter feature
+
+### ⚠ BREAKING CHANGES
+
+SP Formatter now supports only SharePoint Online. There is a separate version for SharePoint 2019 - read instructions [here]() on how to enable it.
+
 ## 0.0.7 - 26 Apr 2021
 
 - bug fixes, documentation updates - thanks [@thechriskent](https://github.com/thechriskent)

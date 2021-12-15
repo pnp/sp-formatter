@@ -1,6 +1,6 @@
 # SP Formatter web extension
 
-This is the browser extension used in either [Google Chrome](https://developer.chrome.com/docs/extensions/) or the new [Microsoft Edge](https://developer.microsoft.com/microsoft-edge/extensions) (chromium).
+This is the browser extension used in either [Google Chrome](https://developer.chrome.com/docs/extensions/) or [Microsoft Edge](https://developer.microsoft.com/microsoft-edge/extensions) (chromium).
 
 ## Development
 
@@ -33,7 +33,7 @@ Use the following instructions to setup a new profile in either browser:
 
 #### Sideload the extension
 
-During develpment, the browser can run and debug the extensions safely by sideloading it from your local system. You just need to tell your browser about it!
+During development, the browser can run and debug the extensions safely by sideloading it from your local system. You just need to tell your browser about it!
 
 Use the following instructions to setup sideloading of the extension in your browser:
 

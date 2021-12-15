@@ -28,6 +28,13 @@ export const ColumnFormatterSettings: FC<IProps> = () => {
 
       emitToggleFormatterEvent(settings.enhancedFormatterEnabled);
 
+      const type = DomService.getInjectionType();
+
+      if (type === ViewType.Form) {
+        const textAreaContainer = DomService.getFormLayoutTextareaContainer();
+        textAreaContainer.style.height = 'calc(80% - 200px)';
+      }
+
       pagePipe.on<IEnabled>(Content.Vscode.onConnected, async (data) => {
         if (data.enabled) {
           const fileName = await VscodeService.instance.getConnectedFileName();

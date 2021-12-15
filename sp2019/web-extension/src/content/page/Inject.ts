@@ -13,9 +13,7 @@ const extensionId = (document.currentScript as HTMLScriptElement).src.split('://
 
 Logger.log(`Extension id: ${extensionId}`);
 
-// if SP 2019
 // Fix to make it work with OUIFR 7.x
-
 const customizations = GlobalSettings.getValue('customizations');
 const theme = getTheme();
 (customizations as any).settings.theme.effects = { ...theme.effects };

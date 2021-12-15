@@ -1,6 +1,30 @@
-# SP Formatter
+# SP 2019 Formatter
 
-Customize your SharePoint Column or View Formatting JSON using full-featured editor instead of default one. Supports [Google Chrome](https://chrome.google.com/webstore/detail/sp-formatter/fmeihfaddhdkoogipahfcjlicglflkhg?hl=en) and [Microsoft Edge (Chromium)](https://microsoftedge.microsoft.com/addons/detail/sp-formatter/eenbldkdgbfcfachaccldfgiajgjmjhi?hl=en-US).
+> IMPORTANT! This is the SP Formatter version, which works only for SharePoint 2019
+>
+## How to enable
+
+The extension is not listed in the Chrome or Edge extensions store, but you can sideload it manually.
+
+1. Go to the Extensions screen and enable `Developer mode`:
+
+    Chrome            |  Edge
+    :-------------------------:|:-------------------------:
+    ![dev chrome](./img/dev-mode-chrome.jpg)  |  ![dev edge](./img/dev-mode-edge.jpg)
+
+2. Go to the [Releases]() page and download the latest SP 2019 Formatter extension (zipped package). Extract it into the known folder.
+
+3. Click `Load unpacked` to load unpacked extension from the folder where you extracted the zip archive.
+
+    Chrome            |  Edge
+    :-------------------------:|:-------------------------:
+    ![dev chrome](./img/load-chrome.jpg)  |  ![dev edge](./img/load-edge.jpg)
+
+4. Enjoy it!
+
+---
+
+Customize your SharePoint Column Formatting JSON using full-featured editor instead of default one. Supports [Google Chrome](https://chrome.google.com/webstore/detail/sp-formatter/fmeihfaddhdkoogipahfcjlicglflkhg?hl=en) and [Microsoft Edge (Chromium)](https://microsoftedge.microsoft.com/addons/detail/sp-formatter/eenbldkdgbfcfachaccldfgiajgjmjhi?hl=en-US).
 
 [![youtube video](web-extension/app/icons/column-formatter-yt.jpg)](https://youtu.be/xnyiDdLKWOA)
 [Watch video](https://youtu.be/xnyiDdLKWOA)
@@ -53,7 +77,7 @@ You can edit your Column Formatting JSON inside VSCode and have it synchronized 
 
 1. If you have SP Formatter web extension enabled and navigate between different SharePoint pages, SP Formatter might not work properly (or not work at all).  
 
-    SP Formatter "loses" context when you navigate between SharePoint pages in a same browser tab because of the async navigation nature in SPO. It's hard to track such navigation from the extension code.   
+    SP Formatter "loses" context when you navigate between SharePoint pages in a same browser tab because of the async navigation nature in SPO. It's hard to track such navigation from the extension code.
 
     > **How to fix:** Just open a page, where you're going to format view\columns and perform a page refresh (F5) or hard refresh (CTRL + F5). Now SP Formatter should work as normal
 

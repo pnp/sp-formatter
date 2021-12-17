@@ -28,7 +28,17 @@
     },
     "formatter": {
       "description": "JSON object that defines formatting of a tile.",
-      "$ref": "column-formatting.extended.schema.json#definitions/elm"
+      "$ref": "column-formatting.extended.schema.json#"
+    },
+    "groupProps": {
+      "type": "object",
+      "description": "Specify the group header formatter",
+      "properties": {
+        "headerFormatter": {
+          "description": "JSON object that defines formatting for the group headers",
+          "$ref": "column-formatting.extended.schema.json#"
+        }
+      }
     }
   }
 }

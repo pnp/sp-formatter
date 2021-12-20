@@ -3,7 +3,7 @@
   "name": "SP Formatter",
   "short_name": "SP Formatter",
   "homepage_url": "https://github.com/pnp/sp-formatter",
-  "description": "Customize your SharePoint Column, View or Form Layout Formatting JSON using full-featured editor instead of default one.",
+  "description": "Customize your SharePoint Column, View or Form Layout Formatting JSON using a full-featured editor instead of the default one.",
   "version": "0.1.0",
   "content_scripts": [
     {

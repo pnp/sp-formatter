@@ -8,7 +8,7 @@
 
 ### ⚠ BREAKING CHANGES
 
-SP Formatter now supports only SharePoint Online. There is a separate version for SharePoint 2019 - read instructions [here]() on how to enable it.
+SP Formatter now supports only SharePoint Online. There is a separate version for SharePoint 2019 - read instructions [here](https://github.com/pnp/sp-formatter/blob/master/sp2019/README.md) on how to enable it.
 
 ## 0.0.7 - 26 Apr 2021
 

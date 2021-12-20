@@ -21,7 +21,7 @@ Customize your SharePoint Column,View or Form Layout Formatting JSON using full-
 ## Supported platforms
 
 - SharePoint Online
-- SharePoint 2019
+- SharePoint 2019 (through a separate extension, read more [here](./sp2019/README.md))
 
 ## Some useful HOT KEYS
 

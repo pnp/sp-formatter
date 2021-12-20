@@ -1,18 +1,20 @@
 # SP 2019 Formatter
 
 > IMPORTANT! This is the SP Formatter version, which works only for SharePoint 2019
->
-## How to enable
+
+To work with SharPoint 2019 you should install this extension manually first.
+
+## How to install
 
 The extension is not listed in the Chrome or Edge extensions store, but you can sideload it manually.
 
-1. Go to the Extensions screen and enable `Developer mode`:
+1. In your browser go to the Extensions screen and enable `Developer mode`:
 
     Chrome            |  Edge
     :-------------------------:|:-------------------------:
     ![dev chrome](./img/dev-mode-chrome.jpg)  |  ![dev edge](./img/dev-mode-edge.jpg)
 
-2. Go to the [Releases]() page and download the latest SP 2019 Formatter extension (zipped package). Extract it into the known folder.
+2. Go to the [Releases](https://github.com/pnp/sp-formatter/releases) page and download the latest SP 2019 Formatter extension (`sp.2019.formatter.zip` package). Extract it into the known folder.
 
 3. Click `Load unpacked` to load unpacked extension from the folder where you extracted the zip archive.
 

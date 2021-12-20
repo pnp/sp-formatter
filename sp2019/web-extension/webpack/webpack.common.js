@@ -13,6 +13,14 @@ module.exports = {
     'css.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/css/css.worker'),
     'html.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/html/html.worker')
   },
+  stats: {
+    all: false,
+    colors: true,
+    errors: true,
+    warnings: true,
+    timings: true,
+    entrypoints: true
+  },
   output: {
     path: path.join(__dirname, '../app/dist'),
     filename: '[name].js'
@@ -58,11 +66,11 @@ module.exports = {
     }
   },
   plugins: [new ForkTsCheckerWebpackPlugin(),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^((fs)|(path)|(os)|(crypto)|(source-map-support))$/,
-      contextRegExp: /vs\/language\/typescript\/lib/
-    }),
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
-    })]
+  new webpack.IgnorePlugin({
+    resourceRegExp: /^((fs)|(path)|(os)|(crypto)|(source-map-support))$/,
+    contextRegExp: /vs\/language\/typescript\/lib/
+  }),
+  new webpack.optimize.LimitChunkCountPlugin({
+    maxChunks: 1
+  })]
 };

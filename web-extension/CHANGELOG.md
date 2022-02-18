@@ -1,6 +1,6 @@
 # Changelog  
 
-## 0.1.0 [Unreleased]
+## 0.1.0 - 20 Dec 2021
 
 - Migrated to the Chromium extensions Manifest V3
 - bug fixes

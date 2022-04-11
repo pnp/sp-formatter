@@ -56,7 +56,6 @@ class ComponentInjector {
     if (this.container) {
       this.container.parentElement.removeChild(this.container);
     }
-    this.triggerRemoveFormatter();
   }
 
   private triggerRemoveFormatter(): void {

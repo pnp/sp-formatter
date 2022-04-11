@@ -1,5 +1,9 @@
 # Changelog  
 
+## 0.1.1 - 11 Apr 2022
+
+- Fixed regression bug in form formatter after SharePoint update
+
 ## 0.1.0 - 20 Dec 2021
 
 - Migrated to the Chromium extensions Manifest V3

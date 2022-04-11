@@ -8,7 +8,7 @@ import { enableFormFormatter } from './components/FormLayoutEnhancer';
 getListFields();
 
 enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]');
-enableComponentInjector(ColumnFormatterSettings, '[class*=custom-clientform-pane-helpText]');
+enableComponentInjector(ColumnFormatterSettings, '[class*=configure-layout-pane-helpText]');
 
 enableFormatter();
 enableFormFormatter();

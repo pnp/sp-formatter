@@ -15,7 +15,7 @@ export class DomService {
   private static SpFormatterCodeContainerSelector = '#sp-formater';
   private static SharePointMonacoSelector = '.monaco-editor[data-uri*="inmemory"]';
   private static SpFormatterMonacoSelector = '.monaco-editor[data-uri*="chrome-column-formatting"]';
-  private static TextAreaSelector = '[class*=custom-clientform-pane] textarea';
+  private static TextAreaSelector = '[class*=configure-layout-pane] textarea';
   private static MonacoSelector = '.monaco-editor';
 
   public static getInjectionType(): ViewType {
@@ -76,7 +76,7 @@ export class DomService {
   }
 
   public static getResizableFormLayoutElement(): HTMLElement {
-    return this.getElement('.CustomClientFormPane', this.getResizableFormLayoutElement.name);
+    return this.getElement('.ConfigLayoutPane', this.getResizableFormLayoutElement.name);
   }
 
   public static getSpFormatterMonacoEditorContainer(): HTMLElement {
@@ -88,7 +88,7 @@ export class DomService {
   }
 
   public static getFormLayoutCustomizationPaneArea(): HTMLDivElement {
-    return this.getElement('[class*=custom-clientform-pane-helpText]', this.getFormLayoutCustomizationPaneArea.name);
+    return this.getElement('[class*=configure-layout-pane-helpText]', this.getFormLayoutCustomizationPaneArea.name);
   }
 
   public static getSharePointCodeContainer(): HTMLElement {
@@ -100,11 +100,11 @@ export class DomService {
   }
 
   public static resolveFormLayoutPreviewButton(): HTMLButtonElement {
-    return (document.querySelector('[class*=custom-clientform-pane-footer] [class*=custom-clientform-pane-button] button') as HTMLButtonElement);
+    return (document.querySelector('[class*=configure-layout-pane-footer] [class*=configure-layout-pane-button] button') as HTMLButtonElement);
   }
 
   public static isBodyFormatLayout() {
-    const element = document.querySelector('[class*=custom-clientform-dropdown] span.ms-Dropdown-title');
+    const element = document.querySelector('[class*=configure-layout-dropdown] span.ms-Dropdown-title');
 
     if (!element) {
       return false;
@@ -126,7 +126,7 @@ export class DomService {
   }
 
   public static getFormLayoutTextareaContainer(): HTMLDivElement {
-    return this.getElement('[class*=custom-clientform-pane-textfield]', this.getFormLayoutTextareaContainer.name);
+    return this.getElement('[class*=configure-layout-pane-textfield]', this.getFormLayoutTextareaContainer.name);
   }
 
   public static getMonacoEditor(): HTMLElement {

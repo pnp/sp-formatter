@@ -145,7 +145,9 @@ export class ContentManager {
   }
 
   private async injectScripts(): Promise<void> {
+    await this.injectScriptFile('dist/pre-inject.js');
     await this.injectScriptFile('dist/inject.js');
+    await this.injectScriptFile('dist/post-inject.js');
   }
 
   private injectScriptFile(src: string): Promise<void> {

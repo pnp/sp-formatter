@@ -7,6 +7,8 @@ module.exports = {
     'background': path.join(__dirname, '../src/background/Background.ts'),
     'content': path.join(__dirname, '../src/content/Content.ts'),
     'inject': path.join(__dirname, '../src/content/page/Inject.ts'),
+    'pre-inject': path.join(__dirname, '../src/content/page/PreInject.ts'),
+    'post-inject': path.join(__dirname, '../src/content/page/PostInject.ts'),
     'popup': path.join(__dirname, '../src/popup/Popup.tsx'),
     'editor.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/editor/editor.worker.js'),
     'json.worker': path.join(__dirname, '../node_modules/monaco-editor/esm/vs/language/json/json.worker'),

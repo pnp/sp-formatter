@@ -11,6 +11,7 @@ declare global {
     moduleLoaderPromise: Promise<any>;
     MonacoEnvironment: any;
     __sp_formatter_id__: string;
-    _spPageContextInfo: IPageContextInfo
+    _spPageContextInfo: IPageContextInfo;
+    sp_original_monaco: any;
   }
 }

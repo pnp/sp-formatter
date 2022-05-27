@@ -11,6 +11,10 @@ import { registerProvider } from '../services/ContextCompletionProvider';
 import { VscodeService } from '../services/VscodeService';
 import { IFileContent } from '../../../common/data/IFileContent';
 
+if(window.sp_original_monaco) {
+  window.monaco = window.sp_original_monaco;
+}
+
 let completionProviderRegistered = false;
 
 const extensionId = (document.currentScript as HTMLScriptElement).src.split('://').pop().split('/').shift();

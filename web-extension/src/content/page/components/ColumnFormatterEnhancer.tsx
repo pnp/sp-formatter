@@ -244,8 +244,33 @@ class ColumnFormatterEnhancer {
   private dispatchDefaultReactFormatterValue(value: string) {
     setSharePointFormatterStringValue(value);
 
+    // provides more stable sync between monaco schema and preview, contains some react hacks
+    this.triggerOnBlurOnEditor();
+
     const previewButton = DomService.resolvePreviewButton();
     previewButton.click();
+  }
+
+  private triggerOnBlurOnEditor(): void {
+    const designerArea = DomService.getRootColumnCustomizationPane();
+    if(!designerArea) return;
+
+    const reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
+
+    if (!reactHandler || !designerArea[reactHandler].children) return;
+
+    let monacoReactInstance;
+
+    for (const child of designerArea[reactHandler].children) {
+      if (child?.props?.className.indexOf('monaco-editor') !== -1) {
+        monacoReactInstance = child;
+        break;
+      }
+    }
+
+    if (!monacoReactInstance) return;
+
+    monacoReactInstance.props?.onBlurEditor();
   }
 
   private getDefaultEditorValue(initialValue): string {

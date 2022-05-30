@@ -17,6 +17,7 @@ export class DomService {
   private static SpFormatterMonacoSelector = '.monaco-editor[data-uri*="chrome-column-formatting"]';
   private static TextAreaSelector = '[class*=configure-layout-pane] textarea';
   private static MonacoSelector = '.monaco-editor';
+  private static RootColumnCustomizationPaneSelector = '.sp-ColumnCustomizationPane';
 
   public static getInjectionType(): ViewType {
     const buttons = document.querySelectorAll('.sp-ColumnDesigner-content div[role=tablist] button');
@@ -77,6 +78,10 @@ export class DomService {
 
   public static getResizableFormLayoutElement(): HTMLElement {
     return this.getElement('.ConfigLayoutPane', this.getResizableFormLayoutElement.name);
+  }
+
+  public static getRootColumnCustomizationPane(): HTMLElement {
+    return this.getElement(this.RootColumnCustomizationPaneSelector, this.getRootColumnCustomizationPane.name);
   }
 
   public static getSpFormatterMonacoEditorContainer(): HTMLElement {

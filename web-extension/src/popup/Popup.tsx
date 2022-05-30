@@ -68,6 +68,7 @@ export const App: FC = () => {
         onText='On'
         offText='Off'
         onChange={onToggleDarkMode} />
+        Use VSCode? Check out <a href='https://marketplace.visualstudio.com/items?itemName=s-kainet.sp-formatter' target='_blank'>VSCode extension!</a>
     </div>
   );
 }

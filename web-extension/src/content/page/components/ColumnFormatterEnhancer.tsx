@@ -262,7 +262,7 @@ class ColumnFormatterEnhancer {
     let monacoReactInstance;
 
     for (const child of designerArea[reactHandler].children) {
-      if (child?.props?.className.indexOf('monaco-editor') !== -1) {
+      if (child?.props?.className?.indexOf('monaco-editor') !== -1) {
         monacoReactInstance = child;
         break;
       }

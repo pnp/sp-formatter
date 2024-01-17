@@ -33,7 +33,11 @@
           "*.column-formatter.json",
           "*.column.formatter.json",
           "*.column-format.json",
-          "*.column.format.json"
+          "*.column.format.json",
+          "*.form-formatter.json",
+          "*.form.formatter.json",
+          "*.form-format.json",
+          "*.form.format.json"
         ],
         "url": "./schemas/column-formatting.extended.schema.json"
       },
@@ -85,7 +89,7 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "npm run lint && npm run schema && tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "dev": "tsc -watch -p ./",
     "lint": "eslint src --ext ts",
     "schema": "ts-node ./src/schema/index.ts"
   },

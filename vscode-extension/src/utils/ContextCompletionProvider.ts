@@ -8,13 +8,6 @@ export class ContextCompletionProvider {
       pattern: `**/*/${fileName}`
     }, {
       provideCompletionItems: (document, position) => {
-        const wordRange = document.getWordRangeAtPosition(position);
-        const text = document.getText(wordRange);
-
-        if (!text || !wordRange) {
-          return new CompletionList([]);
-        }
-
         return new CompletionList(this.createSuggestionsList(position, fields), false);
       }
     }, '@', '$');

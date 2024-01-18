@@ -6,7 +6,7 @@
   "scripts": {
     "watch:webpack": "webpack --config webpack/webpack.dev.js --watch",
     "watch:reload": "mv3-hot-reload",
-    "watch": "concurrently npm:watch:*",
+    "dev": "concurrently npm:watch:*",
     "build": "npm run prod && gulp zip",
     "prod": "webpack --config webpack/webpack.prod.js"
   },

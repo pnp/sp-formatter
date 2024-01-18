@@ -39,6 +39,28 @@ export class DomService {
     return ViewType.Column;
   }
 
+  public static findReactFiber(dom: HTMLElement, traverseUp = 0) {
+    const key = Object.keys(dom).find(key => {
+      return key.startsWith('__reactFiber$');
+    });
+
+    const domFiber = dom[key];
+    if (domFiber == null) return null;
+
+    const GetCompFiber = fiber => {
+      let parentFiber = fiber.return;
+      while (typeof parentFiber.type == 'string') {
+        parentFiber = parentFiber.return;
+      }
+      return parentFiber;
+    };
+    let compFiber = GetCompFiber(domFiber);
+    for (let i = 0; i < traverseUp; i++) {
+      compFiber = GetCompFiber(compFiber);
+    }
+    return compFiber;
+  }
+
   public static async waitForMonaco(retry = 1): Promise<void> {
     // more than 5 sec is timeout
     if (retry > 25) {
@@ -74,6 +96,17 @@ export class DomService {
     }
 
     return codeContainer;
+  }
+
+  public static getMonacoEditorReactFiber(): any {
+    const monacoElement = this.getCustomizationMonacoContent();
+    if (!monacoElement) return null;
+
+    return this.findReactFiber(monacoElement);
+  }
+
+  public static getCustomizationMonacoContent(): HTMLElement {
+    return this.getElement(this.CustomizationMonacoContentSelector, this.getCustomizationMonacoContent.name);
   }
 
   public static getResizableFormLayoutElement(): HTMLElement {

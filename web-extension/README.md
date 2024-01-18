@@ -46,4 +46,4 @@ Choose the `app` folder as the location of the extension.
 
 Now run the following command to build and run the extension:
 
-`npm run watch`
+`npm run dev`

@@ -252,25 +252,11 @@ class ColumnFormatterEnhancer {
   }
 
   private triggerOnBlurOnEditor(): void {
-    const designerArea = DomService.getRootColumnCustomizationPane();
-    if(!designerArea) return;
+    const monacoReactFiber = DomService.getMonacoEditorReactFiber();
 
-    const reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
+    if (!monacoReactFiber) return;
 
-    if (!reactHandler || !designerArea[reactHandler].children) return;
-
-    let monacoReactInstance;
-
-    for (const child of designerArea[reactHandler].children) {
-      if (child?.props?.className?.indexOf('monaco-editor') !== -1) {
-        monacoReactInstance = child;
-        break;
-      }
-    }
-
-    if (!monacoReactInstance) return;
-
-    monacoReactInstance.props?.onBlurEditor();
+    monacoReactFiber.memoizedProps?.onBlurEditor();
   }
 
   private getDefaultEditorValue(initialValue): string {

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.7 - 19 Jan 24
+
+- Added support for intellisense for forms view
+- Fixed problem with autocompletion for SharePoint fields
+
+## 0.0.6 - 24 Jun 22
+
+- Schema improvements
+
 ## 0.0.5 - 28 Jan 21
 
 - Fixed custom completion when word range is empty

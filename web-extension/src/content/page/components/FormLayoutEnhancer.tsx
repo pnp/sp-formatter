@@ -11,7 +11,7 @@ import { registerProvider } from '../services/ContextCompletionProvider';
 import { VscodeService } from '../services/VscodeService';
 import { IFileContent } from '../../../common/data/IFileContent';
 
-if(window.sp_original_monaco) {
+if (window.sp_original_monaco) {
   window.monaco = window.sp_original_monaco;
 }
 
@@ -290,11 +290,11 @@ export class FormLayoutEnhancer {
     const event = new Event('input', { bubbles: true });
     designerArea.dispatchEvent(event);
 
-    // hack
-    const reactHandler = Object.keys(designerArea).filter(k => k.startsWith('__reactEventHandlers'))[0];
-    designerArea[reactHandler]['onFocus']();
-    designerArea[reactHandler]['onBlur']();
-    // end hack
+    const reactFiber = Object.keys(designerArea).filter(k => k.startsWith('__reactFiber'))[0];
+    if (reactFiber && designerArea[reactFiber]?.memoizedProps?.onFocus && designerArea[reactFiber]?.memoizedProps?.onBlur) {
+      designerArea[reactFiber].memoizedProps.onFocus();
+      designerArea[reactFiber].memoizedProps.onBlur();
+    }
 
     const previewButton = DomService.resolveFormLayoutPreviewButton();
     previewButton.click();

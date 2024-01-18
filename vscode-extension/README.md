@@ -23,10 +23,8 @@ SP Formatter VSCode extension creates a bridge between VSCode and SP Formatter w
 If your JSON formatting file name has one of the below endings:
 
 - `*.column-formatter.json`, `*.column.formatter.json`, `*.column-format.json`, `*.column.format.json`
-
-OR
-
 - `*.view-formatter.json`, `*.view.formatter.json`, `*.view-format.json`, `*.view.format.json`
+- `*.form-formatter.json`, `*.form.formatter.json`, `*.form-format.json`, `*.form.format.json`
 
 Then your `.json` file will be the subject for additional intellisense.
 
@@ -42,7 +40,7 @@ Additional intellisense includes:
 ## Development
 
 1. `npm i`
-2. `npm run watch`
+2. `npm run dev`
 3. Open Chrome or Edge with SP Formatter and enable it for the current tab.
 4. VSCode extension should have connected to the web extension.
 5. You are ready for development.

@@ -1,5 +1,9 @@
 # Changelog  
 
+## 0.1.3 - 19 Jan 2024
+
+- Fixed issues: live preview in Form layout and Gallery view
+
 ## 0.1.2 - 31 May 2022
 
 - Fixed problem in Gallery view

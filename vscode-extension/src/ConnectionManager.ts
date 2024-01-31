@@ -7,6 +7,10 @@ import stoppable, { StoppableServer } from 'stoppable';
 import { ContextCompletionProvider } from './utils/ContextCompletionProvider';
 import { Field } from './data/Field';
 import { promiseTimeout } from './utils/PromiseTimeout';
+import getPort from 'get-port';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const killPort = require('kill-port');
+import { Logger } from './utils/Logger';
 
 const onGetFileName = 'vscode_get_file_name';
 const onSendFileName = 'vscode_send_file_name';
@@ -29,6 +33,8 @@ export class ConnectionManager {
     if (this.httpServer) {
       await this.stop();
     }
+
+    await this.freePortIfInUse();
 
     this.activeDocument = window.activeTextEditor.document;
 
@@ -93,6 +99,20 @@ export class ConnectionManager {
         resolve();
       });
     })
+  }
+
+  private async freePortIfInUse() {
+    const freePort = await getPort({ port: this.port, host: 'localhost' });
+
+    // the needed port is not free
+    if (freePort !== this.port) {
+
+      Logger.log(`The port ${this.port} is in use. Trying to release...`);
+
+      await killPort(this.port);
+
+      Logger.log(`The port ${this.port} is successfully released.`);
+    }
   }
 
   private async initCompletionProvider() {

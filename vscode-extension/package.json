@@ -103,6 +103,8 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
+    "get-port": "7.0.0",
+    "kill-port": "2.0.1",
     "socket.io": "4.7.4",
     "stoppable": "1.1.0"
   }

@@ -20,7 +20,7 @@ export class ConnectionManager {
   private port = 11232;
   private defaultTimeOut = 2000;
   private activeDocument: TextDocument;
-  private activeSocket: Socket;
+  private activeSocket: any;
   private subscriptions: Disposable[] = [];
   private providers: Disposable[] = [];
 
@@ -39,7 +39,7 @@ export class ConnectionManager {
       }
     });
 
-    io.on('connection', (socket: Socket) => {
+    io.on('connection', (socket) => {
       StatusBarUtil.connected(this.documentName);
       this.activeSocket = socket;
 

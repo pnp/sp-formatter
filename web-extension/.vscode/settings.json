@@ -10,7 +10,7 @@
         }
     ],
     "editor.codeActionsOnSave": {
-        "source.fixAll": true
+        "source.fixAll": "explicit"
     },
     "editor.detectIndentation": true,
     "files.autoSave": "off",

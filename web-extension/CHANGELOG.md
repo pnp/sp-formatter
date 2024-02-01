@@ -1,5 +1,10 @@
 # Changelog  
 
+## 0.1.4 - 01 Feb 2024
+
+- Minor bug fixing
+- Dependencies update (including the latest socket.io client)
+
 ## 0.1.3 - 19 Jan 2024
 
 - Fixed issues: live preview in Form layout and Gallery view

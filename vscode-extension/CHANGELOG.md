@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.8 - 01 Feb 24
+
+- Bug fixing
+- Updated dependencies (socket.io to the latest version)
+
 ## 0.0.7 - 19 Jan 24
 
 - Added support for intellisense for forms view

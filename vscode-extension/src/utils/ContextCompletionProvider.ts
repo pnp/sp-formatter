@@ -8,6 +8,15 @@ export class ContextCompletionProvider {
       pattern: `**/*/${fileName}`
     }, {
       provideCompletionItems: (document, position) => {
+        const wordRange = document.getWordRangeAtPosition(position);
+        const start = wordRange != null ? new Position(position.line, wordRange.start.character - 1) : new Position(position.line, position.character - 1);
+        const range = new Range(start, wordRange != null ? wordRange.end : position);
+        const text = document.getText(range);
+
+        if (!text || !(text.startsWith('@') || text.startsWith('$'))) {
+          return new CompletionList([]);
+        }
+
         return new CompletionList(this.createSuggestionsList(position, fields), false);
       }
     }, '@', '$');

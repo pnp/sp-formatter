@@ -187,7 +187,7 @@ class ColumnFormatterEnhancer {
       });
     });
 
-    this.resizeObserver.observe(DomService.getRightFilesPane());
+    //this.resizeObserver.observe(DomService.getRightFilesPane());
     customizationPaneArea.style.overflow = 'hidden';
 
     // don't wait cause it's event-based

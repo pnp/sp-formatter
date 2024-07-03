@@ -1,10 +1,6 @@
 export type MonacoEditor = typeof import('monaco-editor');
 export type CompletionItem = import('monaco-editor').languages.CompletionItem;
 
-export interface IPageContextInfo {
-  isSPO: boolean
-}
-
 declare global {
   interface Window {
     monaco: MonacoEditor;
@@ -13,5 +9,6 @@ declare global {
     __sp_formatter_id__: string;
     _spPageContextInfo: IPageContextInfo;
     sp_original_monaco: any;
+    sp_formatter_events: WebEventEmitter;
   }
 }

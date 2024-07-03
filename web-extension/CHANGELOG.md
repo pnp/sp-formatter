@@ -1,5 +1,10 @@
 # Changelog  
 
+## 0.1.5 - 10 Jul 2024
+
+- Fixed UI issues for form layout formatter
+- Fixed issues with new iframe-based column formatter
+
 ## 0.1.4 - 01 Feb 2024
 
 - Minor bug fixing

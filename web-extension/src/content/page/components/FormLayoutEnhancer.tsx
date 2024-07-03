@@ -118,10 +118,11 @@ export class FormLayoutEnhancer {
       monacoElement.style.zIndex = '2000';
       monacoElement.style.top = '0';
       monacoElement.style.marginLeft = '-1px';
+      monacoElement.style.width = window.innerWidth - monacoElement.getBoundingClientRect().left + 'px';
 
       this.editor.layout({
         height: window.innerHeight,
-        width: customizationPaneArea.offsetWidth
+        width: monacoElement.offsetWidth
       });
     } else {
       this.editor.layout({
@@ -200,7 +201,9 @@ export class FormLayoutEnhancer {
 
     const customizationPaneArea = DomService.getFormLayoutCustomizationPaneArea();
     const resizableElement = DomService.getResizableFormLayoutElement();
-    const formContent = resizableElement.parentElement.parentElement.firstElementChild as HTMLElement;
+    const formArea = DomService.getFormArea();
+    let initialClientX = -1;
+    let initialWidth = resizableElement.offsetWidth;
 
     resizableElement.style.right = '0';
 
@@ -212,20 +215,23 @@ export class FormLayoutEnhancer {
     resizer.style.cursor = 'w-resize';
 
     const onResize = (e: MouseEvent) => {
-      const initialWidth = resizableElement.offsetWidth;
-      const newWidth = (resizableElement.offsetLeft - e.clientX + initialWidth) + 'px';
-      formContent.style.width = `calc(100% - ${newWidth})`;
-      resizableElement.style.width = newWidth;
+      if (initialClientX === -1) {
+        initialClientX = e.clientX;
+      }
+      const diff = (initialClientX - e.clientX);
+      resizableElement.style.width = `${initialWidth + diff}px`;
     }
 
     const onStopResize = () => {
-      window.removeEventListener('mousemove', onResize, false);
-      window.removeEventListener('mouseup', onStopResize, false);
+      initialClientX = -1;
+      initialWidth = resizableElement.offsetWidth;
+      formArea.removeEventListener('mousemove', onResize, false);
+      formArea.removeEventListener('mouseup', onStopResize, false);
     }
 
     resizer.addEventListener('mousedown', () => {
-      window.addEventListener('mousemove', onResize, false);
-      window.addEventListener('mouseup', onStopResize, false);
+      formArea.addEventListener('mousemove', onResize, false);
+      formArea.addEventListener('mouseup', onStopResize, false);
     }, false);
 
     resizableElement.appendChild(resizer);

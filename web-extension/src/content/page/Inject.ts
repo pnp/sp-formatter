@@ -3,12 +3,20 @@ import { ColumnFormatterSettings } from './components/ColumnFormatterSettings';
 import { enableFormatter } from './components/ColumnFormatterEnhancer';
 import { getListFields } from './services/SPService';
 import { enableFormFormatter } from './components/FormLayoutEnhancer';
+import { isInIframe } from '../Utils';
+import { ensureContext } from './SpPageContextProvider';
 
-// prefetch fields - for performance - they will be cached
-getListFields();
+(async () => {
+  await ensureContext();
 
-enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]');
-enableComponentInjector(ColumnFormatterSettings, '[class*=configure-layout-pane-helpText]');
+  // prefetch fields - for performance - they will be cached
+  getListFields();
 
-enableFormatter();
-enableFormFormatter();
+  if (isInIframe()) {
+    enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]');
+    enableFormatter();
+  } else {
+    enableComponentInjector(ColumnFormatterSettings, '[class*=configure-layout-pane-helpText]');
+    enableFormFormatter();
+  }
+})();

@@ -7,11 +7,7 @@ export class WebEventEmitter extends EventEmitter {
   private constructor() {
     super();
 
-    window.addEventListener('message', (event) => {
-      if (event.source !== window) {
-        return;
-      }
-
+    window.top.addEventListener('message', (event) => {
       const key = event.data[this.typeKey];
       if (!key) return;
 
@@ -28,8 +24,12 @@ export class WebEventEmitter extends EventEmitter {
   }
 
   public static get instance(): WebEventEmitter {
+    if (!window.top.sp_formatter_events) {
+      window.top.sp_formatter_events = new WebEventEmitter();
+    }
+
     if (!this._instance) {
-      this._instance = new WebEventEmitter();
+      this._instance = window.top.sp_formatter_events;
     }
 
     return this._instance;
@@ -38,7 +38,7 @@ export class WebEventEmitter extends EventEmitter {
   public override emit<T>(eventName: string, data?: T): void {
     data = data || {} as T;
 
-    window.postMessage({
+    window.top.postMessage({
       [this.typeKey]: eventName,
       ...data
     }, '*');

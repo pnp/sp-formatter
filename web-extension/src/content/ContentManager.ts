@@ -23,10 +23,12 @@ export class ContentManager {
   private columnFormatterSchema: any;
   private viewFormatterSchema: IViewFormattingSchema;
   private bodyFormatterSchema: any;
+  private parentDocument: Document;
 
-  constructor() {
+  constructor(document: Document = null) {
     Logger.log('Connecting to the background service....');
 
+    this.parentDocument = document || window.document;
     const port = chrome.runtime.connect({ name: TabConnectEventName });
 
     Logger.log('Connected to the background service....');
@@ -152,14 +154,14 @@ export class ContentManager {
 
   private injectScriptFile(src: string): Promise<void> {
     return new Promise((resolve) => {
-      const scriptTag = document.createElement('script');
+      const scriptTag = this.parentDocument.createElement('script');
       scriptTag.src = src.startsWith('http') ? src : chrome.runtime.getURL(src);
 
       scriptTag.onload = () => {
         resolve();
       };
 
-      (document.head || document.documentElement).appendChild(scriptTag);
+      (this.parentDocument.head || this.parentDocument.documentElement).appendChild(scriptTag);
     });
   }
 }

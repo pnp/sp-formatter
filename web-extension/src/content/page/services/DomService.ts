@@ -109,6 +109,10 @@ export class DomService {
     return this.getElement(this.CustomizationMonacoContentSelector, this.getCustomizationMonacoContent.name);
   }
 
+  public static getFormArea(): HTMLElement {
+    return this.getElement('.ms-Modal-scrollableContent', this.getFormArea.name);
+  }
+
   public static getResizableFormLayoutElement(): HTMLElement {
     return this.getElement('.ConfigLayoutPane', this.getResizableFormLayoutElement.name);
   }

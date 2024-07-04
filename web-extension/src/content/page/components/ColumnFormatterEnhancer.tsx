@@ -98,11 +98,12 @@ class ColumnFormatterEnhancer {
       monacoElement.style.position = 'fixed';
       monacoElement.style.zIndex = '2000';
       monacoElement.style.top = '0';
+      monacoElement.style.right = '0';
       monacoElement.style.marginLeft = '-1px';
 
       this.editor.layout({
         height: window.innerHeight,
-        width: customizationPaneArea.offsetWidth
+        width: customizationPaneArea.offsetWidth + 20
       });
     } else {
       this.editor.layout({
@@ -187,7 +188,7 @@ class ColumnFormatterEnhancer {
       });
     });
 
-    //this.resizeObserver.observe(DomService.getRightFilesPane());
+    this.resizeObserver.observe(DomService.getRightFilesPane());
     customizationPaneArea.style.overflow = 'hidden';
 
     // don't wait cause it's event-based

@@ -11,7 +11,7 @@ export class DomService {
   private static DescriptionContentSelector = '[class$=ColumnCustomizationPane-description]';
   private static RootColumnHtmlSelector = '.sp-ColumnDesigner';
   private static RootViewHtmlSelector = '.od-ColumnCustomizationPane';
-  private static FilesRightSidePaneSelector = '.Files-rightPane';
+  private static FilesRightSidePaneSelector = '.sp-ColumnDesigner';
   private static SpFormatterCodeContainerSelector = '#sp-formater';
   private static SharePointMonacoSelector = '.monaco-editor[data-uri*="inmemory"]';
   private static SpFormatterMonacoSelector = '.monaco-editor[data-uri*="chrome-column-formatting"]';

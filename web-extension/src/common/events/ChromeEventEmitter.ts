@@ -14,10 +14,14 @@ export class ChromeEventEmitter extends EventEmitter {
 
       if (!events || events.length === 0) return;
 
-      delete data[this.typeKey];
+      const callbackData = {
+        ...data
+      }
+
+      delete callbackData[this.typeKey];
 
       events.forEach((callback) => {
-        callback(data);
+        callback(callbackData);
       });
     });
   }

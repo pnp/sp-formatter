@@ -53,7 +53,7 @@ class ComponentInjector {
       this.observer.abort();
       this.observer = null;
     }
-    if (this.container) {
+    if (this.container?.parentElement) {
       this.container.parentElement.removeChild(this.container);
     }
   }

@@ -16,6 +16,9 @@ import { ensureContext } from './SpPageContextProvider';
     enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]');
     enableFormatter();
   } else {
+    enableComponentInjector(ColumnFormatterSettings, '[class$=ColumnCustomizationPane-description]');
+    enableFormatter();
+
     enableComponentInjector(ColumnFormatterSettings, '[class*=configure-layout-pane-helpText]');
     enableFormFormatter();
   }

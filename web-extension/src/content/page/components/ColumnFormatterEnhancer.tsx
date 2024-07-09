@@ -11,6 +11,8 @@ import { IFileContent } from '../../../common/data/IFileContent';
 import { MonacoEditor } from '../../../typings';
 import { getSharePointFormatterStringValue, setSharePointFormatterStringValue } from '../services/SharePointMonaco';
 import { IDisposable } from 'monaco-editor';
+import { IEnableFormatter } from '../../../common/data/IEnableFormatter';
+import { isInIframe } from '../../Utils';
 
 type CodeEditor = import('monaco-editor').editor.IStandaloneCodeEditor;
 
@@ -20,7 +22,10 @@ export function enableFormatter() {
   const pagePipe = WebEventEmitter.instance;
   const enhancer = new ColumnFormatterEnhancer();
 
-  pagePipe.on<IEnabled>(Content.onToggleEnabledColumnFormatter, async (data) => {
+  pagePipe.on<IEnableFormatter>(Content.onToggleEnabledColumnFormatter, async (data) => {
+    const isIframed = isInIframe();
+    if (isIframed !== data.isIframed) return;
+
     if (data.enabled) {
       await DomService.waitForMonaco();
       monaco = window.monaco;

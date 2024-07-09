@@ -7,6 +7,8 @@ import { IEnabled } from '../../../common/data/IEnabled';
 import { FC, MouseEvent, useState } from 'react';
 import { VscodeService } from '../services/VscodeService';
 import { DomService, ViewType } from '../services/DomService';
+import { isInIframe } from '../../Utils';
+import { IEnableFormatter } from '../../../common/data/IEnableFormatter';
 
 interface IProps {
   smth?: any;
@@ -73,14 +75,17 @@ export const ColumnFormatterSettings: FC<IProps> = () => {
 
   function emitToggleFormatterEvent(enabled: boolean) {
     const type = DomService.getInjectionType();
+    const isIframed = isInIframe();
 
     if (type === ViewType.Form) {
-      pagePipe.emit<IEnabled>(Content.onToggleEnabledFormFormatter, {
-        enabled
+      pagePipe.emit<IEnableFormatter>(Content.onToggleEnabledFormFormatter, {
+        enabled,
+        isIframed
       });
     } else {
-      pagePipe.emit<IEnabled>(Content.onToggleEnabledColumnFormatter, {
-        enabled
+      pagePipe.emit<IEnableFormatter>(Content.onToggleEnabledColumnFormatter, {
+        enabled,
+        isIframed
       });
     }
   }

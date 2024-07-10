@@ -1,5 +1,9 @@
 # Changelog  
 
+## 0.1.6 - 09 Jul 2024
+
+- Fixed document libraries issue
+
 ## 0.1.5 - 04 Jul 2024
 
 - Fixed UI issues for form layout formatter

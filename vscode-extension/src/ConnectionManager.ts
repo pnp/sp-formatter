@@ -1,9 +1,8 @@
 import { Disposable, TextDocument, window, workspace } from 'vscode';
 import * as path from 'path';
-import { createServer } from 'http';
-import { Server as Socket } from 'socket.io';
+import { createServer, Server as HttpServer } from 'http';
+import { Server as SocketServer } from 'socket.io';
 import { StatusBarUtil } from './utils/StatusBarUtil';
-import stoppable, { StoppableServer } from 'stoppable';
 import { ContextCompletionProvider } from './utils/ContextCompletionProvider';
 import { Field } from './data/Field';
 import { promiseTimeout } from './utils/PromiseTimeout';
@@ -20,7 +19,8 @@ const onGetListFields = 'vscode_get_list_fields';
 const onSendListFields = 'vscode_send_list_fields';
 
 export class ConnectionManager {
-  private httpServer: StoppableServer;
+  private httpServer: HttpServer;
+  private ioServer: SocketServer;
   private port = 11232;
   private defaultTimeOut = 2000;
   private activeDocument: TextDocument;
@@ -38,12 +38,13 @@ export class ConnectionManager {
 
     this.activeDocument = window.activeTextEditor.document;
 
-    this.httpServer = stoppable(createServer(), 0);
-    const io = new Socket(this.httpServer, {
+    this.httpServer = createServer();
+    this.ioServer = new SocketServer(this.httpServer, {
       cors: {
         origin: '*'
       }
     });
+    const io = this.ioServer;
 
     io.on('connection', (socket) => {
       StatusBarUtil.connected(this.documentName);
@@ -84,21 +85,47 @@ export class ConnectionManager {
       return;
     }
 
+    await this.closeSocketServer();
+    await this.closeHttpServer();
+
+    this.httpServer = null;
+    this.ioServer = null;
+    this.disposeObjects();
+    this.subscriptions = [];
+    this.activeSocket = null;
+
+    StatusBarUtil.destroy();
+  }
+
+  private closeSocketServer(): Promise<void> {
+    if (!this.ioServer) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      this.ioServer.close(() => {
+        resolve();
+      });
+    });
+  }
+
+  private closeHttpServer(): Promise<void> {
+    if (!this.httpServer) {
+      return Promise.resolve();
+    }
+
     return new Promise((resolve, reject) => {
-      this.httpServer.stop(e => {
-        if (e) {
+      this.httpServer.close((e) => {
+        const error = e as NodeJS.ErrnoException;
+
+        if (error && error.code !== 'ERR_SERVER_NOT_RUNNING') {
           reject(e);
           return;
         }
 
-        this.httpServer = null;
-        this.disposeObjects();
-        this.subscriptions = [];
-
-        StatusBarUtil.destroy();
         resolve();
       });
-    })
+    });
   }
 
   private async freePortIfInUse() {
